@@ -1,0 +1,220 @@
+#!/usr/bin/env python3
+"""
+Billy Bass — Stage 1.3 CLI reference client (thin fish client).
+
+Exercises the full homelab voice pipeline from any host with a mic + speaker, so the
+STT -> brain -> TTS chain is validated end-to-end before any ESP32 exists. This client
+*is* the documented fish<->homelab protocol contract that the ESP32 firmware reimplements
+in Stage 3 (see docs/homelab-setup.md service map).
+
+The fish is a THIN client: it holds no persona, no conversation history, and does no text
+cleaning. All of that lives in the homelab shim (SCOPING.md §8.3), which keeps the fish
+model-agnostic and lets the character change with no reflash. The fish just conducts three
+calls per turn, two of them straight to the audio engines:
+
+  STT   : POST {stt}/inference       multipart file=<wav 16k mono>, response_format=json -> {"text": ...}
+  brain : POST {shim}/v1/respond     JSON {session, text}; SSE -> {"sentence": "..."} per line, then [DONE]
+  TTS   : POST {tts}/v1/audio/speech JSON {model,input,voice,response_format=wav}          -> wav bytes
+
+The shim already returns clean, spoken-ready sentences (persona applied, <think> stripped,
+markdown/emoji scrubbed, split on sentence boundaries) — the fish synthesizes them verbatim.
+
+Turn pipeline: record -> STT -> shim (streams sentences) -> TTS per sentence -> play, with
+sentence 1 spoken while later sentences are still being generated/synthesized (a synth thread
+runs ahead of the playback loop). Prints per-turn latency (end-of-speech -> first audio) to
+validate the ~2 s target.
+
+Usage:
+  pip install -r requirements.txt
+  ./billy_cli.py --host gpu-host           # defaults: shim :8000, STT :8081, TTS :8880
+"""
+import argparse
+import io
+import json
+import queue
+import sys
+import threading
+import time
+
+import httpx
+import numpy as np
+import sounddevice as sd
+import soundfile as sf
+import soxr
+
+SAMPLE_RATE = 16000  # whisper wants 16 kHz mono
+
+_DEVICE_SR = None
+
+
+def _device_sr():
+    global _DEVICE_SR
+    if _DEVICE_SR is None:
+        _DEVICE_SR = int(sd.query_devices(kind="output")["default_samplerate"])
+    return _DEVICE_SR
+
+
+def play_audio(audio, sr):
+    """Play float32 audio, resampling to the output device's native rate first.
+    PortAudio's driver-side resampling of a mismatched rate (e.g. 24 kHz TTS on a 48 kHz
+    device) produced static; resampling in Python with soxr avoids it."""
+    dev = _device_sr()
+    if sr != dev:
+        audio = soxr.resample(audio, sr, dev)
+    sd.play(audio, dev)
+    sd.wait()
+
+
+def record_utterance():
+    """Press Enter to start, speak, press Enter to stop. Returns wav bytes (16k mono int16), or None."""
+    input("\n[Enter] to start talking… ")
+    frames = []
+
+    def cb(indata, _frames, _time, status):
+        if status:
+            print(status, file=sys.stderr)
+        frames.append(indata.copy())
+
+    stream = sd.InputStream(samplerate=SAMPLE_RATE, channels=1, dtype="int16", callback=cb)
+    stream.start()
+    input("🎤 recording — [Enter] to stop… ")
+    stream.stop()
+    stream.close()
+    if not frames:
+        return None
+    audio = np.concatenate(frames, axis=0)
+    buf = io.BytesIO()
+    sf.write(buf, audio, SAMPLE_RATE, format="WAV", subtype="PCM_16")
+    return buf.getvalue()
+
+
+def transcribe(client, stt_url, wav_bytes):
+    """whisper.cpp /inference (multipart) -> transcript text. Called directly (STT is a dumb
+    audio->text transform; only the brain hop goes through the shim)."""
+    files = {"file": ("rec.wav", wav_bytes, "audio/wav")}
+    data = {"response_format": "json", "temperature": "0.0"}
+    r = client.post(f"{stt_url}/inference", files=files, data=data, timeout=60)
+    r.raise_for_status()
+    return r.json().get("text", "").strip()
+
+
+def stream_billy(client, shim_url, session, text):
+    """POST the utterance to the shim and yield each spoken sentence as it streams back.
+    The shim owns the persona, history, and text cleaning — sentences arrive ready to speak."""
+    body = {"session": session, "text": text}
+    with client.stream("POST", f"{shim_url}/v1/respond", json=body, timeout=120) as r:
+        r.raise_for_status()
+        for line in r.iter_lines():
+            if not line.startswith("data:"):
+                continue
+            payload = line[len("data:"):].strip()
+            if payload == "[DONE]":
+                break
+            try:
+                obj = json.loads(payload)
+            except json.JSONDecodeError:
+                continue
+            if "sentence" in obj:
+                yield obj["sentence"]
+            elif "error" in obj:
+                print(f"  [shim error: {obj['error']}]", file=sys.stderr)
+
+
+def reset_session(client, shim_url, session):
+    """Start each CLI run with a fresh conversation (the shim keeps history server-side, so
+    without this a new run would inherit the previous run's context)."""
+    try:
+        client.post(f"{shim_url}/v1/reset", json={"session": session}, timeout=10)
+    except httpx.HTTPError as e:  # noqa: BLE001 — non-fatal; stale history just lingers
+        print(f"  [reset failed: {e}]", file=sys.stderr)
+
+
+def tts_synth(client, tts_url, voice, text):
+    """Kokoro /v1/audio/speech -> (float32 audio, samplerate). Called directly (TTS is a dumb
+    text->audio transform)."""
+    body = {"model": "kokoro", "input": text, "voice": voice, "response_format": "wav"}
+    r = client.post(f"{tts_url}/v1/audio/speech", json=body, timeout=120)
+    r.raise_for_status()
+    audio, sr = sf.read(io.BytesIO(r.content), dtype="float32")
+    return audio, sr
+
+
+def speak_turn(client, tts_url, voice, sentence_iter, on_first_audio):
+    """Synthesize sentences on a worker thread (running ahead) while the main thread plays them in order."""
+    audio_q = queue.Queue()
+    DONE = object()
+
+    def synth_worker():
+        for sent in sentence_iter:
+            try:
+                audio, sr = tts_synth(client, tts_url, voice, sent)
+                audio_q.put((sent, audio, sr))
+            except Exception as e:  # noqa: BLE001 — reference client, keep going
+                print(f"  [tts error: {e}]", file=sys.stderr)
+        audio_q.put(DONE)
+
+    worker = threading.Thread(target=synth_worker, daemon=True)
+    worker.start()
+
+    first = True
+    while True:
+        item = audio_q.get()
+        if item is DONE:
+            break
+        sent, audio, sr = item
+        if first:
+            on_first_audio()
+            first = False
+        print(f"  🐟 {sent}")
+        play_audio(audio, sr)
+    worker.join()
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Billy Bass CLI reference client")
+    ap.add_argument("--host", default="gpu-host", help="homelab host (default: gpu-host)")
+    ap.add_argument("--shim-url", default=None, help="override, e.g. http://gpu-host:8000")
+    ap.add_argument("--stt-url", default=None)
+    ap.add_argument("--tts-url", default=None)
+    ap.add_argument("--voice", default="am_onyx", help="TTS voice (Kokoro: see /web UI for the list)")
+    ap.add_argument("--session", default="default", help="shim conversation id")
+    args = ap.parse_args()
+
+    shim_url = args.shim_url or f"http://{args.host}:8000"
+    stt_url = args.stt_url or f"http://{args.host}:8081"
+    tts_url = args.tts_url or f"http://{args.host}:8880"
+
+    print(f"Billy CLI — shim {shim_url} · STT {stt_url} · TTS {tts_url} · voice {args.voice}")
+    print("Ctrl-C to quit.")
+
+    client = httpx.Client()
+    reset_session(client, shim_url, args.session)
+    try:
+        while True:
+            wav = record_utterance()
+            if not wav:
+                continue
+            t_end = time.time()
+
+            text = transcribe(client, stt_url, wav)
+            t_stt = time.time()
+            if not text:
+                print("  (heard nothing)")
+                continue
+            print(f"  🗣  {text}")
+
+            first_audio = {}
+            sentences = stream_billy(client, shim_url, args.session, text)
+            speak_turn(client, tts_url, args.voice, sentences,
+                       lambda: first_audio.setdefault("t", time.time()))
+
+            t_first = first_audio.get("t", time.time())
+            print(f"  ⏱  STT {t_stt - t_end:.2f}s · end→first-audio {t_first - t_end:.2f}s")
+    except KeyboardInterrupt:
+        print("\nbye 🐟")
+    finally:
+        client.close()
+
+
+if __name__ == "__main__":
+    main()

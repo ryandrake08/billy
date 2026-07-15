@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Planning artifacts/docs
+SCOPING.md
+HOMELAB_SETUP.md
+
+# Build artifacts (cmake, ESP-IDF, etc.)
+build/
+
+# macOS
+.DS_Store

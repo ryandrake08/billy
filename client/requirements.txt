@@ -1,0 +1,5 @@
+httpx
+sounddevice
+soundfile
+numpy
+soxr
