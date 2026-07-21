@@ -1,0 +1,3 @@
+# Target: ESP32-S3 (WROOM-1 N8R8). PSRAM/flash/partition tuning comes when the board is on
+# the bench (Stage 3). `idf.py set-target esp32s3` applies the target; this pins it too.
+CONFIG_IDF_TARGET="esp32s3"
