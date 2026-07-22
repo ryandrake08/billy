@@ -1,2 +1,11 @@
 CompileFlags:
     Remove: [-f*, -m*]
+
+Diagnostics:
+    # Keep include-cleaner (unused + missing) ON, but exempt the headers it structurally can't
+    # model: FreeRTOS.h is a prerequisite umbrella (event_groups.h/task.h need it included first
+    # yet don't self-include it), and board.h is a macro-only provider it doesn't credit as used.
+    Includes:
+        IgnoreHeader:
+            - 'FreeRTOS\.h'
+            - 'board\.h'

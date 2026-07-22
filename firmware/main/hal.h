@@ -11,21 +11,21 @@ typedef struct
     size_t len;
 } audio_buf_t;
 
-void hal_init(void);
+void fish_hal_init(void);
 
 // IDLE: park the motors, mute the amp, and arm wake sources, then sleep.
-void hal_prepare_sleep(void);
+void fish_hal_prepare_sleep(void);
 // Block until an activation event (button press, or wake word in always-on mode).
-void hal_wait_for_wake(void);
+void fish_hal_wait_for_wake(void);
 
 // Body choreography (§6): a tail flap signals "I'm listening"; the head lifts to speak and
 // relaxes when the response completes.
-void hal_tail_flap(void);
-void hal_head_out(void);
-void hal_head_relax(void);
+void fish_hal_tail_flap(void);
+void fish_hal_head_out(void);
+void fish_hal_head_relax(void);
 
 // LISTEN: capture mic audio until on-device VAD reports end-of-speech.
-void hal_capture_utterance(audio_buf_t *out);
+void fish_hal_capture_utterance(audio_buf_t *out);
 
 // SPEAK: play one synthesized chunk while driving the mouth motor from its RMS envelope.
-void hal_play_with_mouth(const audio_buf_t *audio);
+void fish_hal_play_with_mouth(const audio_buf_t *audio);

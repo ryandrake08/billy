@@ -11,7 +11,10 @@ static const char *TAG = "billy";
 void app_main(void)
 {
     ESP_LOGI(TAG, "Billy fish booting — ESP-IDF scaffold, stubbed I/O");
-    hal_init();
-    net_init();
+    fish_hal_init();
+    if (net_init() == ESP_OK)   // join WiFi
+    {
+        net_health_check();     // "hello backend" — prove the network path (Stage 2.2)
+    }
     runloop_run();   // never returns
 }

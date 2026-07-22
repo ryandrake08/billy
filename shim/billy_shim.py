@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Billy homelab shim — the application-logic layer in front of llama.cpp (SCOPING.md §8.3).
+"""Billy backend shim — the application-logic layer in front of llama.cpp (SCOPING.md §8.3).
 
 Owns the persona, conversation history, model quirks (the /no_think soft switch, <think>
 stripping), and markdown/emoji scrubbing, then streams clean spoken sentences to the client.

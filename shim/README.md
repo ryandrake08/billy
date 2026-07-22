@@ -1,7 +1,7 @@
-# Billy shim — homelab application-logic layer
+# Billy shim — backend application-logic layer
 
 The **brain layer** that sits in front of `llama.cpp`, per `SCOPING.md` §8.3. It holds the
-application logic that should live on the homelab rather than in the fish, so the fish (CLI
+application logic that should live on the backend rather than in the fish, so the fish (CLI
 today, ESP32 later) stays a thin client:
 
 - the **persona** / system prompt (`SCOPING.md` §2.2) — edit `text.py`, reload, no reflash;
@@ -36,17 +36,17 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 
 Port **8000** keeps the shim (application layer) clear of the heavy engines on 8080/8081/8880.
 
-Config (env): `BILLY_LLM_URL` (default `http://localhost:8080` — the shim runs on `gpu-host`
-alongside llama.cpp), `BILLY_LLM_MODEL` (default `Qwen3-8B`).
+Config (env): `BILLY_LLM_URL` (default `http://localhost:8080` — the shim runs alongside
+llama.cpp), `BILLY_LLM_MODEL` (default `Qwen3-8B`).
 
 Tests (no pytest dependency): `.venv/bin/python test_text.py`.
 
-## Deploy (gpu-host)
+## Deploy
 
-Lives under `/opt/billy-shim` on `gpu-host`, managed by the `billy-shim.service` systemd unit
-(`deploy/systemd/billy-shim.service`, enabled at boot). Redeploy after code changes:
+Lives under `/opt/billy-shim` on the backend host, managed by the `billy-shim.service` systemd
+unit (`deploy/systemd/billy-shim.service`, enabled at boot). Redeploy after code changes:
 
 ```bash
-rsync -a --exclude '.venv' --exclude '__pycache__' shim/ gpu-host:/opt/billy-shim/
-ssh gpu-host systemctl restart billy-shim
+rsync -a --exclude '.venv' --exclude '__pycache__' shim/ your-host-or-ip:/opt/billy-shim/
+ssh your-host-or-ip systemctl restart billy-shim
 ```

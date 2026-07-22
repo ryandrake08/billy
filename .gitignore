@@ -7,6 +7,7 @@ venv/
 # Planning artifacts/docs
 SCOPING.md
 HOMELAB_SETUP.md
+WIRING.md
 
 # Build artifacts (cmake, ESP-IDF, etc.)
 build/
@@ -20,3 +21,5 @@ dependencies.lock
 
 # macOS
 .DS_Store
+# AppleDouble sidecar files (resource-fork/xattr metadata on non-native volumes)
+._*

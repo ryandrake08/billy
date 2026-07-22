@@ -2,13 +2,12 @@
 """
 Billy Bass — Stage 1.3 CLI reference client (thin fish client).
 
-Exercises the full homelab voice pipeline from any host with a mic + speaker, so the
+Exercises the full backend voice pipeline from any host with a mic + speaker, so the
 STT -> brain -> TTS chain is validated end-to-end before any ESP32 exists. This client
-*is* the documented fish<->homelab protocol contract that the ESP32 firmware reimplements
-in Stage 3 (see docs/homelab-setup.md service map).
+*is* the documented fish<->backend protocol contract that the ESP32 firmware reimplements.
 
 The fish is a THIN client: it holds no persona, no conversation history, and does no text
-cleaning. All of that lives in the homelab shim (SCOPING.md §8.3), which keeps the fish
+cleaning. All of that lives in the backend shim (SCOPING.md §8.3), which keeps the fish
 model-agnostic and lets the character change with no reflash. The fish just conducts three
 calls per turn, two of them straight to the audio engines:
 
@@ -26,7 +25,7 @@ validate the ~2 s target.
 
 Usage:
   pip install -r requirements.txt
-  ./billy_cli.py --host gpu-host           # defaults: shim :8000, STT :8081, TTS :8880
+  ./billy_cli.py --host <backend-host>     # ports: shim :8000, STT :8081, TTS :8880
 """
 import argparse
 import io
@@ -172,17 +171,21 @@ def speak_turn(client, tts_url, voice, sentence_iter, on_first_audio):
 
 def main():
     ap = argparse.ArgumentParser(description="Billy Bass CLI reference client")
-    ap.add_argument("--host", default="gpu-host", help="homelab host (default: gpu-host)")
-    ap.add_argument("--shim-url", default=None, help="override, e.g. http://gpu-host:8000")
+    ap.add_argument("--host", default=None,
+                    help="backend host (hostname or IP); builds the default shim/STT/TTS URLs")
+    ap.add_argument("--shim-url", default=None, help="override, e.g. http://<backend-host>:8000")
     ap.add_argument("--stt-url", default=None)
     ap.add_argument("--tts-url", default=None)
     ap.add_argument("--voice", default="am_onyx", help="TTS voice (Kokoro: see /web UI for the list)")
     ap.add_argument("--session", default="default", help="shim conversation id")
     args = ap.parse_args()
 
-    shim_url = args.shim_url or f"http://{args.host}:8000"
-    stt_url = args.stt_url or f"http://{args.host}:8081"
-    tts_url = args.tts_url or f"http://{args.host}:8880"
+    shim_url = args.shim_url or (f"http://{args.host}:8000" if args.host else None)
+    stt_url = args.stt_url or (f"http://{args.host}:8081" if args.host else None)
+    tts_url = args.tts_url or (f"http://{args.host}:8880" if args.host else None)
+    if not (shim_url and stt_url and tts_url):
+        ap.error("provide --host (backend hostname/IP), or override each of "
+                 "--shim-url/--stt-url/--tts-url")
 
     print(f"Billy CLI — shim {shim_url} · STT {stt_url} · TTS {tts_url} · voice {args.voice}")
     print("Ctrl-C to quit.")

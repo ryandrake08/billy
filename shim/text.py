@@ -1,4 +1,4 @@
-"""Billy's character + text-shaping logic — the application layer that lives on the homelab
+"""Billy's character + text-shaping logic — the application layer that lives on the backend
 shim, not on the fish (SCOPING.md §8.3). Pure functions and constants only; the HTTP app is in
 billy_shim.py. This is the source of truth for the persona and text cleaning that the Stage-1
 CLI currently carries client-side; the CLI gets thinned to call the shim (plan 1.6)."""

@@ -29,7 +29,7 @@ static void speak_sentence(const char *sentence, void *ctx)
     audio_buf_t audio;
     if (net_tts(sentence, &audio) == ESP_OK)
     {
-        hal_play_with_mouth(&audio);
+        fish_hal_play_with_mouth(&audio);
     }
 }
 
@@ -45,18 +45,18 @@ void runloop_run(void)
         switch (state)
         {
             case FISH_IDLE:
-                hal_prepare_sleep();
-                hal_wait_for_wake();
+                fish_hal_prepare_sleep();
+                fish_hal_wait_for_wake();
                 state = FISH_ACTIVATE;
                 break;
 
             case FISH_ACTIVATE:
-                hal_tail_flap();                 // "I'm listening" (§6)
+                fish_hal_tail_flap();                 // "I'm listening" (§6)
                 state = FISH_LISTEN;
                 break;
 
             case FISH_LISTEN:
-                hal_capture_utterance(&utterance);
+                fish_hal_capture_utterance(&utterance);
                 state = FISH_THINK;
                 break;
 
@@ -70,7 +70,7 @@ void runloop_run(void)
                 else
                 {
                     ESP_LOGI(TAG, "heard: \"%s\"", transcript);
-                    hal_head_out();              // "I'm talking" (§6)
+                    fish_hal_head_out();              // "I'm talking" (§6)
                     state = FISH_SPEAK;
                 }
                 break;
@@ -78,13 +78,13 @@ void runloop_run(void)
             case FISH_SPEAK:
                 // The shim streams sentences; speak_sentence TTS+plays each as it arrives.
                 net_respond(transcript, speak_sentence, NULL);
-                hal_head_relax();                // relax on response-complete, not silence (§6)
+                fish_hal_head_relax();                // relax on response-complete, not silence (§6)
                 state = FISH_IDLE;
                 break;
         }
 
         // Pace the scaffold so the stubbed loop reads clearly in the serial monitor. The real
-        // runloop blocks in hal_wait_for_wake instead of spinning.
+        // runloop blocks in fish_hal_wait_for_wake instead of spinning.
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
