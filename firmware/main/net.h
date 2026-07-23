@@ -1,8 +1,7 @@
-// Transport layer (SCOPING.md §8.1, "transport"): the fish<->backend contract. Mirrors the
-// three calls the CLI reference client makes (client/billy_cli.py) — STT direct to whisper,
-// the brain hop to the shim, TTS direct to Kokoro. This is the orchestrator seam (§8.1): only
-// this layer changes if the fish ever moves from direct-HTTP to ESPHome/Home Assistant.
-// WiFi + esp_http_client are real (Stage 2.2); STT/brain/TTS stay stubbed until Stage 3.
+// Transport layer: the fish<->backend contract. Mirrors the three calls the CLI reference
+// client makes (client/billy_cli.py) — STT direct to whisper, the brain hop to the shim,
+// TTS direct to Kokoro. This is the orchestrator seam (§8.1): only this layer changes if
+// the fish ever moves from direct-HTTP to ESPHome/Home Assistant.
 #pragma once
 #include "hal.h"      // audio_buf_t
 #include "esp_err.h"
@@ -14,8 +13,8 @@ typedef void (*sentence_cb_t)(const char *sentence, void *ctx);
 // (without spinning) if credentials are missing or the join fails.
 esp_err_t net_init(void);
 
-// "Hello backend" reachability proof (Stage 2.2): GET the shim's /health and log the result.
-esp_err_t net_health_check(void);
+// Block until the backend answers a health check, retrying with capped exponential backoff.
+void net_wait_for_backend(void);
 
 // STT: POST audio to whisper /inference -> transcript text.
 esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len);

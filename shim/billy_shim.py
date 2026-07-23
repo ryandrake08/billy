@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Billy backend shim — the application-logic layer in front of llama.cpp (SCOPING.md §8.3).
+"""Billy backend shim — the application-logic layer in front of llama.cpp.
 
 Owns the persona, conversation history, model quirks (the /no_think soft switch, <think>
 stripping), and markdown/emoji scrubbing, then streams clean spoken sentences to the client.
@@ -65,7 +65,10 @@ def _llm_deltas(client: httpx.Client, messages: list[dict]):
 
 
 def _sse(obj) -> str:
-    return f"data: {json.dumps(obj)}\n\n"
+    # ensure_ascii=False so non-ASCII (em-dashes, curly quotes) go out as raw UTF-8 rather than
+    # \uXXXX escapes — the fish passes the bytes straight to TTS. Safe in SSE: UTF-8 never contains
+    # a stray newline. (text/event-stream is UTF-8 by spec.)
+    return f"data: {json.dumps(obj, ensure_ascii=False)}\n\n"
 
 
 class RespondReq(BaseModel):

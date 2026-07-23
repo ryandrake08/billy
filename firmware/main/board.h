@@ -1,4 +1,4 @@
-// Pin map for the Billy fish — ESP32-S3-WROOM-1 N8R8 (see SCOPING.md §4.1).
+// Pin map for the Billy fish — ESP32-S3-WROOM-1 N8R8.
 // Single source of truth for wiring: the HAL includes this; nothing else hard-codes a GPIO.
 // Values are GPIO numbers. Pin-selection rules from §4.1 are already honored (ADC1 for the
 // photocell, RTC-capable button, no strapping/flash/USB pins).

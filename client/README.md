@@ -6,9 +6,9 @@ chain end-to-end **before** any ESP32 exists, and it *is* the documented protoco
 firmware reimplements in Stage 3.
 
 It is a **thin client** by design: it holds no persona, no conversation history, and does no
-text cleaning. All of that lives in the backend shim (`SCOPING.md` §8.3), so the fish stays
-model-agnostic and the character changes with no reflash. The CLI just conducts three calls
-per turn — two straight to the audio engines, one to the shim's brain endpoint.
+text cleaning. All of that lives in the backend shim, so the fish stays model-agnostic and the
+character changes with no reflash. The CLI just conducts three calls per turn — two straight
+to the audio engines, one to the shim's brain endpoint.
 
 ## Run
 
@@ -36,7 +36,7 @@ The shim streams **clean, spoken-ready sentences** (persona applied, `<think>` s
 markdown/emoji scrubbed, split on sentence boundaries); the CLI synthesizes each verbatim and
 speaks it as it arrives (a synth thread runs ahead of playback), so speech starts on sentence 1
 while the rest is still being generated. Each turn prints STT time and **end-of-speech →
-first-audio** latency (the ~2 s target from `SCOPING.md` §2).
+first-audio** latency.
 
 STT and TTS are called **directly** — they're dumb audio↔text transforms; only the brain hop
 goes through the shim. The shim keeps history server-side, so the CLI resets its session on
@@ -49,4 +49,4 @@ startup to begin each run fresh.
 - Playback resamples the 24 kHz TTS audio to the output device's native rate with `soxr`
   before playing — PortAudio's driver-side resampling of the mismatched rate produced static.
 - This host must reach the backend on ports 8000/8081/8880.
-- The voice `am_onyx` was picked from a Kokoro bake-off; the choice is recorded in `SCOPING.md` §2.2.
+- The voice `am_onyx` was picked from a Kokoro bake-off

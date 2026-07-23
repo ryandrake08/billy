@@ -1,11 +1,11 @@
 # Billy fish firmware (ESP32-S3)
 
-The on-fish firmware — the custom-firmware / direct-HTTP path (`SCOPING.md` §8.1). Right now
-it's a **scaffold with stubbed I/O**: the full runloop and the layer seams exist and build for
-`esp32s3`, but the hardware drivers and networking are stubs (no board yet). It runs the whole
-turn shape on-target, logging each step, so control flow is verified before Stage 3 wiring.
+The on-fish firmware — the custom-firmware / direct-HTTP path. Right now it's a scaffold with
+stubbed I/O: the full runloop and the layer seams exist and build for `esp32s3`, but the
+hardware drivers and networking are stubs (no board yet). It runs the whole turn shape on-target,
+logging each step, so control flow is verified before Stage 3 wiring.
 
-## Layering (`SCOPING.md` §8.1)
+## Layering
 
 Kept as three layers so the deferred orchestrator decision (custom HTTP vs. ESPHome/HA) only
 ever touches the transport seam:

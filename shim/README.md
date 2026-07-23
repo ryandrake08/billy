@@ -1,10 +1,10 @@
 # Billy shim — backend application-logic layer
 
-The **brain layer** that sits in front of `llama.cpp`, per `SCOPING.md` §8.3. It holds the
-application logic that should live on the backend rather than in the fish, so the fish (CLI
-today, ESP32 later) stays a thin client:
+The **brain layer** that sits in front of `llama.cpp`. It holds the application logic that
+should live on the backend rather than in the fish, so the fish (CLI today, ESP32 later)
+stays a thin client:
 
-- the **persona** / system prompt (`SCOPING.md` §2.2) — edit `text.py`, reload, no reflash;
+- the **persona** / system prompt — edit `text.py`, reload, no reflash;
 - **conversation history / session state** — kept server-side, keyed by session id;
 - **model quirks** — the Qwen3 `/no_think` soft switch and `<think>`-block stripping (so the
   fish stays model-agnostic while the LLM choice is still open);
@@ -15,7 +15,7 @@ today, ESP32 later) stays a thin client:
 
 **It is a text service — it does not touch audio.** STT (whisper `:8081`) and TTS (Kokoro
 `:8880`) are dumb audio↔text transforms the client calls **directly**; only the text/brain hop
-goes through the shim. See `SCOPING.md` §8.3.
+goes through the shim.
 
 ## Protocol
 

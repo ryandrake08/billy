@@ -26,15 +26,20 @@ static const char *state_name(fish_state_t s)
 static void speak_sentence(const char *sentence, void *ctx)
 {
     (void) ctx;
-    audio_buf_t audio;
-    if (net_tts(sentence, &audio) == ESP_OK)
+    audio_buf_t audio = {0};
+    if (net_tts(sentence, &audio) == ESP_OK && audio.count > 0)
     {
         fish_hal_play_with_mouth(&audio);
     }
+    audio_buf_free(&audio);
 }
 
-void runloop_run(void)
+// The task body. Runs on its own task (see runloop_start) — the per-turn work nests net_respond's
+// SSE reader over net_tts and playback, plus esp_http_client under each, so it needs far more
+// stack than the main task's ~3.5 KB default.
+static void runloop_task(void *arg)
 {
+    (void) arg;
     fish_state_t state = FISH_IDLE;
     audio_buf_t utterance = {0};
     char transcript[256];
@@ -47,16 +52,18 @@ void runloop_run(void)
             case FISH_IDLE:
                 fish_hal_prepare_sleep();
                 fish_hal_wait_for_wake();
+                vTaskDelay(pdMS_TO_TICKS(200));       // a short rest beat between turns
                 state = FISH_ACTIVATE;
                 break;
 
             case FISH_ACTIVATE:
+                fish_hal_prompt_tone();               // "ready — start talking"
                 fish_hal_tail_flap();                 // "I'm listening" (§6)
                 state = FISH_LISTEN;
                 break;
 
             case FISH_LISTEN:
-                fish_hal_capture_utterance(&utterance);
+                fish_hal_capture_utterance(&utterance);   // blocks until speech, then silence
                 state = FISH_THINK;
                 break;
 
@@ -64,11 +71,13 @@ void runloop_run(void)
                 if (net_stt(&utterance, transcript, sizeof transcript) != ESP_OK
                     || transcript[0] == '\0')
                 {
-                    ESP_LOGI(TAG, "heard nothing — back to sleep");
+                    audio_buf_free(&utterance);
+                    ESP_LOGI(TAG, "heard nothing — listening again");
                     state = FISH_IDLE;
                 }
                 else
                 {
+                    audio_buf_free(&utterance);       // PCM no longer needed after STT
                     ESP_LOGI(TAG, "heard: \"%s\"", transcript);
                     fish_hal_head_out();              // "I'm talking" (§6)
                     state = FISH_SPEAK;
@@ -82,9 +91,10 @@ void runloop_run(void)
                 state = FISH_IDLE;
                 break;
         }
-
-        // Pace the scaffold so the stubbed loop reads clearly in the serial monitor. The real
-        // runloop blocks in fish_hal_wait_for_wake instead of spinning.
-        vTaskDelay(pdMS_TO_TICKS(1000));
     }
+}
+
+void runloop_start(void)
+{
+    xTaskCreate(runloop_task, "runloop", 12288, NULL, 5, NULL);
 }

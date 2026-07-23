@@ -1,4 +1,4 @@
-// Application layer (SCOPING.md §8.1, "app"): the fish's top-level state machine (§6).
+// Application layer: the fish's top-level state machine (§6).
 #pragma once
 
 typedef enum
@@ -10,6 +10,6 @@ typedef enum
     FISH_SPEAK,     // stream the reply and voice it with mouth sync
 } fish_state_t;
 
-// Runs forever: IDLE -> ACTIVATE -> LISTEN -> THINK -> SPEAK -> IDLE, driving the HAL and
-// transport layers. Never returns.
-void runloop_run(void);
+// Spawn the turn loop (IDLE -> ACTIVATE -> LISTEN -> THINK -> SPEAK -> IDLE, driving the HAL and
+// transport layers) as its own FreeRTOS task, then return. The loop runs forever.
+void runloop_start(void);

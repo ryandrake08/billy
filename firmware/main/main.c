@@ -1,6 +1,6 @@
-// Billy fish firmware — entry point. Wires the three layers (SCOPING.md §8.1) and hands off
-// to the app runloop. This is the custom-firmware / direct-HTTP path; the orchestrator seam
-// is the transport layer (net.*), kept isolated so an ESPHome/HA swap wouldn't touch app or hal.
+// Billy fish firmware — entry point. Wires the three layers and hands off to the app runloop.
+// This is the custom-firmware / direct-HTTP path; the orchestrator seam is the transport
+// layer (net.*), kept isolated so an ESPHome/HA swap wouldn't touch app or hal.
 #include "hal.h"
 #include "net.h"
 #include "runloop.h"
@@ -10,16 +10,14 @@ static const char *TAG = "billy";
 
 void app_main(void)
 {
-    ESP_LOGI(TAG, "Billy fish booting — ESP-IDF, Stage 3.1 audio bring-up");
+    ESP_LOGI(TAG, "Billy fish booting — ESP-IDF");
     fish_hal_init();
 
-    // Bench bring-up: verify the mic + amp wiring first. This loops (a test tone, then a live
-    // mic-level readout); remove the call to resume normal boot — WiFi + runloop — below.
-    fish_hal_selftest();
-
-    if (net_init() == ESP_OK)   // join WiFi
+    if (net_init() != ESP_OK)   // the E2E loop needs the backend; without WiFi there's nothing to do
     {
-        net_health_check();     // "hello backend" — prove the network path (Stage 2.2)
+        ESP_LOGE(TAG, "WiFi join failed — cannot reach the backend. Halting.");
+        return;
     }
-    runloop_run();   // never returns
+    net_wait_for_backend();     // block (with backoff) until the backend is reachable
+    runloop_start();            // spawns the turn loop on its own task; returns
 }

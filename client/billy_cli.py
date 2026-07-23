@@ -7,9 +7,9 @@ STT -> brain -> TTS chain is validated end-to-end before any ESP32 exists. This 
 *is* the documented fish<->backend protocol contract that the ESP32 firmware reimplements.
 
 The fish is a THIN client: it holds no persona, no conversation history, and does no text
-cleaning. All of that lives in the backend shim (SCOPING.md §8.3), which keeps the fish
-model-agnostic and lets the character change with no reflash. The fish just conducts three
-calls per turn, two of them straight to the audio engines:
+cleaning. All of that lives in the backend shim, which keeps the fish model-agnostic and
+lets the character change with no reflash. The fish just conducts three calls per turn,
+two of them straight to the audio engines:
 
   STT   : POST {stt}/inference       multipart file=<wav 16k mono>, response_format=json -> {"text": ...}
   brain : POST {shim}/v1/respond     JSON {session, text}; SSE -> {"sentence": "..."} per line, then [DONE]

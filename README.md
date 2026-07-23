@@ -15,9 +15,6 @@ captures audio, conducts three HTTP calls, plays the reply, and animates the mou
 - ⏭ **Stage 2 — ESP32 dev system:** next up, gated on the ESP32-S3 board arriving.
 - ⬜ **Stage 3 — ESP32 audio + I/O on the bench**, ⬜ **Stage 4 — Fish integration.**
 
-See `SCOPING.md` for all hardware/architecture decisions and the rationale behind the staged
-build above.
-
 ## Layout
 
 | Path | What |

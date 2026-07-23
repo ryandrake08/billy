@@ -8,3 +8,8 @@ CONFIG_IDF_TARGET="esp32s3"
 CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
 CONFIG_PARTITION_TABLE_CUSTOM=y
 CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# PSRAM (N8R8 = 8 MB octal) — needed to buffer captured utterances and TTS audio, which are too
+# large for the ~290 KB of internal DRAM left after WiFi. heap_caps_malloc(MALLOC_CAP_SPIRAM).
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_OCT=y

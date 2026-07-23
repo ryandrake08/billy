@@ -1,13 +1,13 @@
 """Billy's character + text-shaping logic — the application layer that lives on the backend
-shim, not on the fish (SCOPING.md §8.3). Pure functions and constants only; the HTTP app is in
-billy_shim.py. This is the source of truth for the persona and text cleaning that the Stage-1
-CLI currently carries client-side; the CLI gets thinned to call the shim (plan 1.6)."""
+shim, not on the fish. Pure functions and constants only; the HTTP app is in billy_shim.py.
+This is the source of truth for the persona and text cleaning that the Stage-1 CLI currently
+carries client-side; the CLI gets thinned to call the shim (plan 1.6)."""
 import re
 
-# The character lever (SCOPING.md §2.2) — the biggest, freest knob for Billy's personality.
-# Written for spoken output: everything here is read aloud by Kokoro sentence-by-sentence,
-# so it steers toward short, plain, TTS-safe lines. strip_markup() is the mechanical backstop
-# for markup the model emits anyway.
+# The character lever — the biggest, freest knob for Billy's personality. Written for spoken
+# output: everything here is read aloud by Kokoro sentence-by-sentence, so it steers toward
+# short, plain, TTS-safe lines. strip_markup() is the mechanical backstop for markup the model
+# emits anyway.
 PERSONA = (
     "You are Billy, a talking largemouth bass mounted on a wooden wall plaque — an "
     "animatronic novelty fish that woke up one day with opinions. You're a wisecracking old "
