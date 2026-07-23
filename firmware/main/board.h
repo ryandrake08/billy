@@ -31,5 +31,5 @@
 
 // --- Inputs ---
 #define BOARD_BUTTON           2  // active-low + pull-up; RTC-capable -> deep-sleep wake (needs an EXTERNAL ~10k pull-up: internal pulls drop out in deep sleep)
-#define BOARD_MODE_SW          1  // stock ON-ON DPDT (2-position, one pole used): button-wake vs wakeword-wake; single GPIO, INPUT_PULLUP (low/high = the two modes)
+#define BOARD_MODE_SW          1  // stock ON-ON DPDT (2-position, one pole used): button-wake vs wakeword-wake; single GPIO, INPUT_PULLUP — floating/high = BUTTON (default), grounded/low = WAKEWORD
 #define BOARD_PHOTOCELL_ADC    9  // ADC1 (ADC2 is unusable while WiFi is on)

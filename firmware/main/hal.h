@@ -1,6 +1,7 @@
 // Hardware-abstraction layer. Everything the app runloop needs from the physical
-// fish, behind a stable interface. Audio I/O (I²S mic + amp) is real; the motor/wake
-// functions are still stubs that log intent until those drivers land.
+// fish, behind a stable interface. Audio I/O (I²S mic + amp) and activation (mode switch + button,
+// bench-wired as bare jumpers) are real; the wake-word detector and the motor functions are still
+// stubs that log intent until those land.
 #pragma once
 #include <stddef.h>
 #include <stdint.h>

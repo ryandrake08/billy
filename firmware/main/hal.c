@@ -3,6 +3,7 @@
 #include "driver/i2s_std.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include "esp_heap_caps.h"
 #include "esp_log.h"
 #include <math.h>
@@ -41,6 +42,17 @@ void fish_hal_init(void)
     };
     ESP_ERROR_CHECK(gpio_config(&sd_gpio));
     gpio_set_level(BOARD_AMP_SD_MODE, 1);
+
+    // Activation inputs: button (BOARD_BUTTON) and mode switch (BOARD_MODE_SW), both active-low
+    // with internal pull-ups — a floating jumper reads high, grounding it reads low. (The button
+    // still needs an EXTERNAL pull-up for the deep-sleep wake path in Stage 3.4; the internal pull
+    // is enough for the bench polling used here.)
+    gpio_config_t in_gpio = {
+        .pin_bit_mask = (1ULL << BOARD_BUTTON) | (1ULL << BOARD_MODE_SW),
+        .mode = GPIO_MODE_INPUT,
+        .pull_up_en = GPIO_PULLUP_ENABLE,
+    };
+    ESP_ERROR_CHECK(gpio_config(&in_gpio));
 
     // Amp: I2S0 TX, 16-bit stereo. Left initialized-but-disabled; each playback enables the
     // channel and reconfigures the clock to the audio's own rate via amp_begin (16 kHz tones,
@@ -167,7 +179,7 @@ void fish_hal_play_with_mouth(const audio_buf_t *audio)
 #define VAD_BLOCK_SAMPLES 320          // 20 ms @ 16 kHz
 #define VAD_BLOCK_MS      (VAD_BLOCK_SAMPLES * 1000 / AUDIO_SAMPLE_RATE)
 #define VAD_ONSET_RMS     6000         // 24-bit scale: idle floor ~2000, speech >7000
-#define VAD_SILENCE_MS    800          // end the turn after this much sub-threshold audio
+#define VAD_SILENCE_MS    600          // end the turn after this much sub-threshold audio
 #define VAD_DRAIN_MS      250          // discard the mic's buffered prompt tone before listening
 #define VAD_MIN_VOICED_MS 250          // reject a capture with less real speech than this (clicks)
 #define CAPTURE_MAX_MS    10000        // hard cap on one utterance
@@ -311,18 +323,124 @@ void fish_hal_selftest(void)
     mic_level_monitor();   // does not return
 }
 
-// --- Motor / wake choreography: still stubs. They log intent so the runloop can be exercised. -
+// --- Activation: mode switch + wake sources (button / wake word) ------------------------------
+//
+// Two activation modes, selected by the physical mode switch (BOARD_MODE_SW, §8.2):
+//   BUTTON   — press-to-talk. The fish can deep-sleep and wake on the button GPIO for months of
+//              standby. Lowest power; needs a deliberate press.
+//   WAKEWORD — hands-free "hey billy". The CPU + mic stay powered to listen continuously, so this
+//              mode cannot deep-sleep — that is the standby-power tradeoff (§8.2).
+//
+// The mode switch and button are bench-wired as bare jumpers on their GPIOs (grounding = "switch
+// selected" / "button pressed"), so these reads are real. Only the wake-word detector is still a
+// stub — it lands in the next steps (a built-in word first, then the trained "hey billy" model).
+
+typedef enum
+{
+    WAKE_MODE_BUTTON,
+    WAKE_MODE_WAKEWORD,
+} wake_mode_t;
+
+#define WAKE_POLL_MS         20    // poll interval for wake sources and the mode switch
+#define BUTTON_DEBOUNCE_MS   40    // press must persist this long to count (contact bounce)
+#define WAKEWORD_STUB_SIM_MS 3000  // stubbed detector's simulated time-to-detect
+
+static const char *wake_mode_name(wake_mode_t m)
+{
+    return m == WAKE_MODE_BUTTON ? "BUTTON" : "WAKEWORD";
+}
+
+static wake_mode_t current_wake_mode(void)
+{
+    // BOARD_MODE_SW has an internal pull-up: floating (high) selects the low-power default,
+    // BUTTON; grounding it selects hands-free WAKEWORD. Read fresh each turn so moving the jumper
+    // takes effect immediately.
+    return gpio_get_level(BOARD_MODE_SW) ? WAKE_MODE_BUTTON : WAKE_MODE_WAKEWORD;
+}
+
+// Active-low: the jumper grounded to GND reads 0 = pressed.
+static bool button_pressed(void)
+{
+    return gpio_get_level(BOARD_BUTTON) == 0;
+}
+
+// BUTTON mode: block until a fresh, debounced press. If the jumper is already grounded from the
+// previous turn, wait for release first so a held wire can't auto-advance every turn — each turn
+// then needs a deliberate press edge. Returns true on a press; false if the mode switch moved off
+// BUTTON, so the runloop can re-dispatch to the other wake source without waiting a whole turn.
+static bool wait_for_button(void)
+{
+    ESP_LOGI(TAG, "wake(button): waiting for a press on GPIO %d (ground the jumper to press)",
+             BOARD_BUTTON);
+    while (button_pressed())
+    {
+        if (current_wake_mode() != WAKE_MODE_BUTTON) return false;
+        vTaskDelay(pdMS_TO_TICKS(WAKE_POLL_MS));
+    }
+    for (;;)
+    {
+        if (current_wake_mode() != WAKE_MODE_BUTTON) return false;
+        if (button_pressed())
+        {
+            vTaskDelay(pdMS_TO_TICKS(BUTTON_DEBOUNCE_MS));
+            if (button_pressed())
+            {
+                ESP_LOGI(TAG, "wake(button): press detected");
+                return true;
+            }
+        }
+        vTaskDelay(pdMS_TO_TICKS(WAKE_POLL_MS));
+    }
+}
+
+// WAKEWORD mode: block until "hey billy" is heard on the continuously-running mic. The detector
+// lands in the next steps; stubbed for now (simulates a detection so the loop advances). Returns
+// true on detection; false if the mode switch moved off WAKEWORD (mirrors wait_for_button).
+static bool wait_for_wakeword(void)
+{
+    ESP_LOGI(TAG, "wake(wakeword): detector not integrated yet — simulating detection in %d ms",
+             WAKEWORD_STUB_SIM_MS);
+    for (int elapsed = 0; elapsed < WAKEWORD_STUB_SIM_MS; elapsed += WAKE_POLL_MS)
+    {
+        if (current_wake_mode() != WAKE_MODE_WAKEWORD) return false;
+        vTaskDelay(pdMS_TO_TICKS(WAKE_POLL_MS));
+    }
+    ESP_LOGI(TAG, "wake(wakeword): detected (simulated)");
+    return true;
+}
 
 void fish_hal_prepare_sleep(void)
 {
-    ESP_LOGI(TAG, "prepare sleep — both DRV8833s nSLEEP low, amp muted, arm button wake on GPIO %d",
-             BOARD_BUTTON);
+    if (current_wake_mode() == WAKE_MODE_BUTTON)
+    {
+        // TODO (Stage 3.4 low-power): park motors (nSLEEP low), mute the amp, arm BOARD_BUTTON as
+        // the wake source, and enter deep sleep here.
+        ESP_LOGI(TAG, "prepare sleep (button mode): would park motors + arm button wake on GPIO %d",
+                 BOARD_BUTTON);
+    }
+    else
+    {
+        // Hands-free: the mic must stay live for the wake-word detector, so we don't sleep.
+        ESP_LOGI(TAG, "prepare sleep (wakeword mode): mic stays live for detection — no sleep");
+    }
 }
 
 void fish_hal_wait_for_wake(void)
 {
-    ESP_LOGI(TAG, "waiting for wake (stub returns immediately)");
+    // Re-dispatch whenever the mode switch flips mid-wait: the wait functions return false when
+    // they see the mode change, so we just re-read and enter the other one. Only a real wake event
+    // (true) returns to the runloop.
+    for (;;)
+    {
+        wake_mode_t mode = current_wake_mode();
+        ESP_LOGI(TAG, "wait for wake — mode=%s", wake_mode_name(mode));
+        bool woke = (mode == WAKE_MODE_BUTTON) ? wait_for_button() : wait_for_wakeword();
+        if (woke) return;
+        ESP_LOGI(TAG, "wake: mode switch flipped — re-dispatching");
+    }
 }
+
+// --- Motor choreography: still stubs. They log intent so the runloop can be exercised. --------
 
 void fish_hal_tail_flap(void)
 {
