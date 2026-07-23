@@ -1,6 +1,6 @@
 // Hardware-abstraction layer (SCOPING.md §8.1, "hardware"). Everything the app runloop needs
-// from the physical fish, behind a stable interface. Implementations are stubs today (no board
-// yet, Stage 3); they log intent so the runloop can be exercised on-target now.
+// from the physical fish, behind a stable interface. Audio I/O (I²S mic + amp) is real as of
+// Stage 3.1; the motor/wake functions are still stubs that log intent until those drivers land.
 #pragma once
 #include <stddef.h>
 
@@ -11,7 +11,12 @@ typedef struct
     size_t len;
 } audio_buf_t;
 
+// Bring up the hardware: amp SD_MODE high + both I²S controllers (mic RX, amp TX).
 void fish_hal_init(void);
+
+// Stage 3.1 bench bring-up: play a test tone on the amp, then continuously log mic level so the
+// mic and amp wiring can be verified before the full audio path exists. Does not return.
+void fish_hal_selftest(void);
 
 // IDLE: park the motors, mute the amp, and arm wake sources, then sleep.
 void fish_hal_prepare_sleep(void);

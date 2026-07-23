@@ -1,0 +1,8 @@
+# Billy fish partition table — 8 MB flash (ESP32-S3-WROOM-1 N8R8).
+# Single factory app for now, sized with headroom for the Stage-3 audio/transport/motor code
+# (app is ~0.9 MB today). OTA slots come in Stage 4 when OTA lands; re-layout then is a bench
+# reflash. Offsets/sizes in bytes.
+# Name,     Type, SubType, Offset,   Size
+nvs,        data, nvs,     0x9000,   0x6000
+phy_init,   data, phy,     0xf000,   0x1000
+factory,    app,  factory, 0x10000,  0x300000

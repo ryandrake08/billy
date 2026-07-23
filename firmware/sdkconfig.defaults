@@ -1,3 +1,10 @@
-# Target: ESP32-S3 (WROOM-1 N8R8). PSRAM/flash/partition tuning comes when the board is on
-# the bench (Stage 3). `idf.py set-target esp32s3` applies the target; this pins it too.
+# Target: ESP32-S3-WROOM-1 N8R8 (8 MB flash, 8 MB PSRAM). `idf.py set-target esp32s3` applies
+# the target; this pins it too.
 CONFIG_IDF_TARGET="esp32s3"
+
+# 8 MB flash — the N8R8's actual size. The default 2 MB tripped a size-mismatch warning at boot
+# and left the app cramped in a 1 MB partition. The custom table (partitions.csv) gives the app
+# room to grow. (PSRAM stays off until audio buffering needs it.)
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
