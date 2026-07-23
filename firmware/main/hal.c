@@ -1,5 +1,6 @@
 #include "hal.h"
 #include "board.h"
+#include "wakeword.h"
 #include "driver/i2s_std.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
@@ -332,8 +333,9 @@ void fish_hal_selftest(void)
 //              mode cannot deep-sleep — that is the standby-power tradeoff (§8.2).
 //
 // The mode switch and button are bench-wired as bare jumpers on their GPIOs (grounding = "switch
-// selected" / "button pressed"), so these reads are real. Only the wake-word detector is still a
-// stub — it lands in the next steps (a built-in word first, then the trained "hey billy" model).
+// selected" / "button pressed"). WAKEWORD mode runs a real detector (components/wakeword) — for
+// now on the pretrained "Hey Jarvis" placeholder model; swapping in a trained "hey billy" model
+// is a model-file-only change (see components/wakeword/models/ATTRIBUTION.md).
 
 typedef enum
 {
@@ -341,9 +343,8 @@ typedef enum
     WAKE_MODE_WAKEWORD,
 } wake_mode_t;
 
-#define WAKE_POLL_MS         20    // poll interval for wake sources and the mode switch
+#define WAKE_POLL_MS         20    // poll interval for the mode switch (button mode) / button debounce
 #define BUTTON_DEBOUNCE_MS   40    // press must persist this long to count (contact bounce)
-#define WAKEWORD_STUB_SIM_MS 3000  // stubbed detector's simulated time-to-detect
 
 static const char *wake_mode_name(wake_mode_t m)
 {
@@ -393,20 +394,39 @@ static bool wait_for_button(void)
     }
 }
 
-// WAKEWORD mode: block until "hey billy" is heard on the continuously-running mic. The detector
-// lands in the next steps; stubbed for now (simulates a detection so the loop advances). Returns
-// true on detection; false if the mode switch moved off WAKEWORD (mirrors wait_for_button).
+// WAKEWORD mode: block until "hey billy" (currently the "Hey Jarvis" placeholder — see
+// components/wakeword/models/ATTRIBUTION.md) is heard on the continuously-running mic. Reads the
+// mic WAKEWORD_STEP_SAMPLES (10 ms) at a time and feeds it to the detector; each step also checks
+// the mode switch, so a flip preempts within one step (mirrors wait_for_button). Returns true on
+// detection; false if the mode switch moved off WAKEWORD.
 static bool wait_for_wakeword(void)
 {
-    ESP_LOGI(TAG, "wake(wakeword): detector not integrated yet — simulating detection in %d ms",
-             WAKEWORD_STUB_SIM_MS);
-    for (int elapsed = 0; elapsed < WAKEWORD_STUB_SIM_MS; elapsed += WAKE_POLL_MS)
+    ESP_LOGI(TAG, "wake(wakeword): listening for the wake word");
+    wakeword_reset();
+
+    int32_t raw[WAKEWORD_STEP_SAMPLES];
+    int16_t pcm[WAKEWORD_STEP_SAMPLES];
+
+    for (;;)
     {
         if (current_wake_mode() != WAKE_MODE_WAKEWORD) return false;
-        vTaskDelay(pdMS_TO_TICKS(WAKE_POLL_MS));
+
+        size_t bytes_read = 0;
+        if (i2s_channel_read(s_rx, raw, sizeof raw, &bytes_read, portMAX_DELAY) != ESP_OK)
+            continue;
+        size_t n = bytes_read / sizeof(int32_t);
+        if (n < WAKEWORD_STEP_SAMPLES) continue;
+
+        // 24-bit sample MSB-first in the 32-bit slot — same conversion as VAD capture (top 16 bits).
+        for (size_t i = 0; i < WAKEWORD_STEP_SAMPLES; i++)
+            pcm[i] = (int16_t) (raw[i] >> 16);
+
+        if (wakeword_feed(pcm, WAKEWORD_STEP_SAMPLES))
+        {
+            ESP_LOGI(TAG, "wake(wakeword): detected");
+            return true;
+        }
     }
-    ESP_LOGI(TAG, "wake(wakeword): detected (simulated)");
-    return true;
 }
 
 void fish_hal_prepare_sleep(void)
