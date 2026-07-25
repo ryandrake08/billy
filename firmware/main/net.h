@@ -1,6 +1,6 @@
 // Transport layer: the fish<->backend contract. Mirrors the three calls the CLI reference
 // client makes (client/billy_cli.py) — STT direct to whisper, the brain hop to the shim,
-// TTS direct to Kokoro. This is the orchestrator seam (§8.1): only this layer changes if
+// TTS direct to Kokoro. This is the orchestrator seam: only this layer changes if
 // the fish ever moves from direct-HTTP to ESPHome/Home Assistant.
 #pragma once
 #include "hal.h"      // audio_buf_t

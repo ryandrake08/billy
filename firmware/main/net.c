@@ -174,9 +174,9 @@ void net_wait_for_backend(void)
 }
 
 // --- Transport contract ------------------------------------------------------------------
-// The three calls client/billy_cli.py demonstrates, now all real: STT direct to whisper
-// /inference (:8081), the brain hop to the shim /v1/respond (:8000, SSE), TTS direct to Kokoro
-// /v1/audio/speech (:8880).
+// The three calls client/billy_cli.py demonstrates: STT direct to whisper /inference (:8081),
+// the brain hop to the shim /v1/respond (:8000, SSE), TTS direct to Kokoro /v1/audio/speech
+// (:8880).
 
 // Extract a top-level JSON string field — {"key":"value with \"escapes\""} — into `out`.
 // Both sources we parse emit raw UTF-8 (the shim with ensure_ascii=False, whisper.cpp natively),

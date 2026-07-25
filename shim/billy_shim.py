@@ -47,7 +47,7 @@ def _session(sid: str) -> list[dict]:
 def _llm_deltas(client: httpx.Client, messages: list[dict]):
     """Yield assistant text deltas from llama.cpp's streamed OpenAI chat completion."""
     body = {"model": LLM_MODEL, "messages": messages, "stream": True,
-            "temperature": 0.7, "top_p": 0.8}
+            "temperature": 0.9, "top_p": 0.9}
     with client.stream("POST", f"{LLM_URL}/v1/chat/completions", json=body, timeout=120) as r:
         r.raise_for_status()
         for line in r.iter_lines():

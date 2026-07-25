@@ -1,6 +1,6 @@
-# Transport needs the WiFi/event/netif/nvs stack + esp_http_client. The HAL now drives I²S audio
+# Transport needs the WiFi/event/netif/nvs stack + esp_http_client. The HAL drives I²S audio
 # (mic RX + amp TX) and GPIO (amp SD_MODE), so it needs esp_driver_i2s + esp_driver_gpio. Add more
-# REQUIRES (esp_driver_ledc for motor PWM, ...) as the HAL gains the rest of its drivers in Stage 3.
+# REQUIRES (esp_driver_ledc for motor PWM, ...) as the HAL gains motor drivers.
 idf_component_register(
     SRCS "main.c" "runloop.c" "hal.c" "net.c"
     INCLUDE_DIRS "."

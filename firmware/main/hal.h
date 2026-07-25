@@ -32,7 +32,7 @@ void fish_hal_prepare_sleep(void);
 // Block until an activation event (button press, or wake word in always-on mode).
 void fish_hal_wait_for_wake(void);
 
-// Body choreography (§6): a tail flap signals "I'm listening"; the head lifts to speak and
+// Body choreography: a tail flap signals "I'm listening"; the head lifts to speak and
 // relaxes when the response completes.
 void fish_hal_tail_flap(void);
 void fish_hal_head_out(void);

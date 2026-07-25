@@ -1,7 +1,8 @@
 // Pin map for the Billy fish — ESP32-S3-WROOM-1 N8R8.
 // Single source of truth for wiring: the HAL includes this; nothing else hard-codes a GPIO.
-// Values are GPIO numbers. Pin-selection rules from §4.1 are already honored (ADC1 for the
-// photocell, RTC-capable button, no strapping/flash/USB pins).
+// Values are GPIO numbers. Pin-selection rules are already honored: ADC1 for the photocell
+// (ADC2 is unusable while WiFi is on), an RTC-capable GPIO for the deep-sleep-wake button, and
+// no strapping/flash/USB pins used anywhere.
 #pragma once
 
 // --- Amplifier: MAX98357A, I2S0 TX (playback) ---
@@ -17,7 +18,7 @@
 
 // --- Motor drivers: 2x DRV8833 (three spring-return motors) ---
 // Each motor is driven one direction only: IN1 = PWM, IN2 held low (the spring returns it).
-// IN2 stays on a GPIO so reverse remains a firmware option if a motor is found reversible (§4).
+// IN2 stays on a GPIO so reverse remains a firmware option if a motor is found reversible.
 // nSLEEP/nFAULT are shared across both chips (one GPIO each; the two open-drain nFAULT lines
 // wire-OR'd onto one input).
 #define BOARD_MOUTH_IN1       10  // drv1 AIN1, PWM (LEDC): mouth open amount for lip-sync

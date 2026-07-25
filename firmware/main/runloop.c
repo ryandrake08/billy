@@ -58,7 +58,7 @@ static void runloop_task(void *arg)
 
             case FISH_ACTIVATE:
                 fish_hal_prompt_tone();               // "ready — start talking"
-                fish_hal_tail_flap();                 // "I'm listening" (§6)
+                fish_hal_tail_flap();                 // "I'm listening"
                 state = FISH_LISTEN;
                 break;
 
@@ -79,7 +79,7 @@ static void runloop_task(void *arg)
                 {
                     audio_buf_free(&utterance);       // PCM no longer needed after STT
                     ESP_LOGI(TAG, "heard: \"%s\"", transcript);
-                    fish_hal_head_out();              // "I'm talking" (§6)
+                    fish_hal_head_out();              // "I'm talking"
                     state = FISH_SPEAK;
                 }
                 break;
@@ -87,7 +87,7 @@ static void runloop_task(void *arg)
             case FISH_SPEAK:
                 // The shim streams sentences; speak_sentence TTS+plays each as it arrives.
                 net_respond(transcript, speak_sentence, NULL);
-                fish_hal_head_relax();                // relax on response-complete, not silence (§6)
+                fish_hal_head_relax();                // relax on response-complete, not silence
                 state = FISH_IDLE;
                 break;
         }

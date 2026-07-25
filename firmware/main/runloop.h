@@ -1,4 +1,4 @@
-// Application layer: the fish's top-level state machine (§6).
+// Application layer: the fish's top-level state machine.
 #pragma once
 
 typedef enum

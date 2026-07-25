@@ -46,8 +46,8 @@ void fish_hal_init(void)
 
     // Activation inputs: button (BOARD_BUTTON) and mode switch (BOARD_MODE_SW), both active-low
     // with internal pull-ups — a floating jumper reads high, grounding it reads low. (The button
-    // still needs an EXTERNAL pull-up for the deep-sleep wake path in Stage 3.4; the internal pull
-    // is enough for the bench polling used here.)
+    // still needs an EXTERNAL pull-up for the deep-sleep wake path (not yet implemented); the
+    // internal pull is enough for the bench polling used here.)
     gpio_config_t in_gpio = {
         .pin_bit_mask = (1ULL << BOARD_BUTTON) | (1ULL << BOARD_MODE_SW),
         .mode = GPIO_MODE_INPUT,
@@ -326,16 +326,15 @@ void fish_hal_selftest(void)
 
 // --- Activation: mode switch + wake sources (button / wake word) ------------------------------
 //
-// Two activation modes, selected by the physical mode switch (BOARD_MODE_SW, §8.2):
+// Two activation modes, selected by the physical mode switch (BOARD_MODE_SW):
 //   BUTTON   — press-to-talk. The fish can deep-sleep and wake on the button GPIO for months of
 //              standby. Lowest power; needs a deliberate press.
 //   WAKEWORD — hands-free "hey billy". The CPU + mic stay powered to listen continuously, so this
-//              mode cannot deep-sleep — that is the standby-power tradeoff (§8.2).
+//              mode cannot deep-sleep — that is the standby-power tradeoff.
 //
 // The mode switch and button are bench-wired as bare jumpers on their GPIOs (grounding = "switch
-// selected" / "button pressed"). WAKEWORD mode runs a real detector (components/wakeword) — for
-// now on the pretrained "Hey Jarvis" placeholder model; swapping in a trained "hey billy" model
-// is a model-file-only change (see components/wakeword/models/ATTRIBUTION.md).
+// selected" / "button pressed"). WAKEWORD mode runs a real detector (components/wakeword) on a
+// trained "Hey Billy" model (see components/wakeword/models/ATTRIBUTION.md).
 
 typedef enum
 {
@@ -394,11 +393,10 @@ static bool wait_for_button(void)
     }
 }
 
-// WAKEWORD mode: block until "hey billy" (currently the "Hey Jarvis" placeholder — see
-// components/wakeword/models/ATTRIBUTION.md) is heard on the continuously-running mic. Reads the
-// mic WAKEWORD_STEP_SAMPLES (10 ms) at a time and feeds it to the detector; each step also checks
-// the mode switch, so a flip preempts within one step (mirrors wait_for_button). Returns true on
-// detection; false if the mode switch moved off WAKEWORD.
+// WAKEWORD mode: block until "hey billy" (see components/wakeword/models/ATTRIBUTION.md) is heard
+// on the continuously-running mic. Reads the mic WAKEWORD_STEP_SAMPLES (10 ms) at a time and feeds
+// it to the detector; each step also checks the mode switch, so a flip preempts within one step
+// (mirrors wait_for_button). Returns true on detection; false if the mode switch moved off WAKEWORD.
 static bool wait_for_wakeword(void)
 {
     ESP_LOGI(TAG, "wake(wakeword): listening for the wake word");
@@ -433,8 +431,8 @@ void fish_hal_prepare_sleep(void)
 {
     if (current_wake_mode() == WAKE_MODE_BUTTON)
     {
-        // TODO (Stage 3.4 low-power): park motors (nSLEEP low), mute the amp, arm BOARD_BUTTON as
-        // the wake source, and enter deep sleep here.
+        // TODO (low-power, not yet implemented): park motors (nSLEEP low), mute the amp, arm
+        // BOARD_BUTTON as the wake source, and enter deep sleep here.
         ESP_LOGI(TAG, "prepare sleep (button mode): would park motors + arm button wake on GPIO %d",
                  BOARD_BUTTON);
     }

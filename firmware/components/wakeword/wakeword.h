@@ -16,8 +16,8 @@ extern "C" {
 // model's feature-slice step). AUDIO_SAMPLE_RATE in hal.c is assumed to be 16 kHz throughout.
 #define WAKEWORD_STEP_SAMPLES 160
 
-// Loads the audio frontend and the streaming model (currently the "Hey Jarvis" pretrained
-// placeholder — see models/ATTRIBUTION.md). Call once at boot, after PSRAM is up. Allocates the
+// Loads the audio frontend and the streaming model (trained "Hey Billy" model — see
+// models/ATTRIBUTION.md). Call once at boot, after PSRAM is up. Allocates the
 // model's tensor arenas in PSRAM and keeps them resident (a few tens of KB; negligible on the
 // N8R8's 8 MB). Returns false on failure (logs the reason) — callers should treat that as
 // "wake-word mode won't detect" rather than a fatal error, since button mode still works.

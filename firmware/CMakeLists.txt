@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.16)
 # ESPMicroSpeechFeatures, pulled by components/wakeword) re-clone into a fresh temp dir on every
 # fetch, so there's no stable cache to pre-clean. Strip sidecars from managed_components/ here,
 # before project() ever lets a component's build glob see them, so this is self-healing regardless
-# of dependency type. (Root-caused during Billy's wake-word bring-up, 2026-07 — see project memory.)
+# of dependency type.
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/managed_components")
     file(GLOB_RECURSE __apple_sidecar_files "${CMAKE_CURRENT_LIST_DIR}/managed_components/._*")
     if(__apple_sidecar_files)

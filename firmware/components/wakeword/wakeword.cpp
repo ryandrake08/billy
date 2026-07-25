@@ -36,25 +36,23 @@
 
 static const char *TAG = "wakeword";
 
-// Embedded model (models/hey_jarvis.tflite, EMBED_FILES in CMakeLists.txt). ESP-IDF derives this
+// Embedded model (models/hey_billy.tflite, EMBED_FILES in CMakeLists.txt). ESP-IDF derives this
 // symbol name from the file's basename ('.' -> '_', objcopy _binary_..._start convention).
 // tflite::GetModel() only needs the start pointer — flatbuffers is self-describing.
-extern const uint8_t hey_jarvis_tflite_start[] asm("_binary_hey_jarvis_tflite_start");
+extern const uint8_t hey_billy_tflite_start[] asm("_binary_hey_billy_tflite_start");
 
-// From models/hey_jarvis.json — the manifest values paired with this specific .tflite. Swap the
-// probability/window values together with the model if it ever changes; see ATTRIBUTION.md.
-static constexpr float WAKEWORD_PROBABILITY_CUTOFF = 0.97f;
+// Our own trained model — see models/ATTRIBUTION.md for training provenance. Cutoff chosen from
+// the training run's ROC sweep (5% false-reject rate, ~0.19 false accepts/hour on the validation
+// set); sliding window matches the training/test harness's own default (test.py,
+// sliding_window_length=5). Swap these together with the model if it's ever retrained.
+static constexpr float WAKEWORD_PROBABILITY_CUTOFF = 0.84f;
 static constexpr size_t WAKEWORD_SLIDING_WINDOW_SIZE = 5;
-// (feature_step_size from the manifest, 10 ms, is baked into WAKEWORD_STEP_SAMPLES in wakeword.h.)
+// (feature_step_size, 10 ms, is baked into WAKEWORD_STEP_SAMPLES in wakeword.h.)
 
-// NOT the manifest's tensor_arena_size (22860) — that figure was calibrated against ESPHome's own
-// bundled TFLM build. We link espressif/esp-tflite-micro, whose ESP-NN-accelerated kernels need
-// larger scratch buffers than the plain reference kernels the manifest assumed, so 22860 undersizes
-// AllocateTensors() on this target. Arena sizing isn't portable across TFLM builds — it's
-// empirical per (model, kernel-implementation) pair. Measured on-device: this model's interpreter
-// actually uses 29988 bytes (init() logs arena_used_bytes() on every successful load); sized here
-// with a ~9% margin, still trivial next to the N8R8's 8 MB PSRAM.
-static constexpr size_t WAKEWORD_TENSOR_ARENA_SIZE = 32768;
+// Measured on-device: this model's interpreter actually uses 33540 bytes (init() logs
+// arena_used_bytes() on every successful load); sized here with a ~9% margin — still trivial
+// next to the N8R8's 8 MB PSRAM.
+static constexpr size_t WAKEWORD_TENSOR_ARENA_SIZE = 36864;
 
 // Frontend feature-slice shape — fixed by the model architecture, not the manifest.
 static constexpr uint8_t FEATURE_SIZE = 40;      // features per 10 ms slice
@@ -155,7 +153,7 @@ bool wakeword_init(void)
     tflite::MicroAllocator *ma = tflite::MicroAllocator::Create(s_var_arena, VARIABLE_ARENA_SIZE);
     s_resource_vars = tflite::MicroResourceVariables::Create(ma, 20);
 
-    const tflite::Model *model = tflite::GetModel(hey_jarvis_tflite_start);
+    const tflite::Model *model = tflite::GetModel(hey_billy_tflite_start);
     if (model->version() != TFLITE_SCHEMA_VERSION)
     {
         ESP_LOGE(TAG, "init: model schema version mismatch (got %" PRIu32 ", want %d)",
@@ -188,7 +186,7 @@ bool wakeword_init(void)
         return false;
     }
 
-    ESP_LOGI(TAG, "init: \"Hey Jarvis\" model loaded — stride=%d slices/inference, arena_used=%u bytes",
+    ESP_LOGI(TAG, "init: \"Hey Billy\" model loaded — stride=%d slices/inference, arena_used=%u bytes",
              s_model_stride, (unsigned) s_interpreter->arena_used_bytes());
 
     s_ready = true;
