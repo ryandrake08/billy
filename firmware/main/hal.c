@@ -12,12 +12,18 @@
 
 static const char *TAG = "hal";
 
-#define AUDIO_SAMPLE_RATE 16000       // mic capture / whisper rate
-#define TWO_PI            6.28318530718f
+#define MIC_SAMPLE_RATE 16000       // mic capture / whisper rate
+#define AMP_SAMPLE_RATE 24000       // amp output rate — fixed to match Kokoro TTS's native rate
+#define TWO_PI          6.28318530718f
 
 // I²S channel handles: I2S0 TX -> MAX98357A amp (playback), I2S1 RX <- INMP441/ICS-43434 mic.
-// The mic (RX) is enabled continuously; the amp (TX) is enabled only during playback so an idle
-// channel can't loop its last DMA buffer out the speaker.
+// Both are enabled once in fish_hal_init() and run continuously for the device's uptime — simpler
+// than enabling/disabling TX per chunk, and just as silent: auto_clear_after_cb (below) zeroes an
+// idle channel's DMA buffers instead of looping stale content.
+//
+// (A prior investigation into audible noise at the start of playback suspected the TX enable/
+// disable cycle, but that wasn't it — the actual cause was the amp sharing the ESP32 dev board's
+// onboard 3.3V regulator with the CPU/WiFi; moving the amp to the board's 5V rail fixed it.)
 static i2s_chan_handle_t s_tx;
 static i2s_chan_handle_t s_rx;
 
@@ -55,14 +61,15 @@ void fish_hal_init(void)
     };
     ESP_ERROR_CHECK(gpio_config(&in_gpio));
 
-    // Amp: I2S0 TX, 16-bit stereo. Left initialized-but-disabled; each playback enables the
-    // channel and reconfigures the clock to the audio's own rate via amp_begin (16 kHz tones,
-    // 24 kHz Kokoro TTS). So this clk_cfg rate is only a required placeholder for init — never
-    // the effective output rate.
+    // Amp: I2S0 TX, 16-bit stereo, fixed at AMP_SAMPLE_RATE. auto_clear_after_cb makes the
+    // hardware zero each DMA buffer once it's sent and nothing new has replaced it, so the amp
+    // plays silence whenever amp_write_mono() isn't actively feeding it — without ever needing to
+    // stop the clock (see the top-of-file note on why that mattered).
     i2s_chan_config_t tx_chan = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_0, I2S_ROLE_MASTER);
+    tx_chan.auto_clear_after_cb = true;
     ESP_ERROR_CHECK(i2s_new_channel(&tx_chan, &s_tx, NULL));
     i2s_std_config_t tx_std = {
-        .clk_cfg  = I2S_STD_CLK_DEFAULT_CONFIG(AUDIO_SAMPLE_RATE),
+        .clk_cfg  = I2S_STD_CLK_DEFAULT_CONFIG(AMP_SAMPLE_RATE),
         .slot_cfg = I2S_STD_PHILIPS_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_STEREO),
         .gpio_cfg = {
             .mclk = I2S_GPIO_UNUSED,
@@ -73,13 +80,14 @@ void fish_hal_init(void)
         },
     };
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(s_tx, &tx_std));
+    ESP_ERROR_CHECK(i2s_channel_enable(s_tx));
 
     // Mic: I2S1 RX. 24-bit sample MSB-first, left-justified in a 32-bit slot, left channel only
     // (the mic's L/R select is tied to GND -> left slot). Enabled continuously.
     i2s_chan_config_t rx_chan = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_1, I2S_ROLE_MASTER);
     ESP_ERROR_CHECK(i2s_new_channel(&rx_chan, NULL, &s_rx));
     i2s_std_config_t rx_std = {
-        .clk_cfg  = I2S_STD_CLK_DEFAULT_CONFIG(AUDIO_SAMPLE_RATE),
+        .clk_cfg  = I2S_STD_CLK_DEFAULT_CONFIG(MIC_SAMPLE_RATE),
         .slot_cfg = I2S_STD_PHILIPS_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_32BIT, I2S_SLOT_MODE_MONO),
         .gpio_cfg = {
             .mclk = I2S_GPIO_UNUSED,
@@ -93,20 +101,12 @@ void fish_hal_init(void)
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(s_rx, &rx_std));
     ESP_ERROR_CHECK(i2s_channel_enable(s_rx));
 
-    ESP_LOGI(TAG, "init — amp SD_MODE high; I2S0 TX (amp) ready, I2S1 RX (mic) @ %d Hz",
-             AUDIO_SAMPLE_RATE);
+    ESP_LOGI(TAG, "init — amp SD_MODE high; I2S0 TX (amp) running @ %d Hz, I2S1 RX (mic) running @ %d Hz",
+             AMP_SAMPLE_RATE, MIC_SAMPLE_RATE);
 }
 
-// --- Amp playback: enable -> write -> disable, so the amp is silent between chunks. -----------
-
-// Start playback at `rate` Hz. TX must be disabled on entry (reconfig requires it); leaves it
-// enabled for amp_write_mono().
-static void amp_begin(int rate)
-{
-    i2s_std_clk_config_t clk = I2S_STD_CLK_DEFAULT_CONFIG(rate);
-    ESP_ERROR_CHECK(i2s_channel_reconfig_std_clock(s_tx, &clk));
-    ESP_ERROR_CHECK(i2s_channel_enable(s_tx));
-}
+// --- Amp playback: the TX channel runs continuously (enabled once in fish_hal_init()) and -------
+// auto-clears to silence between chunks, so playing is just writing samples.
 
 // Write mono samples to the stereo TX by duplicating each into L and R.
 static void amp_write_mono(const int16_t *mono, size_t count)
@@ -127,22 +127,17 @@ static void amp_write_mono(const int16_t *mono, size_t count)
     }
 }
 
-static void amp_end(void)
-{
-    ESP_ERROR_CHECK(i2s_channel_disable(s_tx));
-}
-
-// Synthesize and play a sine tone. Used by the self-test (long) and the prompt beep (short).
+// Synthesize and play a sine tone at AMP_SAMPLE_RATE. Used by the self-test (long) and the prompt
+// beep (short).
 static void amp_tone(int freq_hz, int ms, const char *label)
 {
     const float amplitude = 0.25f * 32767.0f;   // ~-12 dBFS
-    const float dphase = TWO_PI * freq_hz / AUDIO_SAMPLE_RATE;
+    const float dphase = TWO_PI * freq_hz / AMP_SAMPLE_RATE;
     int16_t buf[256];
     float phase = 0.0f;
-    int frames_left = AUDIO_SAMPLE_RATE * ms / 1000;
+    int frames_left = AMP_SAMPLE_RATE * ms / 1000;
 
     ESP_LOGI(TAG, "amp: %s tone %d Hz / %d ms", label, freq_hz, ms);
-    amp_begin(AUDIO_SAMPLE_RATE);
     while (frames_left > 0)
     {
         int n = frames_left > 256 ? 256 : frames_left;
@@ -155,7 +150,6 @@ static void amp_tone(int freq_hz, int ms, const char *label)
         amp_write_mono(buf, n);
         frames_left -= n;
     }
-    amp_end();
 }
 
 void fish_hal_prompt_tone(void)
@@ -169,16 +163,21 @@ void fish_hal_play_with_mouth(const audio_buf_t *audio)
     {
         return;
     }
-    amp_begin(audio->sample_rate);
+    if (audio->sample_rate != AMP_SAMPLE_RATE)
+    {
+        // The TX clock is fixed at init time (see fish_hal_init()) — a mismatched rate would play
+        // at the wrong pitch/speed rather than getting resampled.
+        ESP_LOGW(TAG, "play: audio is %d Hz but amp is fixed at %d Hz — will play at the wrong "
+                      "speed", audio->sample_rate, AMP_SAMPLE_RATE);
+    }
     amp_write_mono(audio->samples, audio->count);
-    amp_end();
     ESP_LOGI(TAG, "play: %u samples @ %d Hz", (unsigned) audio->count, audio->sample_rate);
 }
 
 // --- Mic capture with energy VAD -------------------------------------------------------------
 
 #define VAD_BLOCK_SAMPLES 320          // 20 ms @ 16 kHz
-#define VAD_BLOCK_MS      (VAD_BLOCK_SAMPLES * 1000 / AUDIO_SAMPLE_RATE)
+#define VAD_BLOCK_MS      (VAD_BLOCK_SAMPLES * 1000 / MIC_SAMPLE_RATE)
 #define VAD_ONSET_RMS     6000         // 24-bit scale: idle floor ~2000, speech >7000
 #define VAD_SILENCE_MS    600          // end the turn after this much sub-threshold audio
 #define VAD_DRAIN_MS      250          // discard the mic's buffered prompt tone before listening
@@ -187,14 +186,14 @@ void fish_hal_play_with_mouth(const audio_buf_t *audio)
 
 void fish_hal_capture_utterance(audio_buf_t *out)
 {
-    const size_t max_samples = (size_t) AUDIO_SAMPLE_RATE * CAPTURE_MAX_MS / 1000;
+    const size_t max_samples = (size_t) MIC_SAMPLE_RATE * CAPTURE_MAX_MS / 1000;
     int16_t *pcm = heap_caps_malloc(max_samples * sizeof(int16_t), MALLOC_CAP_SPIRAM);
     if (!pcm)
     {
         ESP_LOGE(TAG, "capture: PSRAM alloc of %u samples failed", (unsigned) max_samples);
         out->samples = NULL;
         out->count = 0;
-        out->sample_rate = AUDIO_SAMPLE_RATE;
+        out->sample_rate = MIC_SAMPLE_RATE;
         return;
     }
 
@@ -273,15 +272,15 @@ void fish_hal_capture_utterance(audio_buf_t *out)
         heap_caps_free(pcm);
         out->samples = NULL;
         out->count = 0;
-        out->sample_rate = AUDIO_SAMPLE_RATE;
+        out->sample_rate = MIC_SAMPLE_RATE;
         return;
     }
 
     out->samples = pcm;
     out->count = count;
-    out->sample_rate = AUDIO_SAMPLE_RATE;
+    out->sample_rate = MIC_SAMPLE_RATE;
     ESP_LOGI(TAG, "listen: captured %u samples (%u ms, %d voiced)",
-             (unsigned) count, (unsigned) (count * 1000 / AUDIO_SAMPLE_RATE), voiced_ms);
+             (unsigned) count, (unsigned) (count * 1000 / MIC_SAMPLE_RATE), voiced_ms);
 }
 
 // --- Self-test (bench tool) ------------------------------------------------------------------
@@ -320,7 +319,7 @@ void fish_hal_selftest(void)
 {
     ESP_LOGI(TAG, "audio self-test — amp tone, then live mic level (reset to replay the tone)");
     amp_tone(440, 2000, "self-test");
-    ESP_LOGI(TAG, "amp: tone done, TX stopped — speaker silent");
+    ESP_LOGI(TAG, "amp: tone done — DMA auto-clears to silence");
     mic_level_monitor();   // does not return
 }
 

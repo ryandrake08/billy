@@ -18,7 +18,8 @@ typedef struct
 // Release a buffer's PSRAM samples and zero it. Safe on an already-empty buffer.
 void audio_buf_free(audio_buf_t *buf);
 
-// Bring up the hardware: amp SD_MODE high + both I²S controllers (mic RX enabled, amp TX ready).
+// Bring up the hardware: amp SD_MODE high + both I²S controllers running continuously (mic RX,
+// amp TX).
 void fish_hal_init(void);
 
 // Bench audio self-test (not in the E2E boot path): 440 Hz tone, then a live mic-level log.
