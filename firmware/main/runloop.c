@@ -50,6 +50,7 @@ static void runloop_task(void *arg)
         switch (state)
         {
             case FISH_IDLE:
+                fish_hal_set_status(FISH_STATUS_IDLE);
                 fish_hal_prepare_sleep();
                 fish_hal_wait_for_wake();
                 vTaskDelay(pdMS_TO_TICKS(200));       // a short rest beat between turns
@@ -57,6 +58,7 @@ static void runloop_task(void *arg)
                 break;
 
             case FISH_ACTIVATE:
+                fish_hal_set_status(FISH_STATUS_LISTEN);   // cue covers ACTIVATE through LISTEN
                 fish_hal_prompt_tone();               // "ready — start talking"
                 fish_hal_tail_flap();                 // "I'm listening"
                 state = FISH_LISTEN;
@@ -68,6 +70,7 @@ static void runloop_task(void *arg)
                 break;
 
             case FISH_THINK:
+                fish_hal_set_status(FISH_STATUS_THINK);
                 if (net_stt(&utterance, transcript, sizeof transcript) != ESP_OK
                     || transcript[0] == '\0')
                 {
@@ -85,6 +88,7 @@ static void runloop_task(void *arg)
                 break;
 
             case FISH_SPEAK:
+                fish_hal_set_status(FISH_STATUS_SPEAK);
                 // The shim streams sentences; speak_sentence TTS+plays each as it arrives.
                 net_respond(transcript, speak_sentence, NULL);
                 fish_hal_head_relax();                // relax on response-complete, not silence

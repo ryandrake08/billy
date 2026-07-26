@@ -11,6 +11,11 @@ static const char *TAG = "billy";
 
 void app_main(void)
 {
+    // Status LED first, standalone, so FISH_STATUS_BOOT shows immediately at power-on — before
+    // the wake-word model load or WiFi join, which can each take a noticeable moment.
+    fish_hal_status_init();
+    fish_hal_set_status(FISH_STATUS_BOOT);
+
     ESP_LOGI(TAG, "Billy fish booting — ESP-IDF");
 
     // initialize wakeword subsystem
@@ -26,11 +31,13 @@ void app_main(void)
     // initialize network
     if (net_init() != ESP_OK)   // the E2E loop needs the backend; without WiFi there's nothing to do
     {
+        fish_hal_set_status(FISH_STATUS_ERROR);
         ESP_LOGE(TAG, "WiFi join failed — cannot reach the backend. Halting.");
         return;
     }
 
     // application
+    fish_hal_set_status(FISH_STATUS_WIFI_WAIT);
     net_wait_for_backend();     // block (with backoff) until the backend is reachable
     runloop_start();            // spawns the turn loop on its own task; returns
 }

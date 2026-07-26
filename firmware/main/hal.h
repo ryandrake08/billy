@@ -22,6 +22,24 @@ void audio_buf_free(audio_buf_t *buf);
 // amp TX).
 void fish_hal_init(void);
 
+// Status colors for the WS2812 status LED (BOARD_STATUS_LED) — a permanent diagnostic indicator,
+// present on the final board too (WIRING.md §1/§9.5), not just a bench aid. fish_hal_status_init()
+// is standalone (not part of fish_hal_init()) so it can run as the very first thing in app_main()
+// and show FISH_STATUS_BOOT immediately at power-on.
+typedef enum
+{
+    FISH_STATUS_BOOT,       // yellow — power-on / booting, before the turn loop starts
+    FISH_STATUS_WIFI_WAIT,  // white  — WiFi joined; waiting on the backend to become reachable
+    FISH_STATUS_IDLE,       // green  — waiting for a wake event (button or wake word)
+    FISH_STATUS_LISTEN,     // blue   — activated, capturing the utterance
+    FISH_STATUS_THINK,      // cyan   — transcribing / waiting on the backend's reply
+    FISH_STATUS_SPEAK,      // violet — voicing the reply
+    FISH_STATUS_ERROR,      // red    — fatal init failure
+} fish_status_t;
+
+void fish_hal_status_init(void);
+void fish_hal_set_status(fish_status_t status);
+
 // Bench audio self-test (not in the E2E boot path): 440 Hz tone, then a live mic-level log.
 void fish_hal_selftest(void);
 

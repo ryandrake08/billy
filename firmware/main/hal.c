@@ -7,6 +7,7 @@
 #include "freertos/task.h"
 #include "esp_heap_caps.h"
 #include "esp_log.h"
+#include "led_strip.h"
 #include <math.h>
 #include <stdint.h>
 
@@ -38,6 +39,45 @@ void audio_buf_free(audio_buf_t *buf)
         buf->samples = NULL;
         buf->count = 0;
     }
+}
+
+// --- Status LED: single WS2812, driven over RMT via the led_strip component ------------------
+
+static led_strip_handle_t s_status_led;
+
+void fish_hal_status_init(void)
+{
+    led_strip_config_t strip_cfg = {
+        .strip_gpio_num = BOARD_STATUS_LED,
+        .max_leds = 1,
+        .led_model = LED_MODEL_WS2812,
+        .color_component_format = LED_STRIP_COLOR_COMPONENT_FMT_GRB,
+    };
+    led_strip_rmt_config_t rmt_cfg = {
+        .clk_src = RMT_CLK_SRC_DEFAULT,
+        .resolution_hz = 10 * 1000 * 1000,   // 10 MHz — standard RMT tick rate for WS2812 timing
+    };
+    ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_cfg, &rmt_cfg, &s_status_led));
+    led_strip_clear(s_status_led);
+}
+
+// Dim RGB triples, not 0-255 — a WS2812 at full brightness is eye-searing a few inches away on a
+// bench. Indexed directly by fish_status_t.
+static const uint8_t STATUS_COLORS[][3] = {
+    [FISH_STATUS_BOOT]      = { 20, 20,  0 },   // yellow
+    [FISH_STATUS_WIFI_WAIT] = { 15, 15, 15 },   // white
+    [FISH_STATUS_IDLE]      = {  0, 20,  0 },   // green
+    [FISH_STATUS_LISTEN]    = {  0,  0, 20 },   // blue
+    [FISH_STATUS_THINK]     = {  0, 20, 20 },   // cyan
+    [FISH_STATUS_SPEAK]     = { 15,  0, 20 },   // violet
+    [FISH_STATUS_ERROR]     = { 20,  0,  0 },   // red
+};
+
+void fish_hal_set_status(fish_status_t status)
+{
+    const uint8_t *c = STATUS_COLORS[status];
+    led_strip_set_pixel(s_status_led, 0, c[0], c[1], c[2]);
+    led_strip_refresh(s_status_led);
 }
 
 void fish_hal_init(void)

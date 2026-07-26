@@ -34,3 +34,8 @@
 #define BOARD_BUTTON           2  // active-low + pull-up; RTC-capable -> deep-sleep wake (needs an EXTERNAL ~10k pull-up: internal pulls drop out in deep sleep)
 #define BOARD_MODE_SW          1  // stock ON-ON DPDT (2-position, one pole used): button-wake vs wakeword-wake; single GPIO, INPUT_PULLUP — floating/high = BUTTON (default), grounded/low = WAKEWORD
 #define BOARD_PHOTOCELL_ADC    9  // ADC1 (ADC2 is unusable while WiFi is on)
+
+// --- Status LED: WS2812-family single RGB pixel. Bench: DevKitC-1's onboard WS2812. Final board:
+// a discrete WS2812B (5050 or 2020 package — WIRING.md §1/§9.5), an official BOM item now, not
+// just a bench aid. Same GPIO on the bare WROOM-1 module (not strapping/flash/native-USB).
+#define BOARD_STATUS_LED      38

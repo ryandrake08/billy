@@ -1,0 +1,4 @@
+dependencies:
+  idf: ">=5.3"
+  # WS2812 status LED (BOARD_STATUS_LED) — RMT-driven single-pixel indicator, hal.c only.
+  espressif/led_strip: "^3.0.3"
