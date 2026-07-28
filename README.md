@@ -12,8 +12,17 @@ captures audio, conducts three HTTP calls, plays the reply, and animates the mou
 
 - ✅ **Stage 1 — Backend pipeline + reference client: complete.** Full spoken conversation
   works end-to-end via a CLI stand-in, at ~2 s first-audio, with the character voice locked.
-- ⏭ **Stage 2 — ESP32 dev system:** next up, gated on the ESP32-S3 board arriving.
-- ⬜ **Stage 3 — ESP32 audio + I/O on the bench**, ⬜ **Stage 4 — Fish integration.**
+- ✅ **Stage 2 — ESP32 dev system: mostly done.** WiFi + backend reachability verified on
+  hardware; one-command flash works, step-debug still to do.
+- ⏭ **Stage 3 — ESP32 audio + I/O on the bench: in progress.** Audio self-test, STT capture,
+  activation (button + mode switch, including a manual button override while in wake-word mode),
+  and wake-word detection all verified on the bench. Motors are now wired and bench-verified —
+  duty swept on all three, and tail-flap / head-raise-relax / mouth-open-close choreography
+  confirmed working end-to-end in the full backend round trip. Two open findings: the head
+  doesn't reach full deflection even at max duty (not yet root-caused), and the shared-battery
+  buck powering ESP32 logic browns out under combined motor+logic current (dev workaround:
+  separate USB logic / battery motor power for now). See `WIRING.md` for detail.
+- ⬜ **Stage 4 — Fish integration:** not started.
 
 ## Layout
 

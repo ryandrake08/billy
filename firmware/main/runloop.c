@@ -5,6 +5,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
+#include <stdbool.h>
 
 static const char *TAG = "runloop";
 
@@ -23,12 +24,27 @@ static const char *state_name(fish_state_t s)
 
 // SPEAK worker: synthesize one streamed sentence and play it with mouth sync. Invoked by
 // net_respond for each sentence, so playback pipelines with generation.
+//
+// The head raises here, on the first sentence that actually has audio -- not earlier, at the
+// THINK->SPEAK transition -- so it lines up with when sound actually starts instead of with the
+// LLM/TTS latency before the first sentence is ready (that gap was visible as the head moving
+// well before any audio played).
+typedef struct
+{
+    bool head_raised;
+} speak_ctx_t;
+
 static void speak_sentence(const char *sentence, void *ctx)
 {
-    (void) ctx;
+    speak_ctx_t *sc = (speak_ctx_t *) ctx;
     audio_buf_t audio = {0};
     if (net_tts(sentence, &audio) == ESP_OK && audio.count > 0)
     {
+        if (!sc->head_raised)
+        {
+            fish_hal_head_out();              // "I'm talking" -- now timed to the first real audio
+            sc->head_raised = true;
+        }
         fish_hal_play_with_mouth(&audio);
     }
     audio_buf_free(&audio);
@@ -82,18 +98,21 @@ static void runloop_task(void *arg)
                 {
                     audio_buf_free(&utterance);       // PCM no longer needed after STT
                     ESP_LOGI(TAG, "heard: \"%s\"", transcript);
-                    fish_hal_head_out();              // "I'm talking"
                     state = FISH_SPEAK;
                 }
                 break;
 
             case FISH_SPEAK:
+            {
                 fish_hal_set_status(FISH_STATUS_SPEAK);
-                // The shim streams sentences; speak_sentence TTS+plays each as it arrives.
-                net_respond(transcript, speak_sentence, NULL);
+                // The shim streams sentences; speak_sentence TTS+plays each as it arrives, and
+                // raises the head on the first one that actually has audio.
+                speak_ctx_t sc = { .head_raised = false };
+                net_respond(transcript, speak_sentence, &sc);
                 fish_hal_head_relax();                // relax on response-complete, not silence
                 state = FISH_IDLE;
                 break;
+            }
         }
     }
 }

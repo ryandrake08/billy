@@ -3,6 +3,7 @@
 #include "wakeword.h"
 #include "driver/i2s_std.h"
 #include "driver/gpio.h"
+#include "driver/ledc.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_heap_caps.h"
@@ -80,8 +81,104 @@ void fish_hal_set_status(fish_status_t status)
     led_strip_refresh(s_status_led);
 }
 
+// --- Motor drivers: 2x DRV8833, three unidirectional channels (mouth/head/tail) ----------------
+// Each motor is IN1 = LEDC PWM, IN2 held low (spring-return; board.h). nSLEEP gates both chips
+// together (high = enabled, low = ~uA parked); nFAULT is both chips' open-drain fault line,
+// wire-OR'd onto one input (low = OCP/thermal/UVLO on either chip).
+
+#define MOTOR_PWM_FREQ_HZ     20000              // above audible range -- avoids motor whine
+#define MOTOR_PWM_RESOLUTION  LEDC_TIMER_10_BIT
+#define MOTOR_DUTY_MAX        ((1 << MOTOR_PWM_RESOLUTION) - 1)   // ledc_timer_bit_t value == bit width
+#define MOTOR_PWM_TIMER       LEDC_TIMER_0
+#define MOTOR_PWM_MODE        LEDC_LOW_SPEED_MODE  // esp32s3 has no high-speed LEDC mode
+
+typedef enum
+{
+    MOTOR_MOUTH = LEDC_CHANNEL_0,
+    MOTOR_HEAD  = LEDC_CHANNEL_1,
+    MOTOR_TAIL  = LEDC_CHANNEL_2,
+} motor_channel_t;
+
+static void motor_enable(void)
+{
+    gpio_set_level(BOARD_DRV_NSLEEP, 1);
+}
+
+static void motor_disable(void)
+{
+    gpio_set_level(BOARD_DRV_NSLEEP, 0);
+}
+
+static bool motor_fault_active(void)
+{
+    return gpio_get_level(BOARD_DRV_NFAULT) == 0;
+}
+
+static void motor_set_duty(motor_channel_t ch, uint32_t duty)
+{
+    if (duty > MOTOR_DUTY_MAX) duty = MOTOR_DUTY_MAX;
+    ledc_set_duty(MOTOR_PWM_MODE, (ledc_channel_t) ch, duty);
+    ledc_update_duty(MOTOR_PWM_MODE, (ledc_channel_t) ch);
+}
+
 void fish_hal_init(void)
 {
+    // Motors: IN2 pins are plain GPIO outputs, held low -- each motor is unidirectional (spring
+    // return).
+    gpio_config_t in2_gpio = {
+        .pin_bit_mask = (1ULL << BOARD_MOUTH_IN2) | (1ULL << BOARD_HEAD_IN2) | (1ULL << BOARD_TAIL_IN2),
+        .mode = GPIO_MODE_OUTPUT,
+    };
+    ESP_ERROR_CHECK(gpio_config(&in2_gpio));
+    gpio_set_level(BOARD_MOUTH_IN2, 0);
+    gpio_set_level(BOARD_HEAD_IN2, 0);
+    gpio_set_level(BOARD_TAIL_IN2, 0);
+
+    // nSLEEP: output, starts low -- motors stay parked until the first drive call enables it.
+    gpio_config_t nsleep_gpio = {
+        .pin_bit_mask = 1ULL << BOARD_DRV_NSLEEP,
+        .mode = GPIO_MODE_OUTPUT,
+    };
+    ESP_ERROR_CHECK(gpio_config(&nsleep_gpio));
+    gpio_set_level(BOARD_DRV_NSLEEP, 0);
+
+    // nFAULT: open-drain from both chips, wire-OR'd. External pull-up is mandatory (SCOPING.md
+    // §4.1); the internal pull is harmless alongside it.
+    gpio_config_t nfault_gpio = {
+        .pin_bit_mask = 1ULL << BOARD_DRV_NFAULT,
+        .mode = GPIO_MODE_INPUT,
+        .pull_up_en = GPIO_PULLUP_ENABLE,
+    };
+    ESP_ERROR_CHECK(gpio_config(&nfault_gpio));
+
+    // One LEDC timer shared by all three motor channels (same frequency/resolution).
+    ledc_timer_config_t timer_cfg = {
+        .speed_mode      = MOTOR_PWM_MODE,
+        .duty_resolution = MOTOR_PWM_RESOLUTION,
+        .timer_num       = MOTOR_PWM_TIMER,
+        .freq_hz         = MOTOR_PWM_FREQ_HZ,
+        .clk_cfg         = LEDC_AUTO_CLK,
+    };
+    ESP_ERROR_CHECK(ledc_timer_config(&timer_cfg));
+
+    const struct { motor_channel_t ch; int gpio; } motor_channels[] = {
+        { MOTOR_MOUTH, BOARD_MOUTH_IN1 },
+        { MOTOR_HEAD,  BOARD_HEAD_IN1 },
+        { MOTOR_TAIL,  BOARD_TAIL_IN1 },
+    };
+    for (size_t i = 0; i < sizeof(motor_channels) / sizeof(motor_channels[0]); i++)
+    {
+        ledc_channel_config_t ch_cfg = {
+            .gpio_num   = motor_channels[i].gpio,
+            .speed_mode = MOTOR_PWM_MODE,
+            .channel    = motor_channels[i].ch,
+            .timer_sel  = MOTOR_PWM_TIMER,
+            .duty       = 0,
+            .hpoint     = 0,
+        };
+        ESP_ERROR_CHECK(ledc_channel_config(&ch_cfg));
+    }
+
     // Amp enable: the MAX98357A's SD_MODE must be driven high; low/floating leaves it muted.
     gpio_config_t sd_gpio = {
         .pin_bit_mask = 1ULL << BOARD_AMP_SD_MODE,
@@ -141,21 +238,27 @@ void fish_hal_init(void)
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(s_rx, &rx_std));
     ESP_ERROR_CHECK(i2s_channel_enable(s_rx));
 
-    ESP_LOGI(TAG, "init — amp SD_MODE high; I2S0 TX (amp) running @ %d Hz, I2S1 RX (mic) running @ %d Hz",
-             AMP_SAMPLE_RATE, MIC_SAMPLE_RATE);
+    ESP_LOGI(TAG, "init — motors: 3x LEDC PWM @ %d Hz configured, nSLEEP low (parked); "
+                  "amp SD_MODE high; I2S0 TX (amp) running @ %d Hz, I2S1 RX (mic) running @ %d Hz",
+             MOTOR_PWM_FREQ_HZ, AMP_SAMPLE_RATE, MIC_SAMPLE_RATE);
 }
 
 // --- Amp playback: the TX channel runs continuously (enabled once in fish_hal_init()) and -------
 // auto-clears to silence between chunks, so playing is just writing samples.
 
-// Write mono samples to the stereo TX by duplicating each into L and R.
-static void amp_write_mono(const int16_t *mono, size_t count)
+// Write mono samples to the stereo TX by duplicating each into L and R. `chunk_cb`, if non-NULL,
+// is invoked with each chunk right before it's written -- used to drive mouth-sync PWM off the
+// audio actually being played (see fish_hal_play_with_mouth below).
+typedef void (*amp_chunk_cb_t)(const int16_t *chunk, int n);
+
+static void amp_write_mono(const int16_t *mono, size_t count, amp_chunk_cb_t chunk_cb)
 {
     int16_t stereo[256 * 2];
     size_t i = 0;
     while (i < count)
     {
         int n = (count - i) > 256 ? 256 : (int) (count - i);
+        if (chunk_cb) chunk_cb(&mono[i], n);
         for (int k = 0; k < n; k++)
         {
             stereo[2 * k]     = mono[i + k];
@@ -187,7 +290,7 @@ static void amp_tone(int freq_hz, int ms, const char *label)
             phase += dphase;
             if (phase >= TWO_PI) phase -= TWO_PI;
         }
-        amp_write_mono(buf, n);
+        amp_write_mono(buf, n, NULL);
         frames_left -= n;
     }
 }
@@ -195,6 +298,53 @@ static void amp_tone(int freq_hz, int ms, const char *label)
 void fish_hal_prompt_tone(void)
 {
     amp_tone(880, 150, "prompt");
+}
+
+// --- Mouth lip-sync: RMS envelope of the audio actually being played -> mouth open/close --------
+// A one-pole envelope follower over each amp-write chunk (~10.7 ms @ 24 kHz): fast attack (mouth
+// snaps open on onset), slower release (holds open briefly through short gaps instead of
+// chattering on every one). The mechanism can't usefully track duty proportionally -- bench
+// testing found it barely moves below ~65% and needs ~100% for a full stroke (WIRING.md §6.1) --
+// so the smoothed envelope is used as a gate, not a proportional value: full duty above the
+// threshold, off below it. Reference level, rates, and threshold are a first-pass estimate --
+// tune on the bench, same as the VAD constants above.
+#define MOUTH_ENV_REF       6000.0f   // RMS that saturates the envelope at 1.0 (16-bit PCM scale)
+#define MOUTH_ENV_ATTACK    0.6f
+#define MOUTH_ENV_RELEASE   0.15f
+#define MOUTH_OPEN_THRESHOLD 0.3f     // envelope above this -> mouth snaps open; below -> closed
+
+static float s_mouth_envelope = 0.0f;
+static bool  s_mouth_open = false;   // last-commanded gate state, so steady open/closed runs of
+                                      // chunks (~93/s during playback) don't re-write the LEDC
+                                      // duty register every chunk for no change in output.
+
+static void mouth_track_chunk(const int16_t *chunk, int n)
+{
+    int64_t sumsq = 0;
+    for (int i = 0; i < n; i++) sumsq += (int32_t) chunk[i] * (int32_t) chunk[i];
+    float rms = sqrtf((float) sumsq / n);
+
+    float target = rms / MOUTH_ENV_REF;
+    if (target > 1.0f) target = 1.0f;
+
+    float rate = (target > s_mouth_envelope) ? MOUTH_ENV_ATTACK : MOUTH_ENV_RELEASE;
+    s_mouth_envelope += (target - s_mouth_envelope) * rate;
+
+    bool want_open = s_mouth_envelope > MOUTH_OPEN_THRESHOLD;
+    if (want_open != s_mouth_open)
+    {
+        motor_set_duty(MOTOR_MOUTH, want_open ? MOTOR_DUTY_MAX : 0);
+        s_mouth_open = want_open;
+    }
+}
+
+// Ramp isn't needed on close -- silence between sentences would otherwise leave the mouth ajar
+// until the next chunk arrives, so snap it shut and reset the follower for the next utterance.
+static void mouth_close(void)
+{
+    s_mouth_envelope = 0.0f;
+    s_mouth_open = false;
+    motor_set_duty(MOTOR_MOUTH, 0);
 }
 
 void fish_hal_play_with_mouth(const audio_buf_t *audio)
@@ -210,7 +360,9 @@ void fish_hal_play_with_mouth(const audio_buf_t *audio)
         ESP_LOGW(TAG, "play: audio is %d Hz but amp is fixed at %d Hz — will play at the wrong "
                       "speed", audio->sample_rate, AMP_SAMPLE_RATE);
     }
-    amp_write_mono(audio->samples, audio->count);
+    motor_enable();
+    amp_write_mono(audio->samples, audio->count, mouth_track_chunk);
+    mouth_close();
     ESP_LOGI(TAG, "play: %u samples @ %d Hz", (unsigned) audio->count, audio->sample_rate);
 }
 
@@ -363,6 +515,68 @@ void fish_hal_selftest(void)
     mic_level_monitor();   // does not return
 }
 
+// Fault-isolating: one motor at a time, sweeping duty from low to full so you can find the
+// minimum duty that actually overcomes the mechanism's spring preload/gearing -- stops
+// immediately on any fault rather than moving on to the next motor. No forced stall -- the
+// motor shafts are friction-fit to their gears, so a deliberate stall risks the gears more than
+// it proves the driver's OCP works (WIRING.md §6.2). Watch the motor itself while this runs; the
+// firmware has no current sense, only nFAULT. NOTE: the duty->motion
+// threshold tracks the motor rail's actual voltage (no buck -- WIRING.md §0), so a sweep run on a
+// sagged battery will read higher thresholds than the same sweep on a fresh one.
+void fish_hal_motor_selftest(void)
+{
+    ESP_LOGI(TAG, "motor self-test — one motor at a time, sweeping duty to find the motion threshold");
+
+    if (motor_fault_active())
+    {
+        ESP_LOGE(TAG, "motor self-test: nFAULT already low before nSLEEP — check the fault line/pull-up before proceeding");
+        return;
+    }
+
+    motor_enable();
+    vTaskDelay(pdMS_TO_TICKS(20));   // let both DRV8833s settle out of sleep before reading nFAULT
+    if (motor_fault_active())
+    {
+        ESP_LOGE(TAG, "motor self-test: nFAULT low right after nSLEEP high, at 0%% duty — check the motor rail before proceeding");
+        motor_disable();
+        return;
+    }
+
+    const struct { motor_channel_t ch; const char *name; } motors[] = {
+        { MOTOR_MOUTH, "mouth" },
+        { MOTOR_HEAD,  "head" },
+        { MOTOR_TAIL,  "tail" },
+    };
+    const uint8_t sweep_pct[] = { 20, 35, 50, 65, 80, 100 };
+
+    for (size_t i = 0; i < sizeof(motors) / sizeof(motors[0]); i++)
+    {
+        const char *name = motors[i].name;
+        motor_channel_t ch = motors[i].ch;
+
+        for (size_t s = 0; s < sizeof(sweep_pct) / sizeof(sweep_pct[0]); s++)
+        {
+            uint32_t duty = (MOTOR_DUTY_MAX * sweep_pct[s]) / 100;
+            ESP_LOGI(TAG, "motor self-test: %s — %u%% duty, 2 s", name, (unsigned) sweep_pct[s]);
+            motor_set_duty(ch, duty);
+            vTaskDelay(pdMS_TO_TICKS(2000));
+            motor_set_duty(ch, 0);
+            if (motor_fault_active())
+            {
+                ESP_LOGE(TAG, "motor self-test: %s tripped nFAULT at %u%% duty — stopping here", name, (unsigned) sweep_pct[s]);
+                motor_disable();
+                return;
+            }
+            vTaskDelay(pdMS_TO_TICKS(800));   // stopped, for a clean before/after contrast with the next step
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(1500));   // extra pause before moving on to the next motor
+    }
+
+    motor_disable();
+    ESP_LOGI(TAG, "motor self-test: done, all three motors clean — nSLEEP low (parked)");
+}
+
 // --- Activation: mode switch + wake sources (button / wake word) ------------------------------
 //
 // Two activation modes, selected by the physical mode switch (BOARD_MODE_SW):
@@ -403,6 +617,33 @@ static bool button_pressed(void)
     return gpio_get_level(BOARD_BUTTON) == 0;
 }
 
+static bool button_mode_active(void)   { return current_wake_mode() == WAKE_MODE_BUTTON; }
+static bool wakeword_mode_active(void) { return current_wake_mode() == WAKE_MODE_WAKEWORD; }
+
+// Block until the button reads released, polling `keep_waiting` so a caller can bail out (e.g. on
+// a mode-switch flip) instead of blocking indefinitely. This is what stops a held/stuck jumper
+// from immediately counting as a fresh press when a wait function starts. Returns false if
+// keep_waiting() ever returns false; true once released (or if it was never pressed).
+static bool wait_for_button_release(bool (*keep_waiting)(void))
+{
+    while (button_pressed())
+    {
+        if (!keep_waiting()) return false;
+        vTaskDelay(pdMS_TO_TICKS(WAKE_POLL_MS));
+    }
+    return true;
+}
+
+// Single-shot debounced press check: true only if the button is pressed now AND still pressed
+// after BUTTON_DEBOUNCE_MS (contact bounce filtering). Cheap to poll once per loop iteration --
+// only blocks for the debounce window when a press is actually seen.
+static bool button_press_debounced(void)
+{
+    if (!button_pressed()) return false;
+    vTaskDelay(pdMS_TO_TICKS(BUTTON_DEBOUNCE_MS));
+    return button_pressed();
+}
+
 // BUTTON mode: block until a fresh, debounced press. If the jumper is already grounded from the
 // previous turn, wait for release first so a held wire can't auto-advance every turn — each turn
 // then needs a deliberate press edge. Returns true on a press; false if the mode switch moved off
@@ -411,34 +652,30 @@ static bool wait_for_button(void)
 {
     ESP_LOGI(TAG, "wake(button): waiting for a press on GPIO %d (ground the jumper to press)",
              BOARD_BUTTON);
-    while (button_pressed())
-    {
-        if (current_wake_mode() != WAKE_MODE_BUTTON) return false;
-        vTaskDelay(pdMS_TO_TICKS(WAKE_POLL_MS));
-    }
+    if (!wait_for_button_release(button_mode_active)) return false;
     for (;;)
     {
-        if (current_wake_mode() != WAKE_MODE_BUTTON) return false;
-        if (button_pressed())
+        if (!button_mode_active()) return false;
+        if (button_press_debounced())
         {
-            vTaskDelay(pdMS_TO_TICKS(BUTTON_DEBOUNCE_MS));
-            if (button_pressed())
-            {
-                ESP_LOGI(TAG, "wake(button): press detected");
-                return true;
-            }
+            ESP_LOGI(TAG, "wake(button): press detected");
+            return true;
         }
         vTaskDelay(pdMS_TO_TICKS(WAKE_POLL_MS));
     }
 }
 
 // WAKEWORD mode: block until "hey billy" (see components/wakeword/models/ATTRIBUTION.md) is heard
-// on the continuously-running mic. Reads the mic WAKEWORD_STEP_SAMPLES (10 ms) at a time and feeds
-// it to the detector; each step also checks the mode switch, so a flip preempts within one step
-// (mirrors wait_for_button). Returns true on detection; false if the mode switch moved off WAKEWORD.
+// on the continuously-running mic, OR the button is pressed as a manual override. Waits for the
+// button to be released first, same as wait_for_button, so a jumper already held when this mode
+// is entered doesn't immediately fire an override. Reads the mic WAKEWORD_STEP_SAMPLES (10 ms) at
+// a time and feeds it to the detector; each step also checks the mode switch and button, so a
+// flip or press preempts within one step. Returns true on detection/press; false if the mode
+// switch moved off WAKEWORD.
 static bool wait_for_wakeword(void)
 {
-    ESP_LOGI(TAG, "wake(wakeword): listening for the wake word");
+    ESP_LOGI(TAG, "wake(wakeword): listening for the wake word (or a button press)");
+    if (!wait_for_button_release(wakeword_mode_active)) return false;
     wakeword_reset();
 
     int32_t raw[WAKEWORD_STEP_SAMPLES];
@@ -446,7 +683,13 @@ static bool wait_for_wakeword(void)
 
     for (;;)
     {
-        if (current_wake_mode() != WAKE_MODE_WAKEWORD) return false;
+        if (!wakeword_mode_active()) return false;
+
+        if (button_press_debounced())
+        {
+            ESP_LOGI(TAG, "wake(wakeword): button press detected (manual override)");
+            return true;
+        }
 
         size_t bytes_read = 0;
         if (i2s_channel_read(s_rx, raw, sizeof raw, &bytes_read, portMAX_DELAY) != ESP_OK)
@@ -468,17 +711,19 @@ static bool wait_for_wakeword(void)
 
 void fish_hal_prepare_sleep(void)
 {
+    motor_disable();   // nSLEEP low -- park both DRV8833s (~uA) regardless of wake mode
+
     if (current_wake_mode() == WAKE_MODE_BUTTON)
     {
-        // TODO (low-power, not yet implemented): park motors (nSLEEP low), mute the amp, arm
-        // BOARD_BUTTON as the wake source, and enter deep sleep here.
-        ESP_LOGI(TAG, "prepare sleep (button mode): would park motors + arm button wake on GPIO %d",
+        // TODO (low-power, not yet implemented): mute the amp, arm BOARD_BUTTON as the wake
+        // source, and enter deep sleep here.
+        ESP_LOGI(TAG, "prepare sleep (button mode): motors parked; would arm button wake on GPIO %d",
                  BOARD_BUTTON);
     }
     else
     {
         // Hands-free: the mic must stay live for the wake-word detector, so we don't sleep.
-        ESP_LOGI(TAG, "prepare sleep (wakeword mode): mic stays live for detection — no sleep");
+        ESP_LOGI(TAG, "prepare sleep (wakeword mode): motors parked; mic stays live for detection — no sleep");
     }
 }
 
@@ -497,19 +742,44 @@ void fish_hal_wait_for_wake(void)
     }
 }
 
-// --- Motor choreography: still stubs. They log intent so the runloop can be exercised. --------
+// --- Motor choreography: tail flap + head raise/relax. Mouth PWM is driven separately, off the
+// playback envelope (see mouth_track_chunk above). Approx timings from SCOPING.md §4/§6.
 
+#define TAIL_FLAP_MS 250   // one flap: drive out, then let the spring return it
+
+static void motor_warn_if_fault(const char *what)
+{
+    if (motor_fault_active())
+    {
+        ESP_LOGW(TAG, "%s: nFAULT low — possible stall/OCP", what);
+    }
+}
+
+// ACTIVATE: a single "I'm listening" gesture -- drive the tail out and let the spring return it.
+// Blocking is fine here; it's a brief one-shot before LISTEN starts capturing.
 void fish_hal_tail_flap(void)
 {
     ESP_LOGI(TAG, "tail flap — 'I'm listening'");
+    motor_enable();
+    motor_set_duty(MOTOR_TAIL, MOTOR_DUTY_MAX);
+    vTaskDelay(pdMS_TO_TICKS(TAIL_FLAP_MS));
+    motor_set_duty(MOTOR_TAIL, 0);
+    motor_warn_if_fault("tail flap");
 }
 
+// SPEAK: raise the head and hold it (non-blocking -- the spring-return motor stays driven for as
+// long as fish_hal_head_relax() is withheld, which the runloop does until the whole reply is
+// done, not just on audio silence -- a documented BillAI bug otherwise, SCOPING.md §6).
 void fish_hal_head_out(void)
 {
     ESP_LOGI(TAG, "head out — 'I'm talking'");
+    motor_enable();
+    motor_set_duty(MOTOR_HEAD, MOTOR_DUTY_MAX);
 }
 
 void fish_hal_head_relax(void)
 {
     ESP_LOGI(TAG, "head relax");
+    motor_set_duty(MOTOR_HEAD, 0);
+    motor_warn_if_fault("head");
 }

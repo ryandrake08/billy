@@ -5,6 +5,7 @@ __pycache__/
 venv/
 
 # Planning artifacts/docs
+BUGS.md
 SCOPING.md
 HOMELAB_SETUP.md
 WIRING.md

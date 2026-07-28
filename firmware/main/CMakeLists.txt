@@ -1,11 +1,10 @@
 # Transport needs the WiFi/event/netif/nvs stack + esp_http_client. The HAL drives I²S audio
-# (mic RX + amp TX), GPIO (amp SD_MODE), and the WS2812 status LED (led_strip, a managed
-# component — see idf_component.yml). Add more REQUIRES (esp_driver_ledc for motor PWM, ...) as
-# the HAL gains motor drivers.
+# (mic RX + amp TX), GPIO (amp SD_MODE + motor IN2/nSLEEP/nFAULT), motor PWM (esp_driver_ledc),
+# and the WS2812 status LED (led_strip, a managed component — see idf_component.yml).
 idf_component_register(
     SRCS "main.c" "runloop.c" "hal.c" "net.c"
     INCLUDE_DIRS "."
-    REQUIRES esp_wifi esp_event esp_netif nvs_flash esp_http_client esp_driver_i2s esp_driver_gpio led_strip wakeword
+    REQUIRES esp_wifi esp_event esp_netif nvs_flash esp_http_client esp_driver_i2s esp_driver_gpio esp_driver_ledc led_strip wakeword
 )
 
 # WiFi credentials and the backend host come from the build environment, never source control:

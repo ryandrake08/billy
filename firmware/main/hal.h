@@ -1,7 +1,7 @@
 // Hardware-abstraction layer. Everything the app runloop needs from the physical
 // fish, behind a stable interface. Audio I/O (I²S mic + amp), activation (mode switch + button,
-// bench-wired as bare jumpers; WAKEWORD mode runs a real detector — see components/wakeword) are
-// real; the motor functions are still stubs that log intent until those land.
+// bench-wired as bare jumpers; WAKEWORD mode runs a real detector — see components/wakeword),
+// and the motor drivers (2x DRV8833, LEDC PWM) are real; awaiting the bench motors to verify.
 #pragma once
 #include <stddef.h>
 #include <stdint.h>
@@ -42,6 +42,13 @@ void fish_hal_set_status(fish_status_t status);
 
 // Bench audio self-test (not in the E2E boot path): 440 Hz tone, then a live mic-level log.
 void fish_hal_selftest(void);
+
+// Bench motor self-test (not in the E2E boot path, currently unused by main.c): one motor at a
+// time, sweeping duty (20/35/50/65/80/100%, 2 s each) to find the minimum duty that overcomes
+// the mechanism's spring preload/gearing -- stopping immediately on any nFAULT trip. No forced
+// stall -- see WIRING.md §6.2 (friction-fit motor shafts make a deliberate stall risky to the
+// gears). Requires fish_hal_init() to have already run.
+void fish_hal_motor_selftest(void);
 
 // A short "ready — start talking" beep on the amp.
 void fish_hal_prompt_tone(void);
