@@ -4,6 +4,7 @@
 #include "driver/i2s_std.h"
 #include "driver/gpio.h"
 #include "driver/ledc.h"
+#include "esp_adc/adc_oneshot.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_heap_caps.h"
@@ -197,6 +198,24 @@ void fish_hal_init(void)
         .pull_up_en = GPIO_PULLUP_ENABLE,
     };
     ESP_ERROR_CHECK(gpio_config(&in_gpio));
+
+    // Photocell: ADC1 oneshot, 12 dB attenuation for the full 0-3.3V range. No consumer yet --
+    // just a single read at boot to confirm the wiring, logged once rather than polled.
+    adc_oneshot_unit_handle_t photocell_adc;
+    adc_oneshot_unit_init_cfg_t photocell_unit_cfg = { .unit_id = ADC_UNIT_1 };
+    ESP_ERROR_CHECK(adc_oneshot_new_unit(&photocell_unit_cfg, &photocell_adc));
+    adc_unit_t photocell_unit;
+    adc_channel_t photocell_channel;
+    ESP_ERROR_CHECK(adc_oneshot_io_to_channel(BOARD_PHOTOCELL_ADC, &photocell_unit, &photocell_channel));
+    adc_oneshot_chan_cfg_t photocell_chan_cfg = {
+        .atten = ADC_ATTEN_DB_12,
+        .bitwidth = ADC_BITWIDTH_DEFAULT,
+    };
+    ESP_ERROR_CHECK(adc_oneshot_config_channel(photocell_adc, photocell_channel, &photocell_chan_cfg));
+    int photocell_raw = 0;
+    ESP_ERROR_CHECK(adc_oneshot_read(photocell_adc, photocell_channel, &photocell_raw));
+    ESP_LOGI(TAG, "photocell: raw=%d", photocell_raw);
+    ESP_ERROR_CHECK(adc_oneshot_del_unit(photocell_adc));
 
     // Amp: I2S0 TX, 16-bit stereo, fixed at AMP_SAMPLE_RATE. auto_clear_after_cb makes the
     // hardware zero each DMA buffer once it's sent and nothing new has replaced it, so the amp
