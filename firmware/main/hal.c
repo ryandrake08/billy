@@ -566,7 +566,7 @@ void fish_hal_motor_selftest(void)
         { MOTOR_HEAD,  "head" },
         { MOTOR_TAIL,  "tail" },
     };
-    const uint8_t sweep_pct[] = { 20, 35, 50, 65, 80, 100 };
+    const uint8_t sweep_pct[] = { 50, 60, 70, 80, 90, 100 };
 
     for (size_t i = 0; i < sizeof(motors) / sizeof(motors[0]); i++)
     {
