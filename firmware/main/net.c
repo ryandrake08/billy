@@ -27,6 +27,14 @@ static const char *TAG = "net";
 #define WIFI_MAX_RETRY 8
 #define NET_HOSTNAME   "billy"   // DHCP hostname (option 12) so the router/dnsmasq registers us
 
+#define BACKEND_BACKOFF_INITIAL_MS 1000
+#define BACKEND_BACKOFF_MAX_MS     30000
+
+#define HEALTH_CHECK_TIMEOUT_MS 5000
+#define STT_TIMEOUT_MS          30000    // whisper.cpp transcribing the whole utterance
+#define RESPOND_TIMEOUT_MS      120000   // shim SSE stream: LLM generation across the whole reply
+#define TTS_TIMEOUT_MS          120000   // Kokoro synthesizing one sentence
+
 // --- WiFi station bring-up ---------------------------------------------------------------
 
 static EventGroupHandle_t s_wifi_events;
@@ -137,7 +145,7 @@ static esp_err_t net_health_check(void)
     const char *url = "http://" BACKEND_HOST ":8000/health";
     esp_http_client_config_t cfg = {
         .url = url,
-        .timeout_ms = 5000,
+        .timeout_ms = HEALTH_CHECK_TIMEOUT_MS,
     };
     esp_http_client_handle_t client = esp_http_client_init(&cfg);
 
@@ -164,12 +172,12 @@ static esp_err_t net_health_check(void)
 // lets it recover on its own if the backend is slow to come up (e.g. a reboot).
 void net_wait_for_backend(void)
 {
-    int backoff_ms = 1000;
+    int backoff_ms = BACKEND_BACKOFF_INITIAL_MS;
     while (net_health_check() != ESP_OK)
     {
         ESP_LOGW(TAG, "backend unreachable — retrying in %d ms", backoff_ms);
         vTaskDelay(pdMS_TO_TICKS(backoff_ms));
-        backoff_ms = (backoff_ms * 2 > 30000) ? 30000 : backoff_ms * 2;
+        backoff_ms = (backoff_ms * 2 > BACKEND_BACKOFF_MAX_MS) ? BACKEND_BACKOFF_MAX_MS : backoff_ms * 2;
     }
 }
 
@@ -284,7 +292,7 @@ esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len)
 
     char url[128];
     snprintf(url, sizeof url, "http://%s:8081/inference", BACKEND_HOST);
-    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = 30000 };
+    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = STT_TIMEOUT_MS };
     esp_http_client_handle_t client = esp_http_client_init(&cfg);
     char ctype[80];
     snprintf(ctype, sizeof ctype, "multipart/form-data; boundary=%s", BOUNDARY);
@@ -355,7 +363,7 @@ esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
 
     char url[128];
     snprintf(url, sizeof url, "http://%s:8000/v1/respond", BACKEND_HOST);
-    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = 120000 };
+    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = RESPOND_TIMEOUT_MS };
     esp_http_client_handle_t client = esp_http_client_init(&cfg);
     esp_http_client_set_header(client, "Content-Type", "application/json");
     esp_http_client_set_header(client, "Accept", "text/event-stream");
@@ -441,7 +449,7 @@ esp_err_t net_tts(const char *sentence, audio_buf_t *out_audio)
 
     char url[128];
     snprintf(url, sizeof url, "http://%s:8880/v1/audio/speech", BACKEND_HOST);
-    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = 120000 };
+    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = TTS_TIMEOUT_MS };
     esp_http_client_handle_t client = esp_http_client_init(&cfg);
     esp_http_client_set_header(client, "Content-Type", "application/json");
 

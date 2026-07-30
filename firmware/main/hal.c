@@ -301,6 +301,10 @@ static bool photocell_bright_enough(const char *context)
 // --- Amp playback: the TX channel runs continuously (enabled once in fish_hal_init()) and -------
 // auto-clears to silence between chunks, so playing is just writing samples.
 
+// Chunk size shared by every amp TX path (amp_write_mono's own buffer and amp_tone's synthesis
+// buffer) -- one DMA write's worth of frames at a time.
+#define AMP_CHUNK_FRAMES 256
+
 // Write mono samples to the stereo TX by duplicating each into L and R. `chunk_cb`, if non-NULL,
 // is invoked with each chunk right before it's written -- used to drive mouth-sync PWM off the
 // audio actually being played (see fish_hal_play_with_mouth below).
@@ -308,11 +312,11 @@ typedef void (*amp_chunk_cb_t)(const int16_t *chunk, int n);
 
 static void amp_write_mono(const int16_t *mono, size_t count, amp_chunk_cb_t chunk_cb)
 {
-    int16_t stereo[256 * 2];
+    int16_t stereo[AMP_CHUNK_FRAMES * 2];
     size_t i = 0;
     while (i < count)
     {
-        int n = (count - i) > 256 ? 256 : (int) (count - i);
+        int n = (count - i) > AMP_CHUNK_FRAMES ? AMP_CHUNK_FRAMES : (int) (count - i);
         if (chunk_cb) chunk_cb(&mono[i], n);
         for (int k = 0; k < n; k++)
         {
@@ -331,14 +335,14 @@ static void amp_tone(int freq_hz, int ms, const char *label)
 {
     const float amplitude = 0.25f * 32767.0f;   // ~-12 dBFS
     const float dphase = TWO_PI * freq_hz / AMP_SAMPLE_RATE;
-    int16_t buf[256];
+    int16_t buf[AMP_CHUNK_FRAMES];
     float phase = 0.0f;
     int frames_left = AMP_SAMPLE_RATE * ms / 1000;
 
     ESP_LOGI(TAG, "amp: %s tone %d Hz / %d ms", label, freq_hz, ms);
     while (frames_left > 0)
     {
-        int n = frames_left > 256 ? 256 : frames_left;
+        int n = frames_left > AMP_CHUNK_FRAMES ? AMP_CHUNK_FRAMES : frames_left;
         for (int i = 0; i < n; i++)
         {
             buf[i] = (int16_t) (amplitude * sinf(phase));
@@ -350,9 +354,12 @@ static void amp_tone(int freq_hz, int ms, const char *label)
     }
 }
 
+#define PROMPT_TONE_HZ 880   // "ready — start talking" beep
+#define PROMPT_TONE_MS 150
+
 void fish_hal_prompt_tone(void)
 {
-    amp_tone(880, 150, "prompt");
+    amp_tone(PROMPT_TONE_HZ, PROMPT_TONE_MS, "prompt");
 }
 
 // --- Mouth lip-sync: RMS envelope of the audio actually being played -> a 3-level mouth gate ----
