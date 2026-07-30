@@ -60,6 +60,12 @@ void fish_hal_motor_stresstest(void);
 // A short "ready — start talking" beep on the amp.
 void fish_hal_prompt_tone(void);
 
+// Raw photocell ADC reading (12-bit, 0-4095 over the 0-3.3V range via 12 dB attenuation). No
+// consumer yet -- kept warm for a future hook (novelty wake / presence / ambient light,
+// SCOPING.md §4) rather than left to fish_hal_init()'s one-shot boot log. Requires
+// fish_hal_init() to have already run.
+int fish_hal_read_photocell(void);
+
 // IDLE: park the motors. In BUTTON mode this mutes the amp and enters real deep sleep on
 // BOARD_BUTTON -- it does not return; the chip fully resets and re-runs app_main() on wake. In
 // WAKEWORD mode it returns normally (the mic must stay live for detection, so there's no sleep).

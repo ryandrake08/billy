@@ -31,6 +31,11 @@ static const char *TAG = "hal";
 static i2s_chan_handle_t s_tx;
 static i2s_chan_handle_t s_rx;
 
+// Photocell: unit kept alive (not torn down after the boot-time log) so fish_hal_read_photocell()
+// stays available for whatever future consumer wants it -- see hal.h's doc comment.
+static adc_oneshot_unit_handle_t s_photocell_adc;
+static adc_channel_t s_photocell_channel;
+
 void audio_buf_free(audio_buf_t *buf)
 {
     if (buf && buf->samples)
@@ -198,9 +203,9 @@ void fish_hal_init(void)
     gpio_hold_dis(BOARD_AMP_SD_MODE);
 
     // Activation inputs: button (BOARD_BUTTON) and mode switch (BOARD_MODE_SW), both active-low
-    // with internal pull-ups — a floating jumper reads high, grounding it reads low. (The button
-    // still needs an EXTERNAL pull-up for the deep-sleep wake path (not yet implemented); the
-    // internal pull is enough for the bench polling used here.)
+    // with internal pull-ups — a floating jumper reads high, grounding it reads low. The button
+    // also has an EXTERNAL pull-up (board.h) for the deep-sleep wake path; the internal pull
+    // here is redundant with it but harmless, and is what the mode switch relies on alone.
     gpio_config_t in_gpio = {
         .pin_bit_mask = (1ULL << BOARD_BUTTON) | (1ULL << BOARD_MODE_SW),
         .mode = GPIO_MODE_INPUT,
@@ -208,23 +213,21 @@ void fish_hal_init(void)
     };
     ESP_ERROR_CHECK(gpio_config(&in_gpio));
 
-    // Photocell: ADC1 oneshot, 12 dB attenuation for the full 0-3.3V range. No consumer yet --
-    // just a single read at boot to confirm the wiring, logged once rather than polled.
-    adc_oneshot_unit_handle_t photocell_adc;
+    // Photocell: ADC1 oneshot, 12 dB attenuation for the full 0-3.3V range. No consumer yet, but
+    // the unit is kept alive (not torn down after this boot-time log) so fish_hal_read_photocell()
+    // stays available for whenever one lands -- see its doc comment.
     adc_oneshot_unit_init_cfg_t photocell_unit_cfg = { .unit_id = ADC_UNIT_1 };
-    ESP_ERROR_CHECK(adc_oneshot_new_unit(&photocell_unit_cfg, &photocell_adc));
+    ESP_ERROR_CHECK(adc_oneshot_new_unit(&photocell_unit_cfg, &s_photocell_adc));
     adc_unit_t photocell_unit;
-    adc_channel_t photocell_channel;
-    ESP_ERROR_CHECK(adc_oneshot_io_to_channel(BOARD_PHOTOCELL_ADC, &photocell_unit, &photocell_channel));
+    ESP_ERROR_CHECK(adc_oneshot_io_to_channel(BOARD_PHOTOCELL_ADC, &photocell_unit, &s_photocell_channel));
     adc_oneshot_chan_cfg_t photocell_chan_cfg = {
         .atten = ADC_ATTEN_DB_12,
         .bitwidth = ADC_BITWIDTH_DEFAULT,
     };
-    ESP_ERROR_CHECK(adc_oneshot_config_channel(photocell_adc, photocell_channel, &photocell_chan_cfg));
+    ESP_ERROR_CHECK(adc_oneshot_config_channel(s_photocell_adc, s_photocell_channel, &photocell_chan_cfg));
     int photocell_raw = 0;
-    ESP_ERROR_CHECK(adc_oneshot_read(photocell_adc, photocell_channel, &photocell_raw));
+    ESP_ERROR_CHECK(adc_oneshot_read(s_photocell_adc, s_photocell_channel, &photocell_raw));
     ESP_LOGI(TAG, "photocell: raw=%d", photocell_raw);
-    ESP_ERROR_CHECK(adc_oneshot_del_unit(photocell_adc));
 
     // Amp: I2S0 TX, 16-bit stereo, fixed at AMP_SAMPLE_RATE. auto_clear_after_cb makes the
     // hardware zero each DMA buffer once it's sent and nothing new has replaced it, so the amp
@@ -269,6 +272,13 @@ void fish_hal_init(void)
     ESP_LOGI(TAG, "init — motors: 3x LEDC PWM @ %d Hz configured, nSLEEP low (parked); "
                   "amp SD_MODE high; I2S0 TX (amp) running @ %d Hz, I2S1 RX (mic) running @ %d Hz",
              MOTOR_PWM_FREQ_HZ, AMP_SAMPLE_RATE, MIC_SAMPLE_RATE);
+}
+
+int fish_hal_read_photocell(void)
+{
+    int raw = 0;
+    ESP_ERROR_CHECK(adc_oneshot_read(s_photocell_adc, s_photocell_channel, &raw));
+    return raw;
 }
 
 // --- Amp playback: the TX channel runs continuously (enabled once in fish_hal_init()) and -------
@@ -328,21 +338,36 @@ void fish_hal_prompt_tone(void)
     amp_tone(880, 150, "prompt");
 }
 
-// --- Mouth lip-sync: RMS envelope of the audio actually being played -> mouth open/close --------
+// --- Mouth lip-sync: RMS envelope of the audio actually being played -> a 3-level mouth gate ----
 // A one-pole envelope follower over each amp-write chunk (~10.7 ms @ 24 kHz): fast attack (mouth
-// snaps open on onset), slower release (holds open briefly through short gaps instead of
-// chattering on every one). The mechanism can't usefully track duty proportionally -- bench
-// testing found it barely moves below ~65% and needs ~100% for a full stroke (WIRING.md §6.1) --
-// so the smoothed envelope is used as a gate, not a proportional value: full duty above the
-// threshold, off below it. Reference level, rates, and threshold are a first-pass estimate --
-// tune on the bench, same as the VAD constants above.
+// snaps to a new level on onset), slower release (holds a level briefly through short gaps
+// instead of chattering on every one). The mechanism can't usefully track duty proportionally --
+// bench testing found it barely moves below ~65% (WIRING.md §6.1) -- so this is a small number of
+// discrete gates, not a continuous value, same reasoning as head/tail staying pure on/off. Mouth
+// gets a third, MID level (unlike head/tail, which stay binary open/close -- there's no plausible
+// use case for a partial head or tail gesture, but a partial mouth reads as quieter/plainer speech
+// vs. a wide-open emphasis, which is worth the extra state): WIRING.md §6.1's bench duty sweep
+// found ~80% duty is a real, visually distinct partial deflection on this mechanism (not just a
+// weaker copy of 100% -- the sweep's own words: "80% look[s] like a ceiling, but 100% is
+// noticeably stronger"), so it's used here as MID rather than picked arbitrarily. Reference level,
+// rates, and thresholds are still first-pass estimates -- tune on the bench, same as the VAD
+// constants above.
 #define MOUTH_ENV_REF       6000.0f   // RMS that saturates the envelope at 1.0 (16-bit PCM scale)
 #define MOUTH_ENV_ATTACK    0.6f
 #define MOUTH_ENV_RELEASE   0.15f
-#define MOUTH_OPEN_THRESHOLD 0.3f     // envelope above this -> mouth snaps open; below -> closed
+#define MOUTH_MID_THRESHOLD  0.3f     // envelope above this -> MID; below -> CLOSED
+#define MOUTH_OPEN_THRESHOLD 0.65f    // envelope above this -> OPEN (full duty); below -> MID
+#define MOUTH_MID_DUTY_PCT   80       // WIRING.md §6.1: the distinct partial-deflection duty
 
-static float s_mouth_envelope = 0.0f;
-static bool  s_mouth_open = false;   // last-commanded gate state, so steady open/closed runs of
+typedef enum
+{
+    MOUTH_CLOSED,
+    MOUTH_MID,
+    MOUTH_OPEN,
+} mouth_gate_t;
+
+static float       s_mouth_envelope = 0.0f;
+static mouth_gate_t s_mouth_gate = MOUTH_CLOSED;   // last-commanded gate, so steady runs of
                                       // chunks (~93/s during playback) don't re-write the LEDC
                                       // duty register every chunk for no change in output.
 
@@ -358,11 +383,17 @@ static void mouth_track_chunk(const int16_t *chunk, int n)
     float rate = (target > s_mouth_envelope) ? MOUTH_ENV_ATTACK : MOUTH_ENV_RELEASE;
     s_mouth_envelope += (target - s_mouth_envelope) * rate;
 
-    bool want_open = s_mouth_envelope > MOUTH_OPEN_THRESHOLD;
-    if (want_open != s_mouth_open)
+    mouth_gate_t want = MOUTH_CLOSED;
+    if (s_mouth_envelope > MOUTH_OPEN_THRESHOLD)      want = MOUTH_OPEN;
+    else if (s_mouth_envelope > MOUTH_MID_THRESHOLD)  want = MOUTH_MID;
+
+    if (want != s_mouth_gate)
     {
-        motor_set_duty(MOTOR_MOUTH, want_open ? MOTOR_DUTY_MAX : 0);
-        s_mouth_open = want_open;
+        uint32_t duty = 0;
+        if (want == MOUTH_OPEN)     duty = MOTOR_DUTY_MAX;
+        else if (want == MOUTH_MID) duty = (MOTOR_DUTY_MAX * MOUTH_MID_DUTY_PCT) / 100;
+        motor_set_duty(MOTOR_MOUTH, duty);
+        s_mouth_gate = want;
     }
 }
 
@@ -371,7 +402,7 @@ static void mouth_track_chunk(const int16_t *chunk, int n)
 static void mouth_close(void)
 {
     s_mouth_envelope = 0.0f;
-    s_mouth_open = false;
+    s_mouth_gate = MOUTH_CLOSED;
     motor_set_duty(MOTOR_MOUTH, 0);
 }
 
