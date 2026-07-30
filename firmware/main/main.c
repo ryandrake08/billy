@@ -11,10 +11,8 @@ static const char *TAG = "billy";
 
 void app_main(void)
 {
-    // Status LED first, standalone, so FISH_STATUS_BOOT shows immediately at power-on — before
-    // the wake-word model load or WiFi join, which can each take a noticeable moment.
-    fish_hal_status_init();
-    fish_hal_set_status(FISH_STATUS_BOOT);
+    // initialize all hardware
+    fish_hal_init();
 
     ESP_LOGI(TAG, "Billy fish booting — ESP-IDF");
 
@@ -24,9 +22,6 @@ void app_main(void)
         // Non-fatal: button mode is a complete fallback with no wake-word dependency.
         ESP_LOGW(TAG, "wake-word model failed to load — WAKEWORD mode won't detect; BUTTON mode still works");
     }
-
-    // initialize fish hardware
-    fish_hal_init();
 
     // initialize network
     if (net_init() != ESP_OK)   // the E2E loop needs the backend; without WiFi there's nothing to do

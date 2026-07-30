@@ -53,22 +53,6 @@ void audio_buf_free(audio_buf_t *buf)
 
 static led_strip_handle_t s_status_led;
 
-void fish_hal_status_init(void)
-{
-    led_strip_config_t strip_cfg = {
-        .strip_gpio_num = BOARD_STATUS_LED,
-        .max_leds = 1,
-        .led_model = LED_MODEL_WS2812,
-        .color_component_format = LED_STRIP_COLOR_COMPONENT_FMT_GRB,
-    };
-    led_strip_rmt_config_t rmt_cfg = {
-        .clk_src = RMT_CLK_SRC_DEFAULT,
-        .resolution_hz = 10 * 1000 * 1000,   // 10 MHz — standard RMT tick rate for WS2812 timing
-    };
-    ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_cfg, &rmt_cfg, &s_status_led));
-    led_strip_clear(s_status_led);
-}
-
 // Dim RGB triples, not 0-255 — a WS2812 at full brightness is eye-searing a few inches away on a
 // bench. Indexed directly by fish_status_t.
 static const uint8_t STATUS_COLORS[][3] = {
@@ -130,6 +114,24 @@ static void motor_set_duty(motor_channel_t ch, uint32_t duty)
 
 void fish_hal_init(void)
 {
+    // Status LED first, before anything below that could ESP_ERROR_CHECK-panic -- so even a
+    // failed motor/amp/mic/photocell bring-up at least shows boot-yellow first, rather than
+    // leaving the LED dark with no sign the chip powered on at all.
+    led_strip_config_t strip_cfg = {
+        .strip_gpio_num = BOARD_STATUS_LED,
+        .max_leds = 1,
+        .led_model = LED_MODEL_WS2812,
+        .color_component_format = LED_STRIP_COLOR_COMPONENT_FMT_GRB,
+    };
+    led_strip_rmt_config_t rmt_cfg = {
+        .clk_src = RMT_CLK_SRC_DEFAULT,
+        .resolution_hz = 10 * 1000 * 1000,   // 10 MHz — standard RMT tick rate for WS2812 timing
+    };
+    ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_cfg, &rmt_cfg, &s_status_led));
+    led_strip_clear(s_status_led);
+    fish_hal_set_status(FISH_STATUS_BOOT);
+    ESP_LOGI(TAG, "init: status LED ready");
+
     // Motors: IN2 pins are plain GPIO outputs, held low -- each motor is unidirectional (spring
     // return).
     gpio_config_t in2_gpio = {
@@ -189,6 +191,8 @@ void fish_hal_init(void)
         };
         ESP_ERROR_CHECK(ledc_channel_config(&ch_cfg));
     }
+    ESP_LOGI(TAG, "init: motors — 3x LEDC PWM @ %d Hz configured, nSLEEP low (parked)",
+             MOTOR_PWM_FREQ_HZ);
 
     // Amp enable: the MAX98357A's SD_MODE must be driven high; low/floating leaves it muted.
     gpio_config_t sd_gpio = {
@@ -201,6 +205,7 @@ void fish_hal_init(void)
     // Same hold-release as nSLEEP above -- level is already the desired 1 (unmuted) before the
     // hold is released, so waking from deep sleep can't leave the amp glitching or muted.
     gpio_hold_dis(BOARD_AMP_SD_MODE);
+    ESP_LOGI(TAG, "init: amp SD_MODE high (unmuted)");
 
     // Activation inputs: button (BOARD_BUTTON) and mode switch (BOARD_MODE_SW), both active-low
     // with internal pull-ups — a floating jumper reads high, grounding it reads low. The button
@@ -212,6 +217,7 @@ void fish_hal_init(void)
         .pull_up_en = GPIO_PULLUP_ENABLE,
     };
     ESP_ERROR_CHECK(gpio_config(&in_gpio));
+    ESP_LOGI(TAG, "init: activation inputs (button, mode switch) configured");
 
     // Photocell: ADC1 oneshot, 12 dB attenuation for the full 0-3.3V range. No consumer yet, but
     // the unit is kept alive (not torn down after this boot-time log) so fish_hal_read_photocell()
@@ -227,7 +233,7 @@ void fish_hal_init(void)
     ESP_ERROR_CHECK(adc_oneshot_config_channel(s_photocell_adc, s_photocell_channel, &photocell_chan_cfg));
     int photocell_raw = 0;
     ESP_ERROR_CHECK(adc_oneshot_read(s_photocell_adc, s_photocell_channel, &photocell_raw));
-    ESP_LOGI(TAG, "photocell: raw=%d", photocell_raw);
+    ESP_LOGI(TAG, "init: photocell ready (raw=%d)", photocell_raw);
 
     // Amp: I2S0 TX, 16-bit stereo, fixed at AMP_SAMPLE_RATE. auto_clear_after_cb makes the
     // hardware zero each DMA buffer once it's sent and nothing new has replaced it, so the amp
@@ -249,6 +255,7 @@ void fish_hal_init(void)
     };
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(s_tx, &tx_std));
     ESP_ERROR_CHECK(i2s_channel_enable(s_tx));
+    ESP_LOGI(TAG, "init: amp I2S0 TX running @ %d Hz", AMP_SAMPLE_RATE);
 
     // Mic: I2S1 RX. 24-bit sample MSB-first, left-justified in a 32-bit slot, left channel only
     // (the mic's L/R select is tied to GND -> left slot). Enabled continuously.
@@ -268,10 +275,7 @@ void fish_hal_init(void)
     rx_std.slot_cfg.slot_mask = I2S_STD_SLOT_LEFT;
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(s_rx, &rx_std));
     ESP_ERROR_CHECK(i2s_channel_enable(s_rx));
-
-    ESP_LOGI(TAG, "init — motors: 3x LEDC PWM @ %d Hz configured, nSLEEP low (parked); "
-                  "amp SD_MODE high; I2S0 TX (amp) running @ %d Hz, I2S1 RX (mic) running @ %d Hz",
-             MOTOR_PWM_FREQ_HZ, AMP_SAMPLE_RATE, MIC_SAMPLE_RATE);
+    ESP_LOGI(TAG, "init: mic I2S1 RX running @ %d Hz", MIC_SAMPLE_RATE);
 }
 
 int fish_hal_read_photocell(void)

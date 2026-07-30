@@ -20,14 +20,8 @@ typedef struct
 // Release a buffer's PSRAM samples and zero it. Safe on an already-empty buffer.
 void audio_buf_free(audio_buf_t *buf);
 
-// Bring up the hardware: amp SD_MODE high + both I²S controllers running continuously (mic RX,
-// amp TX).
-void fish_hal_init(void);
-
 // Status colors for the WS2812 status LED (BOARD_STATUS_LED) — a permanent diagnostic indicator,
-// present on the final board too (WIRING.md §1/§9.5), not just a bench aid. fish_hal_status_init()
-// is standalone (not part of fish_hal_init()) so it can run as the very first thing in app_main()
-// and show FISH_STATUS_BOOT immediately at power-on.
+// present on the final board too (WIRING.md §1/§9.5), not just a bench aid.
 typedef enum
 {
     FISH_STATUS_BOOT,       // yellow — power-on / booting, before the turn loop starts
@@ -39,7 +33,13 @@ typedef enum
     FISH_STATUS_ERROR,      // red    — fatal init failure
 } fish_status_t;
 
-void fish_hal_status_init(void);
+// Bring up the hardware: status LED first (so it shows FISH_STATUS_BOOT immediately, before
+// anything below it could ESP_ERROR_CHECK-panic), then amp SD_MODE high + both I²S controllers
+// running continuously (mic RX, amp TX), motors, and the photocell ADC. Call this first in
+// app_main(), before the wake-word model load or WiFi join, which can each take a noticeable
+// moment.
+void fish_hal_init(void);
+
 void fish_hal_set_status(fish_status_t status);
 
 // Bench audio self-test (not in the E2E boot path): 440 Hz tone, then a live mic-level log.
