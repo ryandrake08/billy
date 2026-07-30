@@ -596,6 +596,63 @@ void fish_hal_motor_selftest(void)
     ESP_LOGI(TAG, "motor self-test: done, all three motors clean — nSLEEP low (parked)");
 }
 
+// Progressive combined-load test: stacks motors on one at a time -- head, then head+tail, then
+// head+tail+mouth -- each stage at 100% duty for 2 s, so the motor rail's sag under real combined
+// load can be read directly off a scope/DMM. fish_hal_motor_selftest() only ever drives one motor
+// at a time, so it can't show this -- combined current draw (and the resulting rail sag) doesn't
+// show up until more than one motor is actually driven at once. Stops immediately on any nFAULT
+// trip. The firmware has no current or voltage sense of its own; watch the rail externally while
+// this runs.
+void fish_hal_motor_stresstest(void)
+{
+    ESP_LOGI(TAG, "motor stress test — progressively loading head, then head+tail, then head+tail+mouth, 100%% duty, 2 s each");
+
+    if (motor_fault_active())
+    {
+        ESP_LOGE(TAG, "motor stress test: nFAULT already low before nSLEEP — check the fault line/pull-up before proceeding");
+        return;
+    }
+
+    motor_enable();
+    vTaskDelay(pdMS_TO_TICKS(20));   // let both DRV8833s settle out of sleep before reading nFAULT
+    if (motor_fault_active())
+    {
+        ESP_LOGE(TAG, "motor stress test: nFAULT low right after nSLEEP high, at 0%% duty — check the motor rail before proceeding");
+        motor_disable();
+        return;
+    }
+
+    const struct { motor_channel_t ch; const char *cumulative; } stages[] = {
+        { MOTOR_HEAD,  "head" },
+        { MOTOR_TAIL,  "head+tail" },
+        { MOTOR_MOUTH, "head+tail+mouth" },
+    };
+
+    for (size_t i = 0; i < sizeof(stages) / sizeof(stages[0]); i++)
+    {
+        motor_set_duty(stages[i].ch, MOTOR_DUTY_MAX);
+        ESP_LOGI(TAG, "motor stress test: stage %u — %s now at 100%%, holding 2 s", (unsigned) (i + 1), stages[i].cumulative);
+        vTaskDelay(pdMS_TO_TICKS(2000));
+        if (motor_fault_active())
+        {
+            ESP_LOGE(TAG, "motor stress test: nFAULT tripped during stage %u (%s) — stopping here", (unsigned) (i + 1), stages[i].cumulative);
+            motor_set_duty(MOTOR_MOUTH, 0);
+            motor_set_duty(MOTOR_HEAD, 0);
+            motor_set_duty(MOTOR_TAIL, 0);
+            motor_disable();
+            return;
+        }
+    }
+
+    motor_set_duty(MOTOR_MOUTH, 0);
+    motor_set_duty(MOTOR_HEAD, 0);
+    motor_set_duty(MOTOR_TAIL, 0);
+    ESP_LOGI(TAG, "motor stress test: all three back to 0%%");
+
+    motor_disable();
+    ESP_LOGI(TAG, "motor stress test: done — nSLEEP low (parked)");
+}
+
 // --- Activation: mode switch + wake sources (button / wake word) ------------------------------
 //
 // Two activation modes, selected by the physical mode switch (BOARD_MODE_SW):
@@ -765,6 +822,7 @@ void fish_hal_wait_for_wake(void)
 // playback envelope (see mouth_track_chunk above). Approx timings from SCOPING.md §4/§6.
 
 #define TAIL_FLAP_MS 250   // one flap: drive out, then let the spring return it
+#define TAIL_SETTLE_MS 350 // spring-return travel + mechanical ring-down before it's safe to listen
 
 static void motor_warn_if_fault(const char *what)
 {
@@ -783,6 +841,7 @@ void fish_hal_tail_flap(void)
     motor_set_duty(MOTOR_TAIL, MOTOR_DUTY_MAX);
     vTaskDelay(pdMS_TO_TICKS(TAIL_FLAP_MS));
     motor_set_duty(MOTOR_TAIL, 0);
+    vTaskDelay(pdMS_TO_TICKS(TAIL_SETTLE_MS));
     motor_warn_if_fault("tail flap");
 }
 

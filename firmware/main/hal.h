@@ -50,6 +50,12 @@ void fish_hal_selftest(void);
 // gears). Requires fish_hal_init() to have already run.
 void fish_hal_motor_selftest(void);
 
+// Progressive combined-motor load test: head, then head+tail, then head+tail+mouth, each at
+// 100% duty for 2 s, then all off. Measures real combined-load rail sag (watch a scope/DMM on
+// the motor rail while it runs) rather than extrapolating from single-motor data. Stops
+// immediately on any nFAULT trip. Requires fish_hal_init() to have already run.
+void fish_hal_motor_stresstest(void);
+
 // A short "ready — start talking" beep on the amp.
 void fish_hal_prompt_tone(void);
 
