@@ -17,6 +17,7 @@ Config (env):  BILLY_LLM_URL (default http://localhost:8080), BILLY_LLM_MODEL (d
 """
 import json
 import os
+import time
 
 import httpx
 from fastapi import FastAPI
@@ -34,9 +35,22 @@ app = FastAPI(title="Billy shim", version="1.0")
 # accumulates the growing message array (§8.3). Fine for a single fish; swap for a store if
 # multiple sessions ever need to persist across restarts.
 _SESSIONS: dict[str, list[dict]] = {}
+_LAST_SEEN: dict[str, float] = {}   # session -> monotonic time of its last turn
+
+# The fish never calls /v1/reset on its own, so without this a long-lived session (e.g. left in
+# WAKEWORD mode for days) grows forever. A gap this long between turns means the conversation is
+# over in any practical sense, so treat it as a fresh start rather than bounding history some
+# other way.
+IDLE_RESET_SECONDS = 5 * 60
 
 
 def _session(sid: str) -> list[dict]:
+    now = time.monotonic()
+    last = _LAST_SEEN.get(sid)
+    if last is not None and now - last > IDLE_RESET_SECONDS:
+        _SESSIONS.pop(sid, None)
+    _LAST_SEEN[sid] = now
+
     msgs = _SESSIONS.get(sid)
     if msgs is None:
         msgs = [{"role": "system", "content": PERSONA + NO_THINK}]
@@ -110,6 +124,7 @@ def respond(req: RespondReq):
 def reset(req: ResetReq):
     """Forget a session's history (start a fresh conversation)."""
     _SESSIONS.pop(req.session, None)
+    _LAST_SEEN.pop(req.session, None)
     return {"reset": req.session}
 
 
