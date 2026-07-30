@@ -15,13 +15,19 @@
 static const char *TAG = "net";
 
 // Credentials and the backend host are injected as compile definitions from the build
-// environment (main/CMakeLists.txt); BACKEND_HOST is required there. The empty fallbacks for the
-// WiFi creds only keep editors/clangd parsing when they don't see the build's -D flags.
+// environment (main/CMakeLists.txt). The empty fallbacks for the WiFi creds only keep
+// editors/clangd parsing when they don't see the build's -D flags -- wifi_connect() already
+// rejects an empty WIFI_SSID at runtime. BACKEND_HOST has no such fallback: an empty value would
+// silently build a nonsense URL instead of failing loudly, so a missing definition is a hard
+// compile error here (CMakeLists.txt also catches it earlier, at configure time).
 #ifndef WIFI_SSID
 #define WIFI_SSID ""
 #endif
 #ifndef WIFI_PASSWORD
 #define WIFI_PASSWORD ""
+#endif
+#ifndef BACKEND_HOST
+#error "BACKEND_HOST is not defined -- export BACKEND_HOST and run idf.py reconfigure build"
 #endif
 
 #define WIFI_MAX_RETRY 8
