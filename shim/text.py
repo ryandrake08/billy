@@ -40,7 +40,7 @@ PERSONA = (
 # (snappy). Model-specific — the shim owns this quirk so the fish stays model-agnostic (§8.3).
 NO_THINK = " /no_think"
 
-_SENT_END = re.compile(r"([.!?]+[\"')\]]?)(\s|$)")
+_SENT_END = re.compile(r"[.!?]+[\"')\]]?\s")
 
 # Symbols that are silent on a page but get spoken or mangled by TTS: markdown formatting
 # characters and emoji/pictograph ranges. The persona asks the LLM to avoid these, but an 8B

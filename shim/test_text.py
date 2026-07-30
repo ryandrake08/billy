@@ -41,6 +41,12 @@ def test_sentences_from():
     check(got, ["Hi there.", "How are you?", "Good!"], "streamed sentence split")
     # a trailing fragment with no terminator still flushes
     check(list(sentences_from(iter(["no period here"]))), ["no period here"], "unterminated flush")
+    # an ellipsis streamed dot-by-dot (how an LLM tokenizes "...") must not fire a sentence cut
+    # on each lone "." before the next real token arrives -- regression test for a bug where a
+    # mid-stream "." was mistaken for end-of-reply, sending bare "." sentences to TTS
+    chunks = ["Testing, one", ".", ".", ".", " two", ".", ".", ".", " three", "."]
+    check(list(sentences_from(iter(chunks))),
+          ["Testing, one...", "two...", "three."], "ellipsis streamed dot-by-dot")
 
 
 if __name__ == "__main__":
