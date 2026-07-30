@@ -854,8 +854,8 @@ static bool wait_for_wakeword(void)
 // gpio_hold_dis() calls in fish_hal_init(), which release these same holds on wake.
 static void enter_deep_sleep_for_button_wake(void)
 {
-    ESP_LOGI(TAG, "prepare sleep (button mode): entering deep sleep, wake on GPIO %d press",
-             BOARD_BUTTON);
+    ESP_LOGI(TAG, "prepare sleep (button mode): entering deep sleep, wake on GPIO %d press or "
+                  "GPIO %d mode-switch flip", BOARD_BUTTON, BOARD_MODE_SW);
 
     // A WS2812 latches whatever color it last received and keeps displaying it with no further
     // refresh needed -- left alone it would keep showing IDLE green (and drawing its current)
@@ -867,21 +867,33 @@ static void enter_deep_sleep_for_button_wake(void)
     gpio_hold_en(BOARD_DRV_NSLEEP);         // already low (motor_disable(), just above)
     gpio_deep_sleep_hold_en();
 
-    // BOARD_BUTTON has an external pull-up (board.h) -- ext1 works even with RTC peripherals
-    // powered down, so no rtc_gpio pull config is needed here.
-    esp_sleep_enable_ext1_wakeup_io(1ULL << BOARD_BUTTON, ESP_EXT1_WAKEUP_ANY_LOW);
+    // Both BOARD_BUTTON and BOARD_MODE_SW have an external pull-up (board.h).
+    esp_sleep_enable_ext1_wakeup_io((1ULL << BOARD_BUTTON) | (1ULL << BOARD_MODE_SW),
+                                     ESP_EXT1_WAKEUP_ANY_LOW);
     esp_deep_sleep_start();   // does not return
 }
 
-bool fish_hal_woke_from_wake_event(void)
+fish_boot_cause_t fish_hal_boot_cause(void)
 {
-    // The only deep-sleep wakeup source we ever arm is the button's ext1 line (see
-    // enter_deep_sleep_for_button_wake above), so the cause check alone is unambiguous: true
-    // means the reboot we're currently in was caused by that button press, not a cold
-    // boot/flash/reset. A dark room additionally rules the wake out as a likely false positive
-    // from the flaky button contact rather than a deliberate press.
-    bool button_wake = (esp_sleep_get_wakeup_causes() & (1 << ESP_SLEEP_WAKEUP_EXT1)) != 0;
-    return button_wake && photocell_bright_enough("deep-sleep wake");
+    // The only deep-sleep wakeup source we ever arm is ext1 on BOARD_BUTTON and BOARD_MODE_SW
+    // (see enter_deep_sleep_for_button_wake above), so no ext1 cause means a cold boot/flash/reset.
+    if ((esp_sleep_get_wakeup_causes() & (1 << ESP_SLEEP_WAKEUP_EXT1)) == 0) return FISH_BOOT_NONE;
+
+    // esp_sleep_get_ext1_wakeup_status() reports which of the armed pins were actually low,
+    // distinguishing which one caused this particular reboot.
+    uint64_t low_pins = esp_sleep_get_ext1_wakeup_status();
+    if (low_pins & (1ULL << BOARD_BUTTON))
+    {
+        // A dark room rules the reboot out as a likely false positive from the flaky button
+        // contact rather than a deliberate press.
+        return photocell_bright_enough("deep-sleep boot: button") ? FISH_BOOT_BUTTON : FISH_BOOT_NONE;
+    }
+    if (low_pins & (1ULL << BOARD_MODE_SW))
+    {
+        ESP_LOGI(TAG, "deep-sleep boot: mode switch flipped");
+        return FISH_BOOT_MODE_CHANGE;
+    }
+    return FISH_BOOT_NONE;
 }
 
 void fish_hal_prepare_sleep(void)
@@ -897,22 +909,25 @@ void fish_hal_prepare_sleep(void)
     ESP_LOGI(TAG, "prepare sleep (wakeword mode): motors parked; mic stays live for detection — no sleep");
 }
 
-void fish_hal_wait_for_wake(void)
+bool fish_hal_wait_for_wake(void)
 {
-    // Re-dispatch whenever the mode switch flips mid-wait: the wait functions return false when
-    // they see the mode change, so we just re-read and enter the other one. Only a real wake event
-    // (true) returns to the runloop.
     for (;;)
     {
         wake_mode_t mode = current_wake_mode();
         ESP_LOGI(TAG, "wait for wake — mode=%s", wake_mode_name(mode));
         bool woke = (mode == WAKE_MODE_BUTTON) ? wait_for_button() : wait_for_wakeword();
-        if (woke)
+        if (!woke)
         {
-            if (photocell_bright_enough(wake_mode_name(mode))) return;
-            continue;
+            // The wait functions return false as soon as they see the mode switch flip (checked
+            // every poll tick / audio step). Return to the caller instead of re-dispatching here
+            // so it re-enters IDLE and calls fish_hal_prepare_sleep() again -- otherwise a flip
+            // to BUTTON mode would just start polling wait_for_button() forever without ever
+            // getting the real deep-sleep this mode is supposed to have.
+            ESP_LOGI(TAG, "wake: mode switch flipped — returning to idle");
+            return false;
         }
-        ESP_LOGI(TAG, "wake: mode switch flipped — re-dispatching");
+        if (photocell_bright_enough(wake_mode_name(mode))) return true;
+        // Too dark -- treat as a false positive and keep waiting in the same mode.
     }
 }
 

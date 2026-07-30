@@ -71,16 +71,27 @@ int fish_hal_read_photocell(void);
 // WAKEWORD mode it returns normally (the mic must stay live for detection, so there's no sleep).
 void fish_hal_prepare_sleep(void);
 
-// True if this boot is a reset caused by the button waking the chip from deep sleep, rather than
-// a cold boot/flash/reset -- the runloop uses this to skip straight to ACTIVATE instead of
-// re-entering IDLE (which would otherwise immediately call fish_hal_prepare_sleep() again and go
-// right back to sleep without ever using the press that just woke it). Also false if the room is
-// too dark for the wake to be trusted (flaky button contact) -- that case re-enters IDLE the same
-// as a cold boot, which puts the chip right back to sleep.
-bool fish_hal_woke_from_wake_event(void);
+// Why this boot exists: a deep-sleep reboot caused by the button or the mode switch, or no such
+// cause at all (a cold boot/flash/reset).
+typedef enum
+{
+    FISH_BOOT_NONE,        // cold boot/flash/reset, or a button reboot rejected by the photocell
+    FISH_BOOT_BUTTON,      // rebooted by a (photocell-confirmed) button press
+    FISH_BOOT_MODE_CHANGE, // rebooted because the mode switch flipped while asleep
+} fish_boot_cause_t;
 
-// Block until an activation event (button press, or wake word in always-on mode).
-void fish_hal_wait_for_wake(void);
+// The reason this boot exists -- see fish_boot_cause_t. The runloop uses FISH_BOOT_BUTTON to skip
+// straight to ACTIVATE instead of re-entering IDLE (which would otherwise immediately call
+// fish_hal_prepare_sleep() again and go right back to sleep without ever using the press that
+// caused it). FISH_BOOT_MODE_CHANGE and FISH_BOOT_NONE both re-enter IDLE, which puts the chip
+// right back to sleep unless the switch is now in WAKEWORD mode.
+fish_boot_cause_t fish_hal_boot_cause(void);
+
+// Block until an activation event (button press, or wake word in always-on mode). Returns true
+// for a real activation. Returns false if the mode switch flipped while waiting -- the caller
+// should re-enter IDLE (re-running fish_hal_prepare_sleep()) so the new mode gets a real shot at
+// it, rather than continuing to poll in the old mode's style.
+bool fish_hal_wait_for_wake(void);
 
 // Body choreography: a tail flap signals "I'm listening"; the head lifts to speak and
 // relaxes when the response completes.

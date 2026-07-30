@@ -56,12 +56,18 @@ static void speak_sentence(const char *sentence, void *ctx)
 static void runloop_task(void *arg)
 {
     (void) arg;
+    // Initial state:
     // A button press in BUTTON mode wakes the chip from deep sleep via a full reboot -- landing
-    // back in IDLE here would immediately re-sleep on that same press (see
-    // fish_hal_woke_from_wake_event()'s doc comment) without ever using it, so start at ACTIVATE
-    // instead to treat the press that woke us as the activation event.
-    fish_state_t state = fish_hal_woke_from_wake_event() ? FISH_ACTIVATE : FISH_IDLE;
+    // back in IDLE here would immediately re-sleep on that same press (see fish_boot_cause_t's
+    // doc comment) without ever using it, so start at ACTIVATE instead to treat the press that
+    // caused it as the activation event. A mode-switch reboot (or no such cause at all) starts at
+    // IDLE like a cold boot.
+    fish_state_t state = (fish_hal_boot_cause() == FISH_BOOT_BUTTON) ? FISH_ACTIVATE : FISH_IDLE;
+
+    // Utterance is set in FISH_LISTEN and used in FISH_THINK
     audio_buf_t utterance = {0};
+
+    // Transcript is set in FISH_THINK and used in FISH_SPEAK
     char transcript[256];
 
     for (;;)
@@ -72,9 +78,13 @@ static void runloop_task(void *arg)
             case FISH_IDLE:
                 fish_hal_set_status(FISH_STATUS_IDLE);
                 fish_hal_prepare_sleep();
-                fish_hal_wait_for_wake();
-                vTaskDelay(pdMS_TO_TICKS(200));       // a short rest beat between turns
-                state = FISH_ACTIVATE;
+                if (fish_hal_wait_for_wake())
+                {
+                    state = FISH_ACTIVATE;
+                }
+                // else: the mode switch flipped -- stay in FISH_IDLE so the next pass calls
+                // fish_hal_prepare_sleep() again with the fresh mode (real deep sleep if it's now
+                // BUTTON mode) instead of continuing to poll in the old mode's style.
                 break;
 
             case FISH_ACTIVATE:

@@ -31,8 +31,8 @@
 #define BOARD_DRV_NFAULT       8  // both chips wire-OR'd (open-drain + pull-up): low = OCP/thermal/UVLO
 
 // --- Inputs ---
-#define BOARD_BUTTON           2  // active-low + pull-up; RTC-capable -> deep-sleep wake (has an EXTERNAL ~10k pull-up: internal pulls drop out in deep sleep)
-#define BOARD_MODE_SW          1  // stock ON-ON DPDT (2-position, one pole used): button-wake vs wakeword-wake; single GPIO, INPUT_PULLUP — floating/high = BUTTON (default), grounded/low = WAKEWORD
+#define BOARD_BUTTON           2  // active-low + pull-up; has an EXTERNAL ~10k pull-up
+#define BOARD_MODE_SW          1  // stock ON-ON DPDT, 2-position, one pole used: button-wake (floating/high) vs wakeword-wake (grounded/low); has an EXTERNAL ~10k pull-up
 #define BOARD_PHOTOCELL_ADC    9  // ADC1 (ADC2 is unusable while WiFi is on)
 
 // --- Status LED: WS2812-family single RGB pixel. Bench: DevKitC-1's onboard WS2812. Final board:
