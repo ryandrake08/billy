@@ -16,7 +16,15 @@ static void speak_sentence(const char *sentence, void *ctx)
 {
     (void) ctx;
     audio_buf_t audio = {0};
-    if (net_tts(sentence, &audio) == ESP_OK && audio.count > 0)
+    esp_err_t tts_err = net_tts(sentence, &audio);
+    if (tts_err != ESP_OK)
+    {
+        // Backend/network failure, not "nothing to say" -- distinct cue so the user doesn't
+        // think the fish just finished speaking normally.
+        ESP_LOGW(TAG, "TTS failed for sentence: \"%s\"", sentence);
+        fish_hal_error_tone();
+    }
+    else if (audio.count > 0)
     {
         fish_hal_play_with_mouth(&audio);
     }
