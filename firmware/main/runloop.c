@@ -12,24 +12,32 @@
 static const char *TAG = "runloop";
 
 // SPEAK worker: synthesize one streamed sentence and play it with mouth sync. Invoked by
-// net_respond for each sentence, so playback pipelines with generation.
-static void speak_sentence(const char *sentence, void *ctx)
+// net_respond for each sentence, so playback pipelines with generation. Propagates (net_respond
+// stops the stream and passes it up) for conditions the runloop needs to reboot over -- playback
+// hardware failure, or PSRAM exhaustion, which will just recur on the next sentence's allocation
+// the same way fish_hal_capture_utterance's PSRAM failure recurs on retry. Any other TTS failure
+// is handled locally (tone + keep going) since it's a per-sentence network hiccup, not a reason to
+// abort the whole reply.
+static esp_err_t speak_sentence(const char *sentence, void *ctx)
 {
     (void) ctx;
     audio_buf_t audio = {0};
-    esp_err_t tts_err = net_tts(sentence, &audio);
-    if (tts_err != ESP_OK)
+    esp_err_t err = net_tts(sentence, &audio);
+    if (err != ESP_OK && err != ESP_ERR_NO_MEM)
     {
         // Backend/network failure, not "nothing to say" -- distinct cue so the user doesn't
-        // think the fish just finished speaking normally.
+        // think the fish just finished speaking normally. Recoverable, so swallow it here rather
+        // than propagating: net_respond keeps streaming the rest of the reply.
         ESP_LOGW(TAG, "TTS failed for sentence: \"%s\"", sentence);
         fish_hal_error_tone();
+        err = ESP_OK;
     }
-    else if (audio.count > 0)
+    else if (err == ESP_OK && audio.count > 0)
     {
-        fish_hal_play_with_mouth(&audio);
+        err = fish_hal_play_with_mouth(&audio);
     }
     heap_caps_free(audio.samples);
+    return err;
 }
 
 // The task body. Runs on its own task (see runloop_start) — the per-turn work nests net_respond's
@@ -89,7 +97,15 @@ static void runloop_task(void *arg)
         esp_err_t stt_err = net_stt(&utterance, transcript, sizeof transcript);
         heap_caps_free(utterance.samples);   // PCM no longer needed after STT
 
-        if (stt_err != ESP_OK)
+        if (stt_err == ESP_ERR_NO_MEM)
+        {
+            // Same device-wide, will-just-recur condition as the capture failure above -- reboot
+            // rather than tone-and-retry into the same exhausted heap.
+            fish_hal_set_status(FISH_STATUS_ERROR);
+            ESP_LOGE(TAG, "STT failed (heap/PSRAM exhausted) — rebooting");
+            esp_restart();
+        }
+        else if (stt_err != ESP_OK)
         {
             // Backend/network failure, not "nothing to say" -- distinct cue so the user doesn't
             // think the fish just didn't hear them and repeat themselves into the same failure.
@@ -109,7 +125,20 @@ static void runloop_task(void *arg)
         fish_hal_head_out();
 
         // The shim streams sentences; speak_sentence TTS+plays each as it arrives.
-        if (net_respond(transcript, speak_sentence, NULL) != ESP_OK)
+        esp_err_t respond_err = net_respond(transcript, speak_sentence, NULL);
+        if (respond_err == FISH_ERR_AUDIO_HW || respond_err == ESP_ERR_NO_MEM)
+        {
+            // Both are device-wide conditions that will just recur on the next sentence -- the
+            // speaker is broken, or PSRAM is exhausted -- so playing the usual error tone (which
+            // itself may need PSRAM/the speaker) and continuing is pointless. A fresh boot clears
+            // heap state and re-inits the amp/I2S from scratch, same rationale as the
+            // capture-failure reboot above.
+            fish_hal_set_status(FISH_STATUS_ERROR);
+            ESP_LOGE(TAG, "unrecoverable TTS/playback failure (%s) — rebooting",
+                     esp_err_to_name(respond_err));
+            esp_restart();
+        }
+        else if (respond_err != ESP_OK)
         {
             ESP_LOGW(TAG, "brain hop failed");
             fish_hal_error_tone();

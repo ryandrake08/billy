@@ -17,6 +17,15 @@ typedef struct
     int      sample_rate;  // Hz
 } audio_buf_t;
 
+// Signals a local audio-hardware fault (currently: i2s_channel_write failing in the amp TX path),
+// as distinct from any ordinary ESP-IDF esp_err_t a network/backend call might also return. Callers
+// several layers up (net_respond's SSE loop, the runloop) use this to tell "the fish's own speaker
+// is broken" apart from "the backend/network had a hiccup" -- the former makes playing the usual
+// error tone pointless (it would just fail the same way), so it needs a distinct signal rather than
+// being lumped in with generic failures. 0x8001 sits well outside the range of any ESP-IDF or driver
+// error code in use here.
+#define FISH_ERR_AUDIO_HW ((esp_err_t) 0x8001)
+
 // Status colors for the WS2812 status LED (BOARD_STATUS_LED) — a permanent diagnostic indicator,
 // present on the final board too (WIRING.md §1/§9.5), not just a bench aid.
 typedef enum
@@ -110,5 +119,7 @@ void fish_hal_head_relax(void);
 // (audio_buf_t's own "no audio" contract) for the caller to skip STT on.
 esp_err_t fish_hal_capture_utterance(audio_buf_t *out);
 
-// SPEAK: play one mono PCM chunk at its own sample rate (mouth-motor sync comes later).
-void fish_hal_play_with_mouth(const audio_buf_t *audio);
+// SPEAK: play one mono PCM chunk at its own sample rate (mouth-motor sync comes later). Returns
+// FISH_ERR_AUDIO_HW if the amp TX write fails; ESP_OK otherwise (including for empty/null audio,
+// which is a no-op, not a failure).
+esp_err_t fish_hal_play_with_mouth(const audio_buf_t *audio);

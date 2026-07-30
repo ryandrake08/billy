@@ -301,7 +301,7 @@ static bool photocell_bright_enough(const char *context)
 // audio actually being played (see fish_hal_play_with_mouth below).
 typedef void (*amp_chunk_cb_t)(const int16_t *chunk, int n);
 
-static void amp_write_mono(const int16_t *mono, size_t count, amp_chunk_cb_t chunk_cb)
+static esp_err_t amp_write_mono(const int16_t *mono, size_t count, amp_chunk_cb_t chunk_cb)
 {
     int16_t stereo[AMP_CHUNK_FRAMES * 2];
     size_t i = 0;
@@ -315,9 +315,16 @@ static void amp_write_mono(const int16_t *mono, size_t count, amp_chunk_cb_t chu
             stereo[2 * k + 1] = mono[i + k];
         }
         size_t written = 0;
-        i2s_channel_write(s_tx, stereo, (size_t) n * 2 * sizeof(int16_t), &written, portMAX_DELAY);
+        esp_err_t err = i2s_channel_write(s_tx, stereo, (size_t) n * 2 * sizeof(int16_t), &written,
+                                          portMAX_DELAY);
+        if (err != ESP_OK)
+        {
+            ESP_LOGE(TAG, "amp: i2s write failed: %s — aborting playback", esp_err_to_name(err));
+            return FISH_ERR_AUDIO_HW;
+        }
         i += n;
     }
+    return ESP_OK;
 }
 
 #define AMP_TONE_AMPLITUDE (0.25f * 32767.0f)   // ~-12 dBFS per oscillator
@@ -456,11 +463,11 @@ static void mouth_close(void)
     motor_set_duty(MOTOR_MOUTH, 0);
 }
 
-void fish_hal_play_with_mouth(const audio_buf_t *audio)
+esp_err_t fish_hal_play_with_mouth(const audio_buf_t *audio)
 {
     if (!audio || !audio->samples || audio->count == 0)
     {
-        return;
+        return ESP_OK;
     }
     if (audio->sample_rate != AMP_SAMPLE_RATE)
     {
@@ -470,9 +477,13 @@ void fish_hal_play_with_mouth(const audio_buf_t *audio)
                       "speed", audio->sample_rate, AMP_SAMPLE_RATE);
     }
     motor_enable();
-    amp_write_mono(audio->samples, audio->count, mouth_track_chunk);
+    esp_err_t err = amp_write_mono(audio->samples, audio->count, mouth_track_chunk);
     mouth_close();
-    ESP_LOGI(TAG, "play: %u samples @ %d Hz", (unsigned) audio->count, audio->sample_rate);
+    if (err == ESP_OK)
+    {
+        ESP_LOGI(TAG, "play: %u samples @ %d Hz", (unsigned) audio->count, audio->sample_rate);
+    }
+    return err;
 }
 
 // --- Mic capture with energy VAD -------------------------------------------------------------
@@ -505,7 +516,8 @@ esp_err_t fish_hal_capture_utterance(audio_buf_t *out)
     for (int drained = 0; drained < VAD_DRAIN_MS; drained += VAD_BLOCK_MS)
     {
         size_t br = 0;
-        i2s_channel_read(s_rx, raw, sizeof raw, &br, portMAX_DELAY);
+        if (i2s_channel_read(s_rx, raw, sizeof raw, &br, portMAX_DELAY) != ESP_OK)
+            continue;
     }
 
     bool capturing = false;

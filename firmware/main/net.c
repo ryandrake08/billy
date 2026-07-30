@@ -154,6 +154,11 @@ static esp_err_t net_health_check(void)
         .timeout_ms = HEALTH_CHECK_TIMEOUT_MS,
     };
     esp_http_client_handle_t client = esp_http_client_init(&cfg);
+    if (!client)
+    {
+        ESP_LOGE(TAG, "hello backend: esp_http_client_init failed (heap/PSRAM exhausted?)");
+        return ESP_ERR_NO_MEM;
+    }
 
     esp_err_t err = esp_http_client_perform(client);
     if (err == ESP_OK)
@@ -300,6 +305,11 @@ esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len)
     snprintf(url, sizeof url, "http://%s:8081/inference", BACKEND_HOST);
     esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = STT_TIMEOUT_MS };
     esp_http_client_handle_t client = esp_http_client_init(&cfg);
+    if (!client)
+    {
+        ESP_LOGE(TAG, "STT: esp_http_client_init failed (heap/PSRAM exhausted?)");
+        return ESP_ERR_NO_MEM;
+    }
     char ctype[80];
     snprintf(ctype, sizeof ctype, "multipart/form-data; boundary=%s", BOUNDARY);
     esp_http_client_set_header(client, "Content-Type", ctype);
@@ -371,6 +381,11 @@ esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
     snprintf(url, sizeof url, "http://%s:8000/v1/respond", BACKEND_HOST);
     esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = RESPOND_TIMEOUT_MS };
     esp_http_client_handle_t client = esp_http_client_init(&cfg);
+    if (!client)
+    {
+        ESP_LOGE(TAG, "shim: esp_http_client_init failed (heap/PSRAM exhausted?)");
+        return ESP_ERR_NO_MEM;
+    }
     esp_http_client_set_header(client, "Content-Type", "application/json");
     esp_http_client_set_header(client, "Accept", "text/event-stream");
 
@@ -397,6 +412,7 @@ esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
     int linelen = 0;
     char chunk[256];
     bool done = false;
+    esp_err_t cb_err = ESP_OK;
     while (!done)
     {
         int r = esp_http_client_read(client, chunk, sizeof chunk);
@@ -421,7 +437,10 @@ esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
                     if (json_get_string(pl, "sentence", sentence, sizeof sentence))
                     {
                         ESP_LOGI(TAG, "shim -> \"%s\"", sentence);
-                        on_sentence(sentence, ctx);
+                        cb_err = on_sentence(sentence, ctx);
+                        // A fatal local failure (audio hardware, not the stream itself) -- stop
+                        // reading rather than fetching/discarding the rest of the reply for nothing.
+                        if (cb_err != ESP_OK) done = true;
                     }
                     else if (json_get_string(pl, "error", sentence, sizeof sentence))
                     {
@@ -437,7 +456,7 @@ esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
     }
     esp_http_client_close(client);
     esp_http_client_cleanup(client);
-    return ESP_OK;
+    return cb_err;
 }
 
 // TTS: POST one sentence to Kokoro and decode the returned WAV into mono 16-bit PCM (PSRAM).
@@ -457,6 +476,11 @@ esp_err_t net_tts(const char *sentence, audio_buf_t *out_audio)
     snprintf(url, sizeof url, "http://%s:8880/v1/audio/speech", BACKEND_HOST);
     esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = TTS_TIMEOUT_MS };
     esp_http_client_handle_t client = esp_http_client_init(&cfg);
+    if (!client)
+    {
+        ESP_LOGE(TAG, "TTS: esp_http_client_init failed (heap/PSRAM exhausted?)");
+        return ESP_ERR_NO_MEM;
+    }
     esp_http_client_set_header(client, "Content-Type", "application/json");
 
     esp_err_t err = esp_http_client_open(client, bodylen);

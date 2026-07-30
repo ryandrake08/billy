@@ -6,8 +6,10 @@
 #include "hal.h"      // audio_buf_t
 #include "esp_err.h"
 
-// Per-sentence callback for the streamed reply, so TTS/playback pipelines with generation.
-typedef void (*sentence_cb_t)(const char *sentence, void *ctx);
+// Per-sentence callback for the streamed reply, so TTS/playback pipelines with generation. A
+// non-ESP_OK return (e.g. FISH_ERR_AUDIO_HW -- see hal.h) is treated as fatal: net_respond stops
+// reading the stream and passes that same error back up as its own return value.
+typedef esp_err_t (*sentence_cb_t)(const char *sentence, void *ctx);
 
 // Bring up networking: join WiFi (station) and block until an IP is acquired. Returns an error
 // (without spinning) if credentials are missing or the join fails.
