@@ -44,7 +44,6 @@ static led_strip_handle_t s_status_led;
 // bench. Indexed directly by fish_status_t.
 static const uint8_t STATUS_COLORS[][3] = {
     [FISH_STATUS_BOOT]      = { 15, 15,  15 },  // white
-    [FISH_STATUS_NET_WAIT]  = { 20, 10,  0 },   // yellow
     [FISH_STATUS_IDLE]      = {  0, 20,  0 },   // green
     [FISH_STATUS_LISTEN]    = {  0,  0, 20 },   // blue
     [FISH_STATUS_THINK]     = {  0, 20, 20 },   // cyan

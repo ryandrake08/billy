@@ -31,7 +31,6 @@ typedef struct
 typedef enum
 {
     FISH_STATUS_BOOT,       // white  — power-on / booting, before the turn loop starts
-    FISH_STATUS_NET_WAIT,   // yellow — joining WiFi or waiting on the backend to become reachable
     FISH_STATUS_IDLE,       // green  — waiting for a wake event (button or wake word)
     FISH_STATUS_LISTEN,     // blue   — activated, capturing the utterance
     FISH_STATUS_THINK,      // cyan   — transcribing / waiting on the backend's reply

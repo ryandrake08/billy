@@ -21,17 +21,14 @@ void app_main(void)
         ESP_LOGW(TAG, "wake-word model failed to load — WAKEWORD mode won't detect; BUTTON mode still works");
     }
 
-    fish_hal_set_status(FISH_STATUS_NET_WAIT);
-
     // initialize network
-    if (net_init() != ESP_OK)   // the E2E loop needs the backend; without WiFi there's nothing to do
+    if (net_init() != ESP_OK)   // only fails on a config error (missing creds) -- not fixable by retrying
     {
         fish_hal_set_status(FISH_STATUS_ERROR);
-        ESP_LOGE(TAG, "WiFi join failed — cannot reach the backend. Halting.");
+        ESP_LOGE(TAG, "WiFi config invalid — cannot bring up networking. Halting.");
         return;
     }
 
     // application
-    net_wait_for_backend();     // block (with backoff) until the backend is reachable
     runloop_start();            // spawns the turn loop on its own task; returns
 }

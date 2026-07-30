@@ -11,12 +11,11 @@
 // reading the stream and passes that same error back up as its own return value.
 typedef esp_err_t (*sentence_cb_t)(const char *sentence, void *ctx);
 
-// Bring up networking: join WiFi (station) and block until an IP is acquired. Returns an error
-// (without spinning) if credentials are missing or the join fails.
+// Bring up networking: start the WiFi driver and kick off the first join attempt, then return
+// without waiting for an IP -- the connection is carried the rest of the way asynchronously, and
+// is supervised (retried with backoff, indefinitely) for the life of the app. Only fails
+// (without spinning) if credentials are missing.
 esp_err_t net_init(void);
-
-// Block until the backend answers a health check, retrying with capped exponential backoff.
-void net_wait_for_backend(void);
 
 // STT: POST audio to whisper /inference -> transcript text.
 esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len);

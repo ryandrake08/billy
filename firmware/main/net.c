@@ -30,13 +30,11 @@ static const char *TAG = "net";
 #error "BACKEND_HOST is not defined -- export BACKEND_HOST and run idf.py reconfigure build"
 #endif
 
-#define WIFI_MAX_RETRY 8
 #define NET_HOSTNAME   "billy"   // DHCP hostname (option 12) so the router/dnsmasq registers us
 
-#define BACKEND_BACKOFF_INITIAL_MS 1000
-#define BACKEND_BACKOFF_MAX_MS     30000
+#define WIFI_RECONNECT_BACKOFF_INITIAL_MS 1000
+#define WIFI_RECONNECT_BACKOFF_MAX_MS     30000
 
-#define HEALTH_CHECK_TIMEOUT_MS 5000
 #define STT_TIMEOUT_MS          30000    // whisper.cpp transcribing the whole utterance
 #define RESPOND_TIMEOUT_MS      120000   // shim SSE stream: LLM generation across the whole reply
 #define TTS_TIMEOUT_MS          120000   // Kokoro synthesizing one sentence
@@ -45,10 +43,13 @@ static const char *TAG = "net";
 
 static EventGroupHandle_t s_wifi_events;
 static esp_netif_t *s_netif;     // the STA netif, kept so we can set its DHCP hostname
-#define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT      BIT1
+#define WIFI_CONNECTED_BIT    BIT0
+#define WIFI_DISCONNECTED_BIT BIT1   // pulsed to wake wifi_monitor_task; auto-clears on read
 
-static int s_retries;
+// Backoff for the *next* reconnect attempt. Only wifi_monitor_task advances it (on a failed
+// attempt); the event handler resets it to the floor on GOT_IP. A relaxed read/write race between
+// the two is fine — worst case is one extra short-delay retry, not a correctness issue.
+static uint32_t s_reconnect_backoff_ms;
 
 static void wifi_event_handler(void *arg, esp_event_base_t base, int32_t id, void *data)
 {
@@ -61,29 +62,77 @@ static void wifi_event_handler(void *arg, esp_event_base_t base, int32_t id, voi
         if (herr != ESP_OK) ESP_LOGW(TAG, "set hostname failed: %s", esp_err_to_name(herr));
         esp_wifi_connect();
     }
+    else if (base == WIFI_EVENT && id == WIFI_EVENT_STA_CONNECTED)
+    {
+        // L2 association only -- DHCP hasn't necessarily finished yet, so this isn't "usable" on
+        // its own (see IP_EVENT_STA_GOT_IP below). Logged purely to separate slow-auth from
+        // slow-DHCP when debugging a flaky AP.
+        ESP_LOGI(TAG, "WiFi associated — waiting on DHCP");
+    }
     else if (base == WIFI_EVENT && id == WIFI_EVENT_STA_DISCONNECTED)
     {
-        if (s_retries < WIFI_MAX_RETRY)
-        {
-            s_retries++;
-            ESP_LOGW(TAG, "WiFi disconnected — retry %d/%d", s_retries, WIFI_MAX_RETRY);
-            esp_wifi_connect();
-        }
-        else
-        {
-            xEventGroupSetBits(s_wifi_events, WIFI_FAIL_BIT);
-        }
+        // Never give up: this fires for every drop for the life of the app, not just at boot, so
+        // the fish always finds its way back onto the network on its own.
+        xEventGroupClearBits(s_wifi_events, WIFI_CONNECTED_BIT);
+        xEventGroupSetBits(s_wifi_events, WIFI_DISCONNECTED_BIT);
     }
     else if (base == IP_EVENT && id == IP_EVENT_STA_GOT_IP)
     {
         ip_event_got_ip_t *event = (ip_event_got_ip_t *) data;
         ESP_LOGI(TAG, "got IP " IPSTR, IP2STR(&event->ip_info.ip));
-        s_retries = 0;
+        s_reconnect_backoff_ms = WIFI_RECONNECT_BACKOFF_INITIAL_MS;
+        xEventGroupClearBits(s_wifi_events, WIFI_DISCONNECTED_BIT);
         xEventGroupSetBits(s_wifi_events, WIFI_CONNECTED_BIT);
+    }
+    else if (base == IP_EVENT && id == IP_EVENT_STA_LOST_IP)
+    {
+        // Still associated at L2, but the DHCP lease is gone (e.g. the router's DHCP server
+        // bounced without dropping our association) -- no WIFI_EVENT_STA_DISCONNECTED fires for
+        // this on its own, so without this branch net_is_connected() would keep lying. Force a
+        // real disconnect rather than calling esp_wifi_connect() straight from an
+        // already-associated state (unreliable for forcing a fresh DHCP request) -- that in turn
+        // fires WIFI_EVENT_STA_DISCONNECTED, reusing the same mark-down + backoff-retry path
+        // already proven for a real link drop.
+        ESP_LOGW(TAG, "lost DHCP lease — forcing reconnect");
+        esp_wifi_disconnect();
     }
 }
 
-static esp_err_t wifi_connect(void)
+// Supervises the WiFi link for the app's entire runtime (not just at boot): sleeps on the
+// disconnected-event bit, then retries with capped exponential backoff, forever. This is what
+// makes recovery unbounded -- there's always a task watching, so a dropped link (router reboot,
+// AP roam, temporary outage) is retried indefinitely instead of being given up on after a fixed
+// count.
+static void wifi_monitor_task(void *arg)
+{
+    (void) arg;
+    for (;;)
+    {
+        xEventGroupWaitBits(s_wifi_events, WIFI_DISCONNECTED_BIT, pdTRUE, pdFALSE, portMAX_DELAY);
+        uint32_t backoff_ms = s_reconnect_backoff_ms;
+        ESP_LOGW(TAG, "WiFi disconnected — retrying in %lu ms", (unsigned long) backoff_ms);
+        vTaskDelay(pdMS_TO_TICKS(backoff_ms));
+        // A reconnect may have already landed while we were waiting out the backoff (e.g. this
+        // was a stale event from before a fast auto-reassociation) -- don't step on it.
+        if (xEventGroupGetBits(s_wifi_events) & WIFI_CONNECTED_BIT) continue;
+        s_reconnect_backoff_ms = (backoff_ms * 2 > WIFI_RECONNECT_BACKOFF_MAX_MS)
+            ? WIFI_RECONNECT_BACKOFF_MAX_MS : backoff_ms * 2;
+        esp_wifi_connect();
+    }
+}
+
+// True once an IP is held. Lets callers that are about to make a backend HTTP call skip it
+// immediately when the link is known down, rather than waiting out a connect timeout to learn
+// the same thing.
+static bool net_is_connected(void)
+{
+    return (xEventGroupGetBits(s_wifi_events) & WIFI_CONNECTED_BIT) != 0;
+}
+
+// Bring up the WiFi driver and kick off the first join attempt, then return -- doesn't wait for
+// an IP. wifi_event_handler + wifi_monitor_task carry the connection the rest of the way,
+// asynchronously, for as long as the app runs.
+static esp_err_t wifi_start(void)
 {
     if (WIFI_SSID[0] == '\0')
     {
@@ -93,6 +142,7 @@ static esp_err_t wifi_connect(void)
     }
 
     s_wifi_events = xEventGroupCreate();
+    s_reconnect_backoff_ms = WIFI_RECONNECT_BACKOFF_INITIAL_MS;
 
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -101,10 +151,18 @@ static esp_err_t wifi_connect(void)
     wifi_init_config_t init_cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&init_cfg));
 
+    // The driver's own internal connection-state tracing (tag "wifi") is chatty at INFO and,
+    // since the join now runs concurrently with the rest of app startup instead of blocking it,
+    // interleaves mid-line with our own logging on the shared UART. Quiet it to warnings-and-up;
+    // doesn't touch any other tag's level.
+    esp_log_level_set("wifi", ESP_LOG_WARN);
+
     ESP_ERROR_CHECK(esp_event_handler_instance_register(
         WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL, NULL));
     ESP_ERROR_CHECK(esp_event_handler_instance_register(
         IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_event_handler, NULL, NULL));
+    ESP_ERROR_CHECK(esp_event_handler_instance_register(
+        IP_EVENT, IP_EVENT_STA_LOST_IP, &wifi_event_handler, NULL, NULL));
 
     wifi_config_t wifi_cfg = {
         .sta = {
@@ -118,16 +176,10 @@ static esp_err_t wifi_connect(void)
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_cfg));
     ESP_ERROR_CHECK(esp_wifi_start());
 
-    ESP_LOGI(TAG, "joining WiFi \"%s\"...", WIFI_SSID);
-    EventBits_t bits = xEventGroupWaitBits(
-        s_wifi_events, WIFI_CONNECTED_BIT | WIFI_FAIL_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
+    xTaskCreate(wifi_monitor_task, "wifi_monitor", 3072, NULL, 4, NULL);
 
-    if (bits & WIFI_CONNECTED_BIT)
-    {
-        return ESP_OK;
-    }
-    ESP_LOGE(TAG, "failed to join WiFi \"%s\" after %d retries", WIFI_SSID, WIFI_MAX_RETRY);
-    return ESP_FAIL;
+    ESP_LOGI(TAG, "joining WiFi \"%s\" (async)...", WIFI_SSID);
+    return ESP_OK;
 }
 
 esp_err_t net_init(void)
@@ -141,55 +193,7 @@ esp_err_t net_init(void)
     }
     ESP_ERROR_CHECK(err);
 
-    return wifi_connect();
-}
-
-// "Hello backend" reachability probe: a single GET to the shim's /health. The default HTTP event
-// handler discards the body — we only care that the round-trip succeeds.
-static esp_err_t net_health_check(void)
-{
-    const char *url = "http://" BACKEND_HOST ":8000/health";
-    esp_http_client_config_t cfg = {
-        .url = url,
-        .timeout_ms = HEALTH_CHECK_TIMEOUT_MS,
-    };
-    esp_http_client_handle_t client = esp_http_client_init(&cfg);
-    if (!client)
-    {
-        ESP_LOGE(TAG, "hello backend: esp_http_client_init failed (heap/PSRAM exhausted?)");
-        return ESP_ERR_NO_MEM;
-    }
-
-    esp_err_t err = esp_http_client_perform(client);
-    if (err == ESP_OK)
-    {
-        int status = esp_http_client_get_status_code(client);
-        ESP_LOGI(TAG, "hello backend — GET %s -> HTTP %d", url, status);
-        if (status != 200)
-        {
-            err = ESP_FAIL;
-        }
-    }
-    else
-    {
-        ESP_LOGE(TAG, "hello backend FAILED — GET %s: %s", url, esp_err_to_name(err));
-    }
-    esp_http_client_cleanup(client);
-    return err;
-}
-
-// Block until the backend answers, retrying with capped exponential backoff. The fish is useless
-// without the backend, so we wait here rather than taking turns that would all fail — and this
-// lets it recover on its own if the backend is slow to come up (e.g. a reboot).
-void net_wait_for_backend(void)
-{
-    int backoff_ms = BACKEND_BACKOFF_INITIAL_MS;
-    while (net_health_check() != ESP_OK)
-    {
-        ESP_LOGW(TAG, "backend unreachable — retrying in %d ms", backoff_ms);
-        vTaskDelay(pdMS_TO_TICKS(backoff_ms));
-        backoff_ms = (backoff_ms * 2 > BACKEND_BACKOFF_MAX_MS) ? BACKEND_BACKOFF_MAX_MS : backoff_ms * 2;
-    }
+    return wifi_start();
 }
 
 // --- Transport contract ------------------------------------------------------------------
@@ -286,6 +290,11 @@ esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len)
         ESP_LOGW(TAG, "STT: nothing captured");
         return ESP_OK;
     }
+    if (!net_is_connected())
+    {
+        ESP_LOGW(TAG, "STT: no WiFi — skipping");
+        return ESP_FAIL;
+    }
 
     static const char *BOUNDARY = "----billyfishboundary";
     char pre[224];
@@ -372,6 +381,12 @@ esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len)
 // on_sentence fires for each so TTS/playback pipelines with generation.
 esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
 {
+    if (!net_is_connected())
+    {
+        ESP_LOGW(TAG, "shim: no WiFi — skipping");
+        return ESP_FAIL;
+    }
+
     char esc[256 * 2];
     json_escape(text, esc, sizeof esc);
     char body[600];
@@ -465,6 +480,12 @@ esp_err_t net_tts(const char *sentence, audio_buf_t *out_audio)
     out_audio->samples = NULL;
     out_audio->count = 0;
     out_audio->sample_rate = 0;
+
+    if (!net_is_connected())
+    {
+        ESP_LOGW(TAG, "TTS: no WiFi — skipping");
+        return ESP_FAIL;
+    }
 
     char esc[256 * 2];
     json_escape(sentence, esc, sizeof esc);
