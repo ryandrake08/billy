@@ -25,7 +25,12 @@ captures audio, conducts three HTTP calls, plays the reply, and animates the mou
   resolved — both root-caused to spent-battery sag, not a firmware/board issue. The bare-module
   standby current measurement is waived for now (needs hardware that doesn't exist yet); deep
   sleep itself is verified functionally. See `WIRING.md` for detail.
-- ⬜ **Stage 4 — Fish integration:** not started.
+- 🔶 **Stage 4 — Fish integration: in progress.** Motor wiring and choreography done on the bench
+  using the toy's own three motors (mouth/head/tail), not yet mounted in the reassembled housing.
+  Photocell wired and read at boot, no consumer yet by design. Speaker and TTS voice both stay
+  stock — an upgraded driver was tried and reverted. Packaging skips the soldered-protoboard
+  stage in favor of a custom PCB (design underway in `board/`); Micro-USB flashing, no OTA, and
+  the power-input mux part are decided. See `IMPLEMENTATION_PLAN.md` for the open items.
 
 ## Layout
 

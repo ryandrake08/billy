@@ -15,8 +15,8 @@ ever touches the transport seam:
 
 | Layer | Files | Responsibility |
 |---|---|---|
-| **app** | `main.c`, `runloop.c/.h` | The `IDLE→ACTIVATE→LISTEN→THINK→SPEAK→IDLE` state machine. |
-| **transport** | `net.c/.h` | The fish↔backend contract — STT (whisper), brain (shim), TTS (Kokoro). The orchestrator seam. |
+| **app** | `main.c` | `app_main()` wires the layers together; `runloop_task` runs the `IDLE→ACTIVATE→LISTEN→THINK→SPEAK→IDLE` state machine. |
+| **transport** | `net.c/.h` | The fish↔backend contract — STT (whisper), brain (shim), TTS (Kokoro). The orchestrator seam. WiFi join/reconnect is async and unbounded (a dedicated task supervises it for the app's whole runtime). |
 | **hardware** | `hal.c/.h`, `board.h`, `components/wakeword` | Mic/amp I²S, 2× DRV8833 motors, button/switch/photocell, wake-word detection. `board.h` is the pin map. |
 
 The transport layer mirrors the three calls the CLI reference client makes
@@ -46,10 +46,12 @@ time). Flash + watch the boot log:
 idf.py -p <port> flash monitor
 ```
 
-On boot the fish joins WiFi and GETs the shim's `/health` on `your-host-or-ip:8000` — the "hello
-backend" proof that toolchain and network path both work (look for `got IP …` and
-`hello backend — … HTTP 200`). It then idles waiting for activation (button press or wake word,
-depending on the mode switch) and runs a full conversational turn on each one.
+The turn loop starts immediately on boot — it doesn't wait for WiFi to join or the backend to
+become reachable (look for `got IP …` in the log once it does). It idles waiting for activation
+(button press or wake word, depending on the mode switch) and runs a full conversational turn on
+each one; a turn that needs the network before WiFi/the backend are up just fails that one turn
+(error tone, back to idle) rather than blocking startup. A dropped connection at any point during
+runtime — not just at boot — is retried with backoff, indefinitely, by a dedicated task.
 
 ## Debug
 
@@ -71,7 +73,9 @@ it's plugged in.
 ## Status
 
 **Real and bench-verified:**
-- WiFi join + backend health check.
+- WiFi join, async and non-blocking (the turn loop starts immediately rather than waiting for an
+  IP); a dedicated task retries a dropped connection with backoff, indefinitely, for the app's
+  whole runtime rather than giving up after a fixed number of attempts.
 - Mic/amp I²S audio: energy-VAD utterance capture, amp playback.
 - Full transport: STT direct to whisper.cpp, the brain hop to the shim (SSE-streamed sentences),
   TTS direct to Kokoro — the same three-call contract `client/billy_cli.py` demonstrates.
