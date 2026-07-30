@@ -9,16 +9,13 @@
 #include "esp_err.h"
 
 // A block of mono 16-bit PCM. `samples` is heap_caps-allocated in PSRAM; free with
-// audio_buf_free(). A zeroed buffer (samples == NULL, count == 0) means "no audio".
+// heap_caps_free(). A zeroed buffer (samples == NULL, count == 0) means "no audio".
 typedef struct
 {
     int16_t *samples;
     size_t   count;        // number of samples
     int      sample_rate;  // Hz
 } audio_buf_t;
-
-// Release a buffer's PSRAM samples and zero it. Safe on an already-empty buffer.
-void audio_buf_free(audio_buf_t *buf);
 
 // Status colors for the WS2812 status LED (BOARD_STATUS_LED) — a permanent diagnostic indicator,
 // present on the final board too (WIRING.md §1/§9.5), not just a bench aid.
@@ -105,7 +102,7 @@ void fish_hal_head_out(void);
 void fish_hal_head_relax(void);
 
 // LISTEN: energy-VAD capture — wait for speech onset, capture until ~0.8 s of silence (or a
-// hard cap). Allocates out->samples in PSRAM; the caller frees it with audio_buf_free(). Returns
+// hard cap). Allocates out->samples in PSRAM; the caller frees it with heap_caps_free(). Returns
 // ESP_ERR_NO_MEM if the PSRAM allocation fails -- a fatal condition, not worth retrying, since a
 // single ~10 s mono 16-bit buffer failing to allocate points at PSRAM exhaustion/corruption
 // rather than transient pressure. Otherwise returns ESP_OK; a capture with no real speech (just

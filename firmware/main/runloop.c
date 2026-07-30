@@ -4,6 +4,7 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "esp_heap_caps.h"
 #include "esp_log.h"
 #include "esp_system.h"
 #include <stdbool.h>
@@ -28,7 +29,7 @@ static void speak_sentence(const char *sentence, void *ctx)
     {
         fish_hal_play_with_mouth(&audio);
     }
-    audio_buf_free(&audio);
+    heap_caps_free(audio.samples);
 }
 
 // The task body. Runs on its own task (see runloop_start) — the per-turn work nests net_respond's
@@ -86,7 +87,7 @@ static void runloop_task(void *arg)
         fish_hal_set_status(FISH_STATUS_THINK);
         char transcript[256];
         esp_err_t stt_err = net_stt(&utterance, transcript, sizeof transcript);
-        audio_buf_free(&utterance);       // PCM no longer needed after STT
+        heap_caps_free(utterance.samples);   // PCM no longer needed after STT
 
         if (stt_err != ESP_OK)
         {

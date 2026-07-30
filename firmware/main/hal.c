@@ -36,19 +36,6 @@ static i2s_chan_handle_t s_rx;
 static adc_oneshot_unit_handle_t s_photocell_adc;
 static adc_channel_t s_photocell_channel;
 
-void audio_buf_free(audio_buf_t *buf)
-{
-    if (buf)
-    {
-        if (buf->samples)
-        {
-            heap_caps_free(buf->samples);
-            buf->samples = NULL;
-        }
-        buf->count = 0;
-    }
-}
-
 // --- Status LED: single WS2812, driven over RMT via the led_strip component ------------------
 
 static led_strip_handle_t s_status_led;
