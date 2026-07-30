@@ -281,6 +281,23 @@ int fish_hal_read_photocell(void)
     return raw;
 }
 
+// Bench-calibrated: raw readings ran ~400-1200 across dim-to-bright room light, dropped to
+// 120-150 with only monitor glow (room lights off), and 40-85 with only ambient window light
+// (finger over the sensor reads 0). 100 sits between the monitor-glow and window-only bands.
+#define PHOTOCELL_WAKE_THRESHOLD 100
+
+// True if the room is bright enough that a wake candidate should be treated as real rather than
+// a false positive from a dark room. Logs the raw reading and the outcome each call -- `context`
+// names the caller for that log line.
+static bool photocell_bright_enough(const char *context)
+{
+    int raw = fish_hal_read_photocell();
+    bool ok = raw >= PHOTOCELL_WAKE_THRESHOLD;
+    ESP_LOGI(TAG, "photocell (%s): raw=%d threshold=%d -> %s",
+             context, raw, PHOTOCELL_WAKE_THRESHOLD, ok ? "ok" : "too dark, ignoring");
+    return ok;
+}
+
 // --- Amp playback: the TX channel runs continuously (enabled once in fish_hal_init()) and -------
 // auto-clears to silence between chunks, so playing is just writing samples.
 
@@ -859,9 +876,12 @@ static void enter_deep_sleep_for_button_wake(void)
 bool fish_hal_woke_from_wake_event(void)
 {
     // The only deep-sleep wakeup source we ever arm is the button's ext1 line (see
-    // enter_deep_sleep_for_button_wake above), so this is unambiguous: true means the reboot
-    // we're currently in was caused by that button press, not a cold boot/flash/reset.
-    return (esp_sleep_get_wakeup_causes() & (1 << ESP_SLEEP_WAKEUP_EXT1)) != 0;
+    // enter_deep_sleep_for_button_wake above), so the cause check alone is unambiguous: true
+    // means the reboot we're currently in was caused by that button press, not a cold
+    // boot/flash/reset. A dark room additionally rules the wake out as a likely false positive
+    // from the flaky button contact rather than a deliberate press.
+    bool button_wake = (esp_sleep_get_wakeup_causes() & (1 << ESP_SLEEP_WAKEUP_EXT1)) != 0;
+    return button_wake && photocell_bright_enough("deep-sleep wake");
 }
 
 void fish_hal_prepare_sleep(void)
@@ -887,7 +907,11 @@ void fish_hal_wait_for_wake(void)
         wake_mode_t mode = current_wake_mode();
         ESP_LOGI(TAG, "wait for wake — mode=%s", wake_mode_name(mode));
         bool woke = (mode == WAKE_MODE_BUTTON) ? wait_for_button() : wait_for_wakeword();
-        if (woke) return;
+        if (woke)
+        {
+            if (photocell_bright_enough(wake_mode_name(mode))) return;
+            continue;
+        }
         ESP_LOGI(TAG, "wake: mode switch flipped — re-dispatching");
     }
 }

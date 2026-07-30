@@ -74,8 +74,11 @@ void fish_hal_prepare_sleep(void);
 // True if this boot is a reset caused by the button waking the chip from deep sleep, rather than
 // a cold boot/flash/reset -- the runloop uses this to skip straight to ACTIVATE instead of
 // re-entering IDLE (which would otherwise immediately call fish_hal_prepare_sleep() again and go
-// right back to sleep without ever using the press that just woke it).
+// right back to sleep without ever using the press that just woke it). Also false if the room is
+// too dark for the wake to be trusted (flaky button contact) -- that case re-enters IDLE the same
+// as a cold boot, which puts the chip right back to sleep.
 bool fish_hal_woke_from_wake_event(void);
+
 // Block until an activation event (button press, or wake word in always-on mode).
 void fish_hal_wait_for_wake(void);
 
