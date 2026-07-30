@@ -30,8 +30,8 @@ typedef struct
 // present on the final board too (WIRING.md §1/§9.5), not just a bench aid.
 typedef enum
 {
-    FISH_STATUS_BOOT,       // yellow — power-on / booting, before the turn loop starts
-    FISH_STATUS_WIFI_WAIT,  // white  — WiFi joined; waiting on the backend to become reachable
+    FISH_STATUS_BOOT,       // white  — power-on / booting, before the turn loop starts
+    FISH_STATUS_NET_WAIT,   // yellow — joining WiFi or waiting on the backend to become reachable
     FISH_STATUS_IDLE,       // green  — waiting for a wake event (button or wake word)
     FISH_STATUS_LISTEN,     // blue   — activated, capturing the utterance
     FISH_STATUS_THINK,      // cyan   — transcribing / waiting on the backend's reply

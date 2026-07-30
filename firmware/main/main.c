@@ -14,14 +14,14 @@ void app_main(void)
     // initialize all hardware
     fish_hal_init();
 
-    ESP_LOGI(TAG, "Billy fish booting — ESP-IDF");
-
     // initialize wakeword subsystem
     if (!wakeword_init())
     {
         // Non-fatal: button mode is a complete fallback with no wake-word dependency.
         ESP_LOGW(TAG, "wake-word model failed to load — WAKEWORD mode won't detect; BUTTON mode still works");
     }
+
+    fish_hal_set_status(FISH_STATUS_NET_WAIT);
 
     // initialize network
     if (net_init() != ESP_OK)   // the E2E loop needs the backend; without WiFi there's nothing to do
@@ -32,7 +32,6 @@ void app_main(void)
     }
 
     // application
-    fish_hal_set_status(FISH_STATUS_WIFI_WAIT);
     net_wait_for_backend();     // block (with backoff) until the backend is reachable
     runloop_start();            // spawns the turn loop on its own task; returns
 }
