@@ -5,46 +5,19 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
+#include "esp_system.h"
 #include <stdbool.h>
 
 static const char *TAG = "runloop";
 
-static const char *state_name(fish_state_t s)
-{
-    switch (s)
-    {
-        case FISH_IDLE:     return "IDLE";
-        case FISH_ACTIVATE: return "ACTIVATE";
-        case FISH_LISTEN:   return "LISTEN";
-        case FISH_THINK:    return "THINK";
-        case FISH_SPEAK:    return "SPEAK";
-    }
-    return "?";
-}
-
 // SPEAK worker: synthesize one streamed sentence and play it with mouth sync. Invoked by
 // net_respond for each sentence, so playback pipelines with generation.
-//
-// The head raises here, on the first sentence that actually has audio -- not earlier, at the
-// THINK->SPEAK transition -- so it lines up with when sound actually starts instead of with the
-// LLM/TTS latency before the first sentence is ready (that gap was visible as the head moving
-// well before any audio played).
-typedef struct
-{
-    bool head_raised;
-} speak_ctx_t;
-
 static void speak_sentence(const char *sentence, void *ctx)
 {
-    speak_ctx_t *sc = (speak_ctx_t *) ctx;
+    (void) ctx;
     audio_buf_t audio = {0};
     if (net_tts(sentence, &audio) == ESP_OK && audio.count > 0)
     {
-        if (!sc->head_raised)
-        {
-            fish_hal_head_out();              // "I'm talking" -- now timed to the first real audio
-            sc->head_raised = true;
-        }
         fish_hal_play_with_mouth(&audio);
     }
     audio_buf_free(&audio);
@@ -56,78 +29,87 @@ static void speak_sentence(const char *sentence, void *ctx)
 static void runloop_task(void *arg)
 {
     (void) arg;
-    // Initial state:
     // A button press in BUTTON mode wakes the chip from deep sleep via a full reboot -- landing
-    // back in IDLE here would immediately re-sleep on that same press (see fish_boot_cause_t's
-    // doc comment) without ever using it, so start at ACTIVATE instead to treat the press that
-    // caused it as the activation event. A mode-switch reboot (or no such cause at all) starts at
-    // IDLE like a cold boot.
-    fish_state_t state = (fish_hal_boot_cause() == FISH_BOOT_BUTTON) ? FISH_ACTIVATE : FISH_IDLE;
-
-    // Utterance is set in FISH_LISTEN and used in FISH_THINK
-    audio_buf_t utterance = {0};
-
-    // Transcript is set in FISH_THINK and used in FISH_SPEAK
-    char transcript[256];
+    // in idle here would immediately re-sleep on that same press (see fish_boot_cause_t's doc
+    // comment) without ever using it, so the first turn skips idle and treats the press that
+    // caused it as the activation event. A mode-switch reboot (or no such cause at all) goes
+    // through idle normally, like a cold boot.
+    bool skip_idle = (fish_hal_boot_cause() == FISH_BOOT_BUTTON);
 
     for (;;)
     {
-        ESP_LOGI(TAG, "state=%s", state_name(state));
-        switch (state)
+        if (!skip_idle)
         {
-            case FISH_IDLE:
-                fish_hal_set_status(FISH_STATUS_IDLE);
-                fish_hal_prepare_sleep();
-                if (fish_hal_wait_for_wake())
-                {
-                    state = FISH_ACTIVATE;
-                }
-                // else: the mode switch flipped -- stay in FISH_IDLE so the next pass calls
+            // Idle state -- fish is waiting to be activated.
+            // In button mode, this is a deep sleep. Activating the button or switch will boot the device
+            // In wakeword mode, activating the button or wakeword will continue to the next state
+            // In wakeword mode, activating the switch will interrupt the wait and return back to idle
+            fish_hal_set_status(FISH_STATUS_IDLE);
+            fish_hal_prepare_sleep();
+            if (!fish_hal_wait_for_wake())
+            {
+                // The mode switch flipped -- loop back so the next pass calls
                 // fish_hal_prepare_sleep() again with the fresh mode (real deep sleep if it's now
                 // BUTTON mode) instead of continuing to poll in the old mode's style.
-                break;
-
-            case FISH_ACTIVATE:
-                fish_hal_set_status(FISH_STATUS_LISTEN);   // cue covers ACTIVATE through LISTEN
-                fish_hal_prompt_tone();               // "ready — start talking"
-                fish_hal_tail_flap();                 // "I'm listening"
-                state = FISH_LISTEN;
-                break;
-
-            case FISH_LISTEN:
-                fish_hal_capture_utterance(&utterance);   // blocks until speech, then silence
-                state = FISH_THINK;
-                break;
-
-            case FISH_THINK:
-                fish_hal_set_status(FISH_STATUS_THINK);
-                if (net_stt(&utterance, transcript, sizeof transcript) != ESP_OK
-                    || transcript[0] == '\0')
-                {
-                    audio_buf_free(&utterance);
-                    ESP_LOGI(TAG, "heard nothing — listening again");
-                    state = FISH_IDLE;
-                }
-                else
-                {
-                    audio_buf_free(&utterance);       // PCM no longer needed after STT
-                    ESP_LOGI(TAG, "heard: \"%s\"", transcript);
-                    state = FISH_SPEAK;
-                }
-                break;
-
-            case FISH_SPEAK:
-            {
-                fish_hal_set_status(FISH_STATUS_SPEAK);
-                // The shim streams sentences; speak_sentence TTS+plays each as it arrives, and
-                // raises the head on the first one that actually has audio.
-                speak_ctx_t sc = { .head_raised = false };
-                net_respond(transcript, speak_sentence, &sc);
-                fish_hal_head_relax();                // relax on response-complete, not silence
-                state = FISH_IDLE;
-                break;
+                continue;
             }
         }
+        skip_idle = false;
+
+        // Prepare to listen -- fish plays a prompt tone and flaps its tail
+        fish_hal_set_status(FISH_STATUS_LISTEN);
+        fish_hal_prompt_tone();
+        fish_hal_tail_flap();
+
+        // Capture an utterance from the microphone
+        audio_buf_t utterance = {0};
+        if (fish_hal_capture_utterance(&utterance) != ESP_OK)   // blocks until speech, then silence
+        {
+            // PSRAM allocation failure -- not worth retrying capture again against the same
+            // exhausted heap. A fresh boot clears that heap state entirely, so recover by
+            // rebooting rather than halting; flash the error status first so it's visible
+            // even though the reboot (and BUTTON mode's own deep-sleep reboots) will clear it.
+            fish_hal_set_status(FISH_STATUS_ERROR);
+            ESP_LOGE(TAG, "capture failed (PSRAM allocation) — rebooting");
+            esp_restart();
+        }
+
+        // Transcribe the utterance using speech-to-text backend
+        fish_hal_set_status(FISH_STATUS_THINK);
+        char transcript[256];
+        esp_err_t stt_err = net_stt(&utterance, transcript, sizeof transcript);
+        audio_buf_free(&utterance);       // PCM no longer needed after STT
+
+        if (stt_err != ESP_OK)
+        {
+            // Backend/network failure, not "nothing to say" -- distinct cue so the user doesn't
+            // think the fish just didn't hear them and repeat themselves into the same failure.
+            ESP_LOGW(TAG, "STT failed — back to idle");
+            fish_hal_error_tone();
+            continue;
+        }
+
+        if (transcript[0] == '\0')
+        {
+            ESP_LOGI(TAG, "heard nothing — back to idle");
+            continue;
+        }
+
+        // Pass utterance transcript to LLM backend shim app
+        fish_hal_set_status(FISH_STATUS_SPEAK);
+        fish_hal_head_out();
+
+        // The shim streams sentences; speak_sentence TTS+plays each as it arrives.
+        if (net_respond(transcript, speak_sentence, NULL) != ESP_OK)
+        {
+            ESP_LOGW(TAG, "brain hop failed");
+            fish_hal_error_tone();
+        }
+
+        // Return head to relaxed state
+        fish_hal_head_relax();
+
+        // loop back to idle
     }
 }
 

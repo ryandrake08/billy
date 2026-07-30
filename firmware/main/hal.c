@@ -38,13 +38,13 @@ static adc_channel_t s_photocell_channel;
 
 void audio_buf_free(audio_buf_t *buf)
 {
-    if (buf && buf->samples)
-    {
-        heap_caps_free(buf->samples);
-    }
     if (buf)
     {
-        buf->samples = NULL;
+        if (buf->samples)
+        {
+            heap_caps_free(buf->samples);
+            buf->samples = NULL;
+        }
         buf->count = 0;
     }
 }
@@ -329,11 +329,12 @@ static void amp_write_mono(const int16_t *mono, size_t count, amp_chunk_cb_t chu
     }
 }
 
+#define AMP_TONE_AMPLITUDE (0.25f * 32767.0f)   // ~-12 dBFS per oscillator
+
 // Synthesize and play a sine tone at AMP_SAMPLE_RATE. Used by the self-test (long) and the prompt
 // beep (short).
 static void amp_tone(int freq_hz, int ms, const char *label)
 {
-    const float amplitude = 0.25f * 32767.0f;   // ~-12 dBFS
     const float dphase = TWO_PI * freq_hz / AMP_SAMPLE_RATE;
     int16_t buf[AMP_CHUNK_FRAMES];
     float phase = 0.0f;
@@ -345,9 +346,34 @@ static void amp_tone(int freq_hz, int ms, const char *label)
         int n = frames_left > AMP_CHUNK_FRAMES ? AMP_CHUNK_FRAMES : frames_left;
         for (int i = 0; i < n; i++)
         {
-            buf[i] = (int16_t) (amplitude * sinf(phase));
+            buf[i] = (int16_t) (AMP_TONE_AMPLITUDE * sinf(phase));
             phase += dphase;
             if (phase >= TWO_PI) phase -= TWO_PI;
+        }
+        amp_write_mono(buf, n, NULL);
+        frames_left -= n;
+    }
+}
+
+// Two clashing frequencies summed together -- deliberately dissonant so it can't be mistaken for
+// the single-pitch prompt/self-test tones. Used for backend-failure cues.
+static void amp_dissonant_tone(int freq1_hz, int freq2_hz, int ms, const char *label)
+{
+    const float dphase1 = TWO_PI * freq1_hz / AMP_SAMPLE_RATE;
+    const float dphase2 = TWO_PI * freq2_hz / AMP_SAMPLE_RATE;
+    int16_t buf[AMP_CHUNK_FRAMES];
+    float phase1 = 0.0f, phase2 = 0.0f;
+    int frames_left = AMP_SAMPLE_RATE * ms / 1000;
+
+    ESP_LOGI(TAG, "amp: %s tone %d+%d Hz / %d ms", label, freq1_hz, freq2_hz, ms);
+    while (frames_left > 0)
+    {
+        int n = frames_left > AMP_CHUNK_FRAMES ? AMP_CHUNK_FRAMES : frames_left;
+        for (int i = 0; i < n; i++)
+        {
+            buf[i] = (int16_t) (AMP_TONE_AMPLITUDE * (sinf(phase1) + sinf(phase2)));
+            phase1 += dphase1; if (phase1 >= TWO_PI) phase1 -= TWO_PI;
+            phase2 += dphase2; if (phase2 >= TWO_PI) phase2 -= TWO_PI;
         }
         amp_write_mono(buf, n, NULL);
         frames_left -= n;
@@ -357,9 +383,18 @@ static void amp_tone(int freq_hz, int ms, const char *label)
 #define PROMPT_TONE_HZ 880   // "ready — start talking" beep
 #define PROMPT_TONE_MS 150
 
+#define ERROR_TONE_HZ_LOW  300
+#define ERROR_TONE_HZ_HIGH 320   // tight interval against LOW -> audible clashing/beating
+#define ERROR_TONE_MS      400
+
 void fish_hal_prompt_tone(void)
 {
     amp_tone(PROMPT_TONE_HZ, PROMPT_TONE_MS, "prompt");
+}
+
+void fish_hal_error_tone(void)
+{
+    amp_dissonant_tone(ERROR_TONE_HZ_LOW, ERROR_TONE_HZ_HIGH, ERROR_TONE_MS, "error");
 }
 
 // --- Mouth lip-sync: RMS envelope of the audio actually being played -> a 3-level mouth gate ----
@@ -459,7 +494,7 @@ void fish_hal_play_with_mouth(const audio_buf_t *audio)
 #define VAD_MIN_VOICED_MS 250          // reject a capture with less real speech than this (clicks)
 #define CAPTURE_MAX_MS    10000        // hard cap on one utterance
 
-void fish_hal_capture_utterance(audio_buf_t *out)
+esp_err_t fish_hal_capture_utterance(audio_buf_t *out)
 {
     const size_t max_samples = (size_t) MIC_SAMPLE_RATE * CAPTURE_MAX_MS / 1000;
     int16_t *pcm = heap_caps_malloc(max_samples * sizeof(int16_t), MALLOC_CAP_SPIRAM);
@@ -469,7 +504,7 @@ void fish_hal_capture_utterance(audio_buf_t *out)
         out->samples = NULL;
         out->count = 0;
         out->sample_rate = MIC_SAMPLE_RATE;
-        return;
+        return ESP_ERR_NO_MEM;
     }
 
     int32_t raw[VAD_BLOCK_SAMPLES];
@@ -548,7 +583,7 @@ void fish_hal_capture_utterance(audio_buf_t *out)
         out->samples = NULL;
         out->count = 0;
         out->sample_rate = MIC_SAMPLE_RATE;
-        return;
+        return ESP_OK;
     }
 
     out->samples = pcm;
@@ -556,6 +591,7 @@ void fish_hal_capture_utterance(audio_buf_t *out)
     out->sample_rate = MIC_SAMPLE_RATE;
     ESP_LOGI(TAG, "listen: captured %u samples (%u ms, %d voiced)",
              (unsigned) count, (unsigned) (count * 1000 / MIC_SAMPLE_RATE), voiced_ms);
+    return ESP_OK;
 }
 
 // --- Self-test (bench tool) ------------------------------------------------------------------

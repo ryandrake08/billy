@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "esp_err.h"
 
 // A block of mono 16-bit PCM. `samples` is heap_caps-allocated in PSRAM; free with
 // audio_buf_free(). A zeroed buffer (samples == NULL, count == 0) means "no audio".
@@ -60,6 +61,10 @@ void fish_hal_motor_stresstest(void);
 // A short "ready — start talking" beep on the amp.
 void fish_hal_prompt_tone(void);
 
+// A brief dissonant alert on the amp -- two clashing frequencies, distinct from the mellow
+// prompt/self-test tones -- for a backend/network failure (STT or the shim brain-hop).
+void fish_hal_error_tone(void);
+
 // Raw photocell ADC reading (12-bit, 0-4095 over the 0-3.3V range via 12 dB attenuation). No
 // consumer yet -- kept warm for a future hook (novelty wake / presence / ambient light,
 // SCOPING.md §4) rather than left to fish_hal_init()'s one-shot boot log. Requires
@@ -100,8 +105,13 @@ void fish_hal_head_out(void);
 void fish_hal_head_relax(void);
 
 // LISTEN: energy-VAD capture — wait for speech onset, capture until ~0.8 s of silence (or a
-// hard cap). Allocates out->samples in PSRAM; the caller frees it with audio_buf_free().
-void fish_hal_capture_utterance(audio_buf_t *out);
+// hard cap). Allocates out->samples in PSRAM; the caller frees it with audio_buf_free(). Returns
+// ESP_ERR_NO_MEM if the PSRAM allocation fails -- a fatal condition, not worth retrying, since a
+// single ~10 s mono 16-bit buffer failing to allocate points at PSRAM exhaustion/corruption
+// rather than transient pressure. Otherwise returns ESP_OK; a capture with no real speech (just
+// noise/clicks) is a normal outcome, not an error, and comes back as a zeroed *out
+// (audio_buf_t's own "no audio" contract) for the caller to skip STT on.
+esp_err_t fish_hal_capture_utterance(audio_buf_t *out);
 
 // SPEAK: play one mono PCM chunk at its own sample rate (mouth-motor sync comes later).
 void fish_hal_play_with_mouth(const audio_buf_t *audio);
