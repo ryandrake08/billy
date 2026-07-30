@@ -40,6 +40,11 @@ PERSONA = (
 # (snappy). Model-specific — the shim owns this quirk so the fish stays model-agnostic (§8.3).
 NO_THINK = " /no_think"
 
+# TTS voice (Kokoro). A character lever like PERSONA, but delivered per-turn on the /v1/respond
+# stream rather than baked into firmware, so it can be changed -- or varied by scenario -- with
+# no reflash.
+VOICE = "am_onyx"
+
 _SENT_END = re.compile(r"[.!?]+[\"')\]]?\s")
 
 # Symbols that are silent on a page but get spoken or mangled by TTS: markdown formatting

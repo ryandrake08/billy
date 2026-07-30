@@ -12,11 +12,14 @@ lets the character change with no reflash. The fish just conducts three calls pe
 two of them straight to the audio engines:
 
   STT   : POST {stt}/inference       multipart file=<wav 16k mono>, response_format=json -> {"text": ...}
-  brain : POST {shim}/v1/respond     JSON {session, text}; SSE -> {"sentence": "..."} per line, then [DONE]
+  brain : POST {shim}/v1/respond     JSON {session, text}; SSE -> {"sentence", "voice"} per line, then [DONE]
   TTS   : POST {tts}/v1/audio/speech JSON {model,input,voice,response_format=wav}          -> wav bytes
 
 The shim already returns clean, spoken-ready sentences (persona applied, <think> stripped,
-markdown/emoji scrubbed, split on sentence boundaries) — the fish synthesizes them verbatim.
+markdown/emoji scrubbed, split on sentence boundaries), each carrying the voice it should be
+spoken in. This CLI is a dev tool rather than the fish itself, so it adds one liberty the fish
+doesn't have: --voice, if given, overrides the shim's choice for every sentence (handy for A/B
+listening). Priority is --voice > the shim's per-sentence voice > a built-in default.
 
 Turn pipeline: record -> STT -> shim (streams sentences) -> TTS per sentence -> play, with
 sentence 1 spoken while later sentences are still being generated/synthesized (a synth thread
@@ -42,6 +45,7 @@ import soundfile as sf
 import soxr
 
 SAMPLE_RATE = 16000  # whisper wants 16 kHz mono
+DEFAULT_VOICE = "am_onyx"  # used only if the shim omits "voice" and --voice wasn't given
 
 _DEVICE_SR = None
 
@@ -98,8 +102,9 @@ def transcribe(client, stt_url, wav_bytes):
 
 
 def stream_billy(client, shim_url, session, text):
-    """POST the utterance to the shim and yield each spoken sentence as it streams back.
-    The shim owns the persona, history, and text cleaning — sentences arrive ready to speak."""
+    """POST the utterance to the shim and yield each (sentence, voice) as it streams back.
+    The shim owns the persona, history, and text cleaning — sentences arrive ready to speak,
+    each tagged with the voice it should be spoken in (voice is None if the shim omits it)."""
     body = {"session": session, "text": text}
     with client.stream("POST", f"{shim_url}/v1/respond", json=body, timeout=120) as r:
         r.raise_for_status()
@@ -114,7 +119,7 @@ def stream_billy(client, shim_url, session, text):
             except json.JSONDecodeError:
                 continue
             if "sentence" in obj:
-                yield obj["sentence"]
+                yield obj["sentence"], obj.get("voice")
             elif "error" in obj:
                 print(f"  [shim error: {obj['error']}]", file=sys.stderr)
 
@@ -138,15 +143,18 @@ def tts_synth(client, tts_url, voice, text):
     return audio, sr
 
 
-def speak_turn(client, tts_url, voice, sentence_iter, on_first_audio):
-    """Synthesize sentences on a worker thread (running ahead) while the main thread plays them in order."""
+def speak_turn(client, tts_url, voice_override, sentence_iter, on_first_audio):
+    """Synthesize sentences on a worker thread (running ahead) while the main thread plays them
+    in order. Voice priority: voice_override (--voice, if given) > the shim's per-sentence
+    choice > DEFAULT_VOICE."""
     audio_q = queue.Queue()
     DONE = object()
 
     def synth_worker():
-        for sent in sentence_iter:
+        for sent, voice in sentence_iter:
             try:
-                audio, sr = tts_synth(client, tts_url, voice, sent)
+                chosen_voice = voice_override or voice or DEFAULT_VOICE
+                audio, sr = tts_synth(client, tts_url, chosen_voice, sent)
                 audio_q.put((sent, audio, sr))
             except Exception as e:  # noqa: BLE001 — reference client, keep going
                 print(f"  [tts error: {e}]", file=sys.stderr)
@@ -176,7 +184,9 @@ def main():
     ap.add_argument("--shim-url", default=None, help="override, e.g. http://<backend-host>:8000")
     ap.add_argument("--stt-url", default=None)
     ap.add_argument("--tts-url", default=None)
-    ap.add_argument("--voice", default="am_onyx", help="TTS voice (Kokoro: see /web UI for the list)")
+    ap.add_argument("--voice", default=None,
+                    help="override the shim's per-sentence voice choice for the whole session "
+                         "(Kokoro: see /web UI for the list); omit to use whatever the shim sends")
     ap.add_argument("--session", default="default", help="shim conversation id")
     args = ap.parse_args()
 
@@ -187,7 +197,8 @@ def main():
         ap.error("provide --host (backend hostname/IP), or override each of "
                  "--shim-url/--stt-url/--tts-url")
 
-    print(f"Billy CLI — shim {shim_url} · STT {stt_url} · TTS {tts_url} · voice {args.voice}")
+    voice_note = f"voice override {args.voice}" if args.voice else f"shim-chosen voice (fallback {DEFAULT_VOICE})"
+    print(f"Billy CLI — shim {shim_url} · STT {stt_url} · TTS {tts_url} · {voice_note}")
     print("Ctrl-C to quit.")
 
     client = httpx.Client()

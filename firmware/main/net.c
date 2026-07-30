@@ -39,6 +39,10 @@ static const char *TAG = "net";
 #define RESPOND_TIMEOUT_MS      120000   // shim SSE stream: LLM generation across the whole reply
 #define TTS_TIMEOUT_MS          120000   // Kokoro synthesizing one sentence
 
+// Used if a sentence event omits "voice" (older shim, or the shim just didn't set one) -- keeps
+// TTS working rather than sending Kokoro an empty voice field.
+#define DEFAULT_TTS_VOICE "am_onyx"
+
 // --- WiFi station bring-up ---------------------------------------------------------------
 
 static EventGroupHandle_t s_wifi_events;
@@ -451,8 +455,13 @@ esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
                     char sentence[256];
                     if (json_get_string(pl, "sentence", sentence, sizeof sentence))
                     {
-                        ESP_LOGI(TAG, "shim -> \"%s\"", sentence);
-                        cb_err = on_sentence(sentence, ctx);
+                        char voice[32];
+                        if (!json_get_string(pl, "voice", voice, sizeof voice))
+                        {
+                            strlcpy(voice, DEFAULT_TTS_VOICE, sizeof voice);
+                        }
+                        ESP_LOGI(TAG, "shim -> \"%s\" (voice=%s)", sentence, voice);
+                        cb_err = on_sentence(sentence, voice, ctx);
                         // A fatal local failure (audio hardware, not the stream itself) -- stop
                         // reading rather than fetching/discarding the rest of the reply for nothing.
                         if (cb_err != ESP_OK) done = true;
@@ -474,8 +483,9 @@ esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
     return cb_err;
 }
 
-// TTS: POST one sentence to Kokoro and decode the returned WAV into mono 16-bit PCM (PSRAM).
-esp_err_t net_tts(const char *sentence, audio_buf_t *out_audio)
+// TTS: POST one sentence to Kokoro, in the given voice, and decode the returned WAV into mono
+// 16-bit PCM (PSRAM).
+esp_err_t net_tts(const char *sentence, const char *voice, audio_buf_t *out_audio)
 {
     out_audio->samples = NULL;
     out_audio->count = 0;
@@ -491,7 +501,7 @@ esp_err_t net_tts(const char *sentence, audio_buf_t *out_audio)
     json_escape(sentence, esc, sizeof esc);
     char body[600];
     int bodylen = snprintf(body, sizeof body,
-        "{\"model\":\"kokoro\",\"input\":\"%s\",\"voice\":\"am_onyx\",\"response_format\":\"wav\"}", esc);
+        "{\"model\":\"kokoro\",\"input\":\"%s\",\"voice\":\"%s\",\"response_format\":\"wav\"}", esc, voice);
 
     char url[128];
     snprintf(url, sizeof url, "http://%s:8880/v1/audio/speech", BACKEND_HOST);

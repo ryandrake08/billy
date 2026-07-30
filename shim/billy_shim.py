@@ -8,7 +8,7 @@ It is a TEXT service: it never touches the audio streams. The client (CLI today,
 later) calls whisper (STT :8081) and Kokoro (TTS :8880) directly, and routes only the text/brain
 hop through here. Contract:
 
-  POST /v1/respond  {session, text}      -> text/event-stream of {"sentence": "..."} then [DONE]
+  POST /v1/respond  {session, text}      -> text/event-stream of {"sentence", "voice"} then [DONE]
   POST /v1/reset    {session}            -> {"reset": <session>}
   GET  /health                           -> shim + upstream llama.cpp status
 
@@ -24,7 +24,7 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from text import PERSONA, NO_THINK, strip_think, sentences_from, strip_markup
+from text import PERSONA, NO_THINK, VOICE, strip_think, sentences_from, strip_markup
 
 LLM_URL = os.environ.get("BILLY_LLM_URL", "http://localhost:8080").rstrip("/")
 LLM_MODEL = os.environ.get("BILLY_LLM_MODEL", "Qwen3-8B")
@@ -96,8 +96,9 @@ class ResetReq(BaseModel):
 
 @app.post("/v1/respond")
 def respond(req: RespondReq):
-    """Stream Billy's reply as clean, spoken-ready sentences (one SSE event each). The client
-    pipelines these into TTS — speech can start on sentence 1 while the LLM is still generating."""
+    """Stream Billy's reply as clean, spoken-ready sentences (one SSE event each), each carrying
+    the voice it should be spoken in. The client pipelines these into TTS — speech can start on
+    sentence 1 while the LLM is still generating."""
     msgs = _session(req.session)
     msgs.append({"role": "user", "content": req.text + NO_THINK})
 
@@ -110,7 +111,7 @@ def respond(req: RespondReq):
                     if not clean:  # sentence was pure markup/emoji — nothing to say
                         continue
                     spoken.append(clean)
-                    yield _sse({"sentence": clean})
+                    yield _sse({"sentence": clean, "voice": VOICE})
         except httpx.HTTPError as e:
             yield _sse({"error": f"llm upstream: {e}"})
         # Record what Billy actually said so the next turn has context.

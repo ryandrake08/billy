@@ -19,11 +19,11 @@ static const char *TAG = "billy";
 // the same way fish_hal_capture_utterance's PSRAM failure recurs on retry. Any other TTS failure
 // is handled locally (tone + keep going) since it's a per-sentence network hiccup, not a reason to
 // abort the whole reply.
-static esp_err_t speak_sentence(const char *sentence, void *ctx)
+static esp_err_t speak_sentence(const char *sentence, const char *voice, void *ctx)
 {
     (void) ctx;
     audio_buf_t audio = {0};
-    esp_err_t err = net_tts(sentence, &audio);
+    esp_err_t err = net_tts(sentence, voice, &audio);
     if (err != ESP_OK && err != ESP_ERR_NO_MEM)
     {
         // Backend/network failure, not "nothing to say" -- distinct cue so the user doesn't
