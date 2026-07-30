@@ -3,6 +3,7 @@
 // bench-wired as bare jumpers; WAKEWORD mode runs a real detector — see components/wakeword),
 // and the motor drivers (2x DRV8833, LEDC PWM) are real; awaiting the bench motors to verify.
 #pragma once
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -59,8 +60,16 @@ void fish_hal_motor_stresstest(void);
 // A short "ready — start talking" beep on the amp.
 void fish_hal_prompt_tone(void);
 
-// IDLE: park the motors, mute the amp, and arm wake sources, then sleep.
+// IDLE: park the motors. In BUTTON mode this mutes the amp and enters real deep sleep on
+// BOARD_BUTTON -- it does not return; the chip fully resets and re-runs app_main() on wake. In
+// WAKEWORD mode it returns normally (the mic must stay live for detection, so there's no sleep).
 void fish_hal_prepare_sleep(void);
+
+// True if this boot is a reset caused by the button waking the chip from deep sleep, rather than
+// a cold boot/flash/reset -- the runloop uses this to skip straight to ACTIVATE instead of
+// re-entering IDLE (which would otherwise immediately call fish_hal_prepare_sleep() again and go
+// right back to sleep without ever using the press that just woke it).
+bool fish_hal_woke_from_wake_event(void);
 // Block until an activation event (button press, or wake word in always-on mode).
 void fish_hal_wait_for_wake(void);
 

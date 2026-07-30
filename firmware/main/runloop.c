@@ -56,7 +56,11 @@ static void speak_sentence(const char *sentence, void *ctx)
 static void runloop_task(void *arg)
 {
     (void) arg;
-    fish_state_t state = FISH_IDLE;
+    // A button press in BUTTON mode wakes the chip from deep sleep via a full reboot -- landing
+    // back in IDLE here would immediately re-sleep on that same press (see
+    // fish_hal_woke_from_wake_event()'s doc comment) without ever using it, so start at ACTIVATE
+    // instead to treat the press that woke us as the activation event.
+    fish_state_t state = fish_hal_woke_from_wake_event() ? FISH_ACTIVATE : FISH_IDLE;
     audio_buf_t utterance = {0};
     char transcript[256];
 

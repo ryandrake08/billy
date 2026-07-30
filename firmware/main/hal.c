@@ -5,6 +5,7 @@
 #include "driver/gpio.h"
 #include "driver/ledc.h"
 #include "esp_adc/adc_oneshot.h"
+#include "esp_sleep.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_heap_caps.h"
@@ -143,6 +144,10 @@ void fish_hal_init(void)
     ESP_ERROR_CHECK(gpio_config(&nsleep_gpio));
     gpio_set_level(BOARD_DRV_NSLEEP, 0);
 
+    // Release any hold left over from a deep sleep the chip just woke from (fish_hal_prepare_sleep
+    // holds this pin low through sleep) -- level is already the desired 0, so this can't glitch it.
+    gpio_hold_dis(BOARD_DRV_NSLEEP);
+
     // nFAULT: open-drain from both chips, wire-OR'd. External pull-up is mandatory (SCOPING.md
     // §4.1); the internal pull is harmless alongside it.
     gpio_config_t nfault_gpio = {
@@ -187,6 +192,10 @@ void fish_hal_init(void)
     };
     ESP_ERROR_CHECK(gpio_config(&sd_gpio));
     gpio_set_level(BOARD_AMP_SD_MODE, 1);
+
+    // Same hold-release as nSLEEP above -- level is already the desired 1 (unmuted) before the
+    // hold is released, so waking from deep sleep can't leave the amp glitching or muted.
+    gpio_hold_dis(BOARD_AMP_SD_MODE);
 
     // Activation inputs: button (BOARD_BUTTON) and mode switch (BOARD_MODE_SW), both active-low
     // with internal pull-ups — a floating jumper reads high, grounding it reads low. (The button
@@ -785,22 +794,56 @@ static bool wait_for_wakeword(void)
     }
 }
 
+// BUTTON mode: real deep sleep, not a polling loop -- this is the whole point of the mode
+// (months of standby on 4xC NiMH, SCOPING.md §5). Deep sleep is a full chip reset: nothing after
+// esp_deep_sleep_start() runs, and the next code to execute is app_main() from scratch on wake.
+// The digital domain (and its GPIO config/levels) is lost across that reset except for pins
+// explicitly held -- SD_MODE and nSLEEP both need to stay exactly where they are (muted / parked)
+// for the whole sleep, or the amp and DRV8833s would come back up floating instead (WIRING.md
+// §9.6 -- nSLEEP floating high would undo the DRV8833s' uA-standby state, the actual point of
+// this milestone). ESP32-S3 needs the *global* gpio_deep_sleep_hold_en() for a per-pin
+// gpio_hold_en() to actually survive deep sleep (not just light-sleep/reset) -- see hal.c's
+// gpio_hold_dis() calls in fish_hal_init(), which release these same holds on wake.
+static void enter_deep_sleep_for_button_wake(void)
+{
+    ESP_LOGI(TAG, "prepare sleep (button mode): entering deep sleep, wake on GPIO %d press",
+             BOARD_BUTTON);
+
+    // A WS2812 latches whatever color it last received and keeps displaying it with no further
+    // refresh needed -- left alone it would keep showing IDLE green (and drawing its current)
+    // for the whole sleep. Clear it to black before the RMT peripheral driving it powers down.
+    led_strip_clear(s_status_led);
+
+    gpio_set_level(BOARD_AMP_SD_MODE, 0);   // mute before power-down
+    gpio_hold_en(BOARD_AMP_SD_MODE);
+    gpio_hold_en(BOARD_DRV_NSLEEP);         // already low (motor_disable(), just above)
+    gpio_deep_sleep_hold_en();
+
+    // BOARD_BUTTON has an external pull-up (board.h) -- ext1 works even with RTC peripherals
+    // powered down, so no rtc_gpio pull config is needed here.
+    esp_sleep_enable_ext1_wakeup_io(1ULL << BOARD_BUTTON, ESP_EXT1_WAKEUP_ANY_LOW);
+    esp_deep_sleep_start();   // does not return
+}
+
+bool fish_hal_woke_from_wake_event(void)
+{
+    // The only deep-sleep wakeup source we ever arm is the button's ext1 line (see
+    // enter_deep_sleep_for_button_wake above), so this is unambiguous: true means the reboot
+    // we're currently in was caused by that button press, not a cold boot/flash/reset.
+    return (esp_sleep_get_wakeup_causes() & (1 << ESP_SLEEP_WAKEUP_EXT1)) != 0;
+}
+
 void fish_hal_prepare_sleep(void)
 {
     motor_disable();   // nSLEEP low -- park both DRV8833s (~uA) regardless of wake mode
 
     if (current_wake_mode() == WAKE_MODE_BUTTON)
     {
-        // TODO (low-power, not yet implemented): mute the amp, arm BOARD_BUTTON as the wake
-        // source, and enter deep sleep here.
-        ESP_LOGI(TAG, "prepare sleep (button mode): motors parked; would arm button wake on GPIO %d",
-                 BOARD_BUTTON);
+        enter_deep_sleep_for_button_wake();   // does not return
     }
-    else
-    {
-        // Hands-free: the mic must stay live for the wake-word detector, so we don't sleep.
-        ESP_LOGI(TAG, "prepare sleep (wakeword mode): motors parked; mic stays live for detection — no sleep");
-    }
+
+    // Hands-free: the mic must stay live for the wake-word detector, so we don't sleep.
+    ESP_LOGI(TAG, "prepare sleep (wakeword mode): motors parked; mic stays live for detection — no sleep");
 }
 
 void fish_hal_wait_for_wake(void)

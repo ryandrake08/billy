@@ -3,9 +3,10 @@
 The on-fish firmware — the custom-firmware / direct-HTTP path. Builds and runs for `esp32s3` on a
 bare ESP32-S3-WROOM-1 N8R8, wired on a breadboard (not installed in the fish toy). WiFi, backend
 transport, mic/amp audio I/O, activation (button + mode switch + wake-word detection), motor
-drive (mouth/head/tail lip-sync and choreography), and the full conversational turn loop are all
-real and bench-verified. Deep-sleep low-power mode is still stubbed — see Status below for that
-and two open hardware findings (head deflection, buck power under combined motor+logic load).
+drive (mouth/head/tail lip-sync and choreography), button-mode deep sleep, and the full
+conversational turn loop are all real and bench-verified — see Status below. The two hardware
+findings previously open (head deflection, buck power under combined motor+logic load) are
+resolved (spent-battery sag, not a firmware/board issue).
 
 ## Layering
 
@@ -50,6 +51,23 @@ backend" proof that toolchain and network path both work (look for `got IP …` 
 `hello backend — … HTTP 200`). It then idles waiting for activation (button press or wake word,
 depending on the mode switch) and runs a full conversational turn on each one.
 
+## Debug
+
+Step-debug with real breakpoints over the S3's native USB-Serial-JTAG, no extra hardware:
+
+```bash
+openocd -f board/esp32s3-builtin.cfg    # terminal 1 — leave running
+idf.py -p <port> gdb                    # terminal 2
+```
+
+The DevKitC-1 has **two** USB-C ports — flashing via `idf.py flash` (above) uses the **UART**
+port (the CP2102 bridge), but OpenOCD needs the separate **USB** port instead, wired straight to
+the S3's native USB-Serial-JTAG peripheral. Plugging into the wrong port shows up as OpenOCD
+failing with `could not find or open device!` — check `system_profiler SPUSBDataType` (macOS) for
+a `303a:1001` device to confirm you're on the right one. That port also carries USB power, so
+debug sessions have the same constraint as USB flashing: keep the battery/buck disconnected while
+it's plugged in.
+
 ## Status
 
 **Real and bench-verified:**
@@ -78,14 +96,19 @@ depending on the mode switch) and runs a full conversational turn on each one.
   friction-fit to their gears, so a forced stall risks the gears more than it proves the driver's
   OCP works (`WIRING.md` §6.2). Trusting the DRV8833 datasheet's OCP/thermal/UVLO protection
   instead of empirically triggering it.
+- Deep sleep (button mode only): `fish_hal_prepare_sleep()` mutes the amp, clears the status LED,
+  and holds both through the sleep (`gpio_hold_en()` + the ESP32-S3-required global
+  `gpio_deep_sleep_hold_en()`, or they'd float back up once the digital domain powers down —
+  undoing the DRV8833s' `nSLEEP`-parked µA state) before arming `ext1` wake on `BOARD_BUTTON` and
+  calling `esp_deep_sleep_start()`. Since deep sleep is a full chip reset, `runloop_task` checks
+  `fish_hal_woke_from_wake_event()` on boot and starts at `FISH_ACTIVATE` instead of `FISH_IDLE`
+  when the reboot was caused by that button press — otherwise it would immediately call
+  `fish_hal_prepare_sleep()` again and re-sleep without ever using the press that woke it.
+  Bench-verified: button press → reboot (`rst:0x5 (DSLEEP)`) → prompt tone → LISTEN, repeatedly.
+  WAKEWORD mode is unchanged (mic has to stay live, so it never sleeps). The actual standby
+  *current* measurement is waived for now — it needs the bare module (§3.1), not the DevKitC,
+  which doesn't exist yet; deep sleep itself is verified functionally.
 
-**Open hardware findings** (not blocking current firmware work) — tracked in `../BUGS.md`, full
-technical detail in `WIRING.md`:
-- The head doesn't reach full deflection even at 100% duty — not yet root-caused; candidates are
-  voltage (untested on the 6 V adapter), gearbox lubrication/binding, or motor wear.
-- The TPS62130 buck powering ESP32 logic off the shared battery browns out the chip under
-  combined motor+logic current draw (harder than the earlier WiFi-`phy_init`-only brownout).
-  Current dev-only workaround: separate USB logic power / battery motor power, not a fix.
-
-**Still stubbed:** deep-sleep low-power mode for button-only standby (`fish_hal_prepare_sleep()`
-parks the motors for real now, but doesn't yet arm `BOARD_BUTTON` and enter deep sleep).
+Both hardware findings previously tracked here (head deflection, buck brownout under motor load)
+are **resolved** — both root-caused to spent-battery sag, not a firmware or board issue; see
+`../BUGS.md` and `WIRING.md` §6.1/§9.6.
