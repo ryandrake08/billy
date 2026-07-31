@@ -81,6 +81,21 @@ int fish_hal_read_photocell(void);
 // WAKEWORD mode it returns normally (the mic must stay live for detection, so there's no sleep).
 void fish_hal_prepare_sleep(void);
 
+// Which physical pin caused an EXT1 deep-sleep wake, if any -- a raw hardware fact, unlike
+// fish_hal_boot_cause() below, which additionally validates a button pin against the photocell
+// (and therefore against fish_config_get(), which may not have its freshest value yet -- see
+// fish_hal_boot_cause()'s doc comment). Exists so a caller can act on "was this a button press"
+// before that validation runs, without creating a circular dependency on boot_cause's own,
+// photocell-dependent result.
+typedef enum
+{
+    FISH_WAKE_PIN_NONE,     // not an EXT1 wake (cold boot/flash/reset)
+    FISH_WAKE_PIN_BUTTON,   // BOARD_BUTTON was low at wake
+    FISH_WAKE_PIN_MODE_SW,  // BOARD_MODE_SW was low at wake
+} fish_wake_pin_t;
+
+fish_wake_pin_t fish_hal_deep_sleep_wake_pin(void);
+
 // Why this boot exists: a deep-sleep reboot caused by the button or the mode switch, or no such
 // cause at all (a cold boot/flash/reset).
 typedef enum
@@ -95,6 +110,12 @@ typedef enum
 // fish_hal_prepare_sleep() again and go right back to sleep without ever using the press that
 // caused it). FISH_BOOT_MODE_CHANGE and FISH_BOOT_NONE both re-enter IDLE, which puts the chip
 // right back to sleep unless the switch is now in WAKEWORD mode.
+//
+// For a button pin, this validates against the photocell (fish_config_get()->
+// photocell_wake_threshold) *before* the runloop has had any chance to fetch fresh config -- so
+// that check always sees the compiled-in default unless a caller forces a fetch first, which
+// means checking fish_hal_deep_sleep_wake_pin() (above) rather than this function, since this
+// function's own result depends on the very config a forced fetch would change.
 fish_boot_cause_t fish_hal_boot_cause(void);
 
 // Block until an activation event (button press, or wake word in always-on mode). Returns true

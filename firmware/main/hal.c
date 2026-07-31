@@ -1,5 +1,6 @@
 #include "hal.h"
 #include "board.h"
+#include "fish_config.h"
 #include "wakeword.h"
 #include "driver/i2s_std.h"
 #include "driver/gpio.h"
@@ -271,20 +272,19 @@ int fish_hal_read_photocell(void)
     return raw;
 }
 
-// Bench-calibrated: raw readings ran ~400-1200 across dim-to-bright room light, dropped to
-// 120-150 with only monitor glow (room lights off), and 40-85 with only ambient window light
-// (finger over the sensor reads 0). 100 sits between the monitor-glow and window-only bands.
-#define PHOTOCELL_WAKE_THRESHOLD 100
-
 // True if the room is bright enough that a wake candidate should be treated as real rather than
 // a false positive from a dark room. Logs the raw reading and the outcome each call -- `context`
-// names the caller for that log line.
+// names the caller for that log line. Threshold is runtime-tunable (fish_config.h) --
+// bench-calibrated raw readings ran ~400-1200 across dim-to-bright room light, dropped to 120-150
+// with only monitor glow (room lights off), and 40-85 with only ambient window light; the default
+// of 100 sits between the monitor-glow and window-only bands.
 static bool photocell_bright_enough(const char *context)
 {
+    int threshold = fish_config_get()->photocell_wake_threshold;
     int raw = fish_hal_read_photocell();
-    bool ok = raw >= PHOTOCELL_WAKE_THRESHOLD;
+    bool ok = raw >= threshold;
     ESP_LOGI(TAG, "photocell (%s): raw=%d threshold=%d -> %s",
-             context, raw, PHOTOCELL_WAKE_THRESHOLD, ok ? "ok" : "too dark, ignoring");
+             context, raw, threshold, ok ? "ok" : "too dark, ignoring");
     return ok;
 }
 
@@ -406,14 +406,8 @@ void fish_hal_error_tone(void)
 // found ~80% duty is a real, visually distinct partial deflection on this mechanism (not just a
 // weaker copy of 100% -- the sweep's own words: "80% look[s] like a ceiling, but 100% is
 // noticeably stronger"), so it's used here as MID rather than picked arbitrarily. Reference level,
-// rates, and thresholds are still first-pass estimates -- tune on the bench, same as the VAD
-// constants above.
-#define MOUTH_ENV_REF       6000.0f   // RMS that saturates the envelope at 1.0 (16-bit PCM scale)
-#define MOUTH_ENV_ATTACK    0.6f
-#define MOUTH_ENV_RELEASE   0.15f
-#define MOUTH_MID_THRESHOLD  0.3f     // envelope above this -> MID; below -> CLOSED
-#define MOUTH_OPEN_THRESHOLD 0.65f    // envelope above this -> OPEN (full duty); below -> MID
-#define MOUTH_MID_DUTY_PCT   80       // WIRING.md §6.1: the distinct partial-deflection duty
+// rates, and thresholds are runtime-tunable (fish_config.h) -- still first-pass
+// estimates, worth tuning by ear once the toy's real mechanism (vs. bench motors) is in the loop.
 
 typedef enum
 {
@@ -429,25 +423,27 @@ static mouth_gate_t s_mouth_gate = MOUTH_CLOSED;   // last-commanded gate, so st
 
 static void mouth_track_chunk(const int16_t *chunk, int n)
 {
+    const fish_config_t *cfg = fish_config_get();
+
     int64_t sumsq = 0;
     for (int i = 0; i < n; i++) sumsq += (int32_t) chunk[i] * (int32_t) chunk[i];
     float rms = sqrtf((float) sumsq / n);
 
-    float target = rms / MOUTH_ENV_REF;
+    float target = rms / cfg->mouth_env_ref;
     if (target > 1.0f) target = 1.0f;
 
-    float rate = (target > s_mouth_envelope) ? MOUTH_ENV_ATTACK : MOUTH_ENV_RELEASE;
+    float rate = (target > s_mouth_envelope) ? cfg->mouth_env_attack : cfg->mouth_env_release;
     s_mouth_envelope += (target - s_mouth_envelope) * rate;
 
     mouth_gate_t want = MOUTH_CLOSED;
-    if (s_mouth_envelope > MOUTH_OPEN_THRESHOLD)      want = MOUTH_OPEN;
-    else if (s_mouth_envelope > MOUTH_MID_THRESHOLD)  want = MOUTH_MID;
+    if (s_mouth_envelope > cfg->mouth_open_threshold)      want = MOUTH_OPEN;
+    else if (s_mouth_envelope > cfg->mouth_mid_threshold)  want = MOUTH_MID;
 
     if (want != s_mouth_gate)
     {
         uint32_t duty = 0;
         if (want == MOUTH_OPEN)     duty = MOTOR_DUTY_MAX;
-        else if (want == MOUTH_MID) duty = (MOTOR_DUTY_MAX * MOUTH_MID_DUTY_PCT) / 100;
+        else if (want == MOUTH_MID) duty = (MOTOR_DUTY_MAX * cfg->mouth_mid_duty_pct) / 100;
         motor_set_duty(MOTOR_MOUTH, duty);
         s_mouth_gate = want;
     }
@@ -487,17 +483,17 @@ esp_err_t fish_hal_play_with_mouth(const audio_buf_t *audio)
 
 // --- Mic capture with energy VAD -------------------------------------------------------------
 
+// Block size is a mic-read granularity choice, not a tunable -- stays compile-time. The onset/
+// silence/voiced/drain/cap thresholds are runtime-tunable (fish_config.h): bench floor
+// ~2000, speech >7000 on the 24-bit scale, but housing acoustics/mic placement will likely shift
+// this once the fish is in its final housing.
 #define VAD_BLOCK_SAMPLES 320          // 20 ms @ 16 kHz
 #define VAD_BLOCK_MS      (VAD_BLOCK_SAMPLES * 1000 / MIC_SAMPLE_RATE)
-#define VAD_ONSET_RMS     6000         // 24-bit scale: idle floor ~2000, speech >7000
-#define VAD_SILENCE_MS    600          // end the turn after this much sub-threshold audio
-#define VAD_DRAIN_MS      250          // discard the mic's buffered prompt tone before listening
-#define VAD_MIN_VOICED_MS 250          // reject a capture with less real speech than this (clicks)
-#define CAPTURE_MAX_MS    10000        // hard cap on one utterance
 
 esp_err_t fish_hal_capture_utterance(audio_buf_t *out)
 {
-    const size_t max_samples = (size_t) MIC_SAMPLE_RATE * CAPTURE_MAX_MS / 1000;
+    const fish_config_t *cfg = fish_config_get();
+    const size_t max_samples = (size_t) MIC_SAMPLE_RATE * cfg->capture_max_ms / 1000;
     int16_t *pcm = heap_caps_malloc(max_samples * sizeof(int16_t), MALLOC_CAP_SPIRAM);
     if (!pcm)
     {
@@ -511,8 +507,8 @@ esp_err_t fish_hal_capture_utterance(audio_buf_t *out)
     int32_t raw[VAD_BLOCK_SAMPLES];
 
     // The mic (RX runs continuously) just recorded the prompt tone into its DMA buffer; reading it
-    // would false-trigger the VAD. Discard ~VAD_DRAIN_MS so the beep is gone and the room settles.
-    for (int drained = 0; drained < VAD_DRAIN_MS; drained += VAD_BLOCK_MS)
+    // would false-trigger the VAD. Discard ~vad_drain_ms so the beep is gone and the room settles.
+    for (int drained = 0; drained < cfg->vad_drain_ms; drained += VAD_BLOCK_MS)
     {
         size_t br = 0;
         if (i2s_channel_read(s_rx, raw, sizeof raw, &br, portMAX_DELAY) != ESP_OK)
@@ -547,7 +543,7 @@ esp_err_t fish_hal_capture_utterance(audio_buf_t *out)
 
         if (!capturing)
         {
-            if (rms > VAD_ONSET_RMS)
+            if (rms > cfg->vad_onset_rms)
             {
                 capturing = true;
                 ESP_LOGI(TAG, "listen: onset (rms=%ld), capturing...", (long) rms);
@@ -564,10 +560,10 @@ esp_err_t fish_hal_capture_utterance(audio_buf_t *out)
             pcm[count++] = (int16_t) (raw[i] >> 16);
         }
 
-        if (rms < VAD_ONSET_RMS)
+        if (rms < cfg->vad_onset_rms)
         {
             silence_ms += VAD_BLOCK_MS;
-            if (silence_ms >= VAD_SILENCE_MS) break;
+            if (silence_ms >= cfg->vad_silence_ms) break;
         }
         else
         {
@@ -578,7 +574,7 @@ esp_err_t fish_hal_capture_utterance(audio_buf_t *out)
 
     // A real utterance has a meaningful amount of voiced audio; anything less is a click/pop and
     // would only make whisper hallucinate. Drop it and let the runloop listen again.
-    if (voiced_ms < VAD_MIN_VOICED_MS)
+    if (voiced_ms < cfg->vad_min_voiced_ms)
     {
         ESP_LOGI(TAG, "listen: only %d ms voiced — ignoring (no real speech)", voiced_ms);
         heap_caps_free(pcm);
@@ -918,27 +914,37 @@ static void enter_deep_sleep_for_button_wake(void)
     esp_deep_sleep_start();   // does not return
 }
 
-fish_boot_cause_t fish_hal_boot_cause(void)
+fish_wake_pin_t fish_hal_deep_sleep_wake_pin(void)
 {
     // The only deep-sleep wakeup source we ever arm is ext1 on BOARD_BUTTON and BOARD_MODE_SW
     // (see enter_deep_sleep_for_button_wake above), so no ext1 cause means a cold boot/flash/reset.
-    if ((esp_sleep_get_wakeup_causes() & (1 << ESP_SLEEP_WAKEUP_EXT1)) == 0) return FISH_BOOT_NONE;
+    if ((esp_sleep_get_wakeup_causes() & (1 << ESP_SLEEP_WAKEUP_EXT1)) == 0) return FISH_WAKE_PIN_NONE;
 
     // esp_sleep_get_ext1_wakeup_status() reports which of the armed pins were actually low,
-    // distinguishing which one caused this particular reboot.
+    // distinguishing which one caused this particular reboot. Both reads are of latched
+    // wake-status bits, not consumed on read, so calling this more than once (e.g. once here,
+    // again inside fish_hal_boot_cause()) is safe and cheap.
     uint64_t low_pins = esp_sleep_get_ext1_wakeup_status();
-    if (low_pins & (1ULL << BOARD_BUTTON))
+    if (low_pins & (1ULL << BOARD_BUTTON))  return FISH_WAKE_PIN_BUTTON;
+    if (low_pins & (1ULL << BOARD_MODE_SW)) return FISH_WAKE_PIN_MODE_SW;
+    return FISH_WAKE_PIN_NONE;
+}
+
+fish_boot_cause_t fish_hal_boot_cause(void)
+{
+    switch (fish_hal_deep_sleep_wake_pin())
     {
-        // A dark room rules the reboot out as a likely false positive from the flaky button
-        // contact rather than a deliberate press.
-        return photocell_bright_enough("deep-sleep boot: button") ? FISH_BOOT_BUTTON : FISH_BOOT_NONE;
+        case FISH_WAKE_PIN_BUTTON:
+            // A dark room rules the reboot out as a likely false positive from the flaky button
+            // contact rather than a deliberate press.
+            return photocell_bright_enough("deep-sleep boot: button") ? FISH_BOOT_BUTTON : FISH_BOOT_NONE;
+        case FISH_WAKE_PIN_MODE_SW:
+            ESP_LOGI(TAG, "deep-sleep boot: mode switch flipped");
+            return FISH_BOOT_MODE_CHANGE;
+        case FISH_WAKE_PIN_NONE:
+        default:
+            return FISH_BOOT_NONE;
     }
-    if (low_pins & (1ULL << BOARD_MODE_SW))
-    {
-        ESP_LOGI(TAG, "deep-sleep boot: mode switch flipped");
-        return FISH_BOOT_MODE_CHANGE;
-    }
-    return FISH_BOOT_NONE;
 }
 
 void fish_hal_prepare_sleep(void)
@@ -979,8 +985,9 @@ bool fish_hal_wait_for_wake(void)
 // --- Motor choreography: tail flap + head raise/relax. Mouth PWM is driven separately, off the
 // playback envelope (see mouth_track_chunk above). Approx timings from SCOPING.md §4/§6.
 
-#define TAIL_FLAP_MS 250   // one flap: drive out, then let the spring return it
-#define TAIL_SETTLE_MS 350 // spring-return travel + mechanical ring-down before it's safe to listen
+// Timing is runtime-tunable (fish_config.h) -- tail_flap_ms drives out then lets the
+// spring return it; tail_settle_ms is the spring-return travel + mechanical ring-down before it's
+// safe to listen.
 
 static void motor_warn_if_fault(const char *what)
 {
@@ -994,12 +1001,13 @@ static void motor_warn_if_fault(const char *what)
 // Blocking is fine here; it's a brief one-shot before LISTEN starts capturing.
 void fish_hal_tail_flap(void)
 {
+    const fish_config_t *cfg = fish_config_get();
     ESP_LOGI(TAG, "tail flap — 'I'm listening'");
     motor_enable();
     motor_set_duty(MOTOR_TAIL, MOTOR_DUTY_MAX);
-    vTaskDelay(pdMS_TO_TICKS(TAIL_FLAP_MS));
+    vTaskDelay(pdMS_TO_TICKS(cfg->tail_flap_ms));
     motor_set_duty(MOTOR_TAIL, 0);
-    vTaskDelay(pdMS_TO_TICKS(TAIL_SETTLE_MS));
+    vTaskDelay(pdMS_TO_TICKS(cfg->tail_settle_ms));
     motor_warn_if_fault("tail flap");
 }
 

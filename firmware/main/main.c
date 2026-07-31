@@ -48,6 +48,19 @@ static esp_err_t speak_sentence(const char *sentence, const char *voice, void *c
 static void runloop_task(void *arg)
 {
     (void) arg;
+
+    // fish_hal_boot_cause() validates a button-pin wake against the photocell (fish_config_get()),
+    // which by default is still whatever was compiled in -- nothing has fetched config yet at
+    // this point in boot. So a config fetch needs to be forced *before* that validation runs, for
+    // it to have a real shot at a fresh (or shim-overridden) threshold. That decision can't be
+    // based on fish_hal_boot_cause()'s own result -- that's the very thing the fetch would
+    // affect -- so it's based on the raw wake pin instead (fish_hal_deep_sleep_wake_pin()), which
+    // has no such dependency.
+    if (fish_hal_deep_sleep_wake_pin() == FISH_WAKE_PIN_BUTTON)
+    {
+        net_fetch_config(/* wait_for_backend = */ true);
+    }
+
     // A button press in BUTTON mode wakes the chip from deep sleep via a full reboot -- landing
     // in idle here would immediately re-sleep on that same press (see fish_boot_cause_t's doc
     // comment) without ever using it, so the first turn skips idle and treats the press that
@@ -57,6 +70,14 @@ static void runloop_task(void *arg)
 
     for (;;)
     {
+        // Best-effort, bounded -- picks up any shim-side config change on every cycle, so a
+        // WAKEWORD-mode fish (which never reboots) can be retuned live with no reboot at all.
+        // The one case that needs a forced, longer wait (a button-caused wake, about to skip
+        // idle below and go straight into a turn that needs the network right after) already got
+        // it above, before fish_hal_boot_cause() ran -- this call always stays light so it never
+        // meaningfully delays sleep or a WAKEWORD-mode loop.
+        net_fetch_config(/* wait_for_backend = */ false);
+
         if (!skip_idle)
         {
             // Idle state -- fish is waiting to be activated.

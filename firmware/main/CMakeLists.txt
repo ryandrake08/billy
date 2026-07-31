@@ -3,7 +3,7 @@
 # the photocell (esp_adc), and the WS2812 status LED (led_strip, a managed component — see
 # idf_component.yml).
 idf_component_register(
-    SRCS "main.c" "hal.c" "net.c"
+    SRCS "main.c" "hal.c" "net.c" "fish_config.c"
     INCLUDE_DIRS "."
     REQUIRES esp_wifi esp_event esp_netif nvs_flash esp_http_client esp_driver_i2s esp_driver_gpio esp_driver_ledc esp_adc led_strip wakeword
 )

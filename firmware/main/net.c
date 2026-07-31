@@ -1,4 +1,5 @@
 #include "net.h"
+#include "fish_config.h"
 #include <string.h>
 #include <stdint.h>
 #include "freertos/FreeRTOS.h"
@@ -35,9 +36,19 @@ static const char *TAG = "net";
 #define WIFI_RECONNECT_BACKOFF_INITIAL_MS 1000
 #define WIFI_RECONNECT_BACKOFF_MAX_MS     30000
 
-#define STT_TIMEOUT_MS          30000    // whisper.cpp transcribing the whole utterance
-#define RESPOND_TIMEOUT_MS      120000   // shim SSE stream: LLM generation across the whole reply
-#define TTS_TIMEOUT_MS          120000   // Kokoro synthesizing one sentence
+// STT/respond/TTS timeouts live in fish_config_t -- they track backend model speed rather than
+// anything fixed on the fish, so they're fetched from the shim alongside the other runtime
+// tunables instead of staying compile-time here.
+
+// GET /v1/config itself -- can't be config-driven. Kept short: this now runs synchronously on
+// every runloop cycle (main.c), so a hung shim shouldn't stall the fish's wake/sleep cycle for long.
+#define CONFIG_FETCH_TIMEOUT_MS 3000
+
+// Bounds for net_fetch_config(wait_for_backend=true) -- see its doc comment (net.h). Worst case
+// (WiFi comes up but the shim never responds) is roughly
+// FORCE_FETCH_MAX_ATTEMPTS * (CONFIG_FETCH_TIMEOUT_MS + FORCE_FETCH_RETRY_DELAY_MS).
+#define FORCE_FETCH_MAX_ATTEMPTS   6
+#define FORCE_FETCH_RETRY_DELAY_MS 500
 
 // Used if a sentence event omits "voice" (older shim, or the shim just didn't set one) -- keeps
 // TTS working rather than sending Kokoro an empty voice field.
@@ -316,7 +327,8 @@ esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len)
 
     char url[128];
     snprintf(url, sizeof url, "http://%s:8081/inference", BACKEND_HOST);
-    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = STT_TIMEOUT_MS };
+    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST,
+                                      .timeout_ms = fish_config_get()->stt_timeout_ms };
     esp_http_client_handle_t client = esp_http_client_init(&cfg);
     if (!client)
     {
@@ -398,7 +410,8 @@ esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
 
     char url[128];
     snprintf(url, sizeof url, "http://%s:8000/v1/respond", BACKEND_HOST);
-    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = RESPOND_TIMEOUT_MS };
+    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST,
+                                      .timeout_ms = fish_config_get()->respond_timeout_ms };
     esp_http_client_handle_t client = esp_http_client_init(&cfg);
     if (!client)
     {
@@ -505,7 +518,8 @@ esp_err_t net_tts(const char *sentence, const char *voice, audio_buf_t *out_audi
 
     char url[128];
     snprintf(url, sizeof url, "http://%s:8880/v1/audio/speech", BACKEND_HOST);
-    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST, .timeout_ms = TTS_TIMEOUT_MS };
+    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_POST,
+                                      .timeout_ms = fish_config_get()->tts_timeout_ms };
     esp_http_client_handle_t client = esp_http_client_init(&cfg);
     if (!client)
     {
@@ -611,4 +625,91 @@ esp_err_t net_tts(const char *sentence, const char *voice, audio_buf_t *out_audi
     out_audio->sample_rate = (int) rate;
     ESP_LOGI(TAG, "TTS -> %u samples @ %u Hz", (unsigned) nframes, (unsigned) rate);
     return ESP_OK;
+}
+
+// --- Runtime config -------------------------------------------------------------------------
+// Bench-measured tunables that are likely to need retuning once the fish is in its final
+// housing. The runloop calls this once at the top of every cycle (main.c) rather than once at
+// boot -- every consumer (hal.c, net.c's own timeouts above) reads fish_config_get() fresh on
+// each use rather than caching a value, so a value picked up here takes effect on the very next
+// read, and a shim-side edit reaches a WAKEWORD-mode fish (which never reboots) with no reboot
+// at all.
+
+// Single best-effort attempt: on any failure (no WiFi, shim unreachable, bad response) the
+// compiled-in or previously-fetched values already in effect are left untouched -- there's
+// always something sane to run on.
+static esp_err_t net_fetch_config_once(void)
+{
+    if (!net_is_connected())
+    {
+        ESP_LOGW(TAG, "config: no WiFi — using compiled-in defaults");
+        return ESP_FAIL;
+    }
+
+    char url[128];
+    snprintf(url, sizeof url, "http://%s:8000/v1/config", BACKEND_HOST);
+    esp_http_client_config_t cfg = { .url = url, .method = HTTP_METHOD_GET,
+                                      .timeout_ms = CONFIG_FETCH_TIMEOUT_MS };
+    esp_http_client_handle_t client = esp_http_client_init(&cfg);
+    if (!client)
+    {
+        ESP_LOGW(TAG, "config: esp_http_client_init failed — using compiled-in defaults");
+        return ESP_ERR_NO_MEM;
+    }
+
+    esp_err_t err = esp_http_client_open(client, 0);
+    if (err != ESP_OK)
+    {
+        ESP_LOGW(TAG, "config: connect failed (%s) — using compiled-in defaults", esp_err_to_name(err));
+        esp_http_client_cleanup(client);
+        return err;
+    }
+    esp_http_client_fetch_headers(client);
+    int status = esp_http_client_get_status_code(client);
+
+    char resp[1024];
+    int rd = esp_http_client_read_response(client, resp, sizeof resp - 1);
+    if (rd < 0) rd = 0;
+    resp[rd] = '\0';
+    esp_http_client_close(client);
+    esp_http_client_cleanup(client);
+
+    if (status != 200)
+    {
+        ESP_LOGW(TAG, "config: HTTP %d — using compiled-in defaults", status);
+        return ESP_FAIL;
+    }
+
+    fish_config_apply_json(resp);
+    ESP_LOGI(TAG, "config: applied from shim (photocell_wake_threshold=%d)",
+             fish_config_get()->photocell_wake_threshold);
+    return ESP_OK;
+}
+
+esp_err_t net_fetch_config(bool wait_for_backend)
+{
+    if (!wait_for_backend)
+    {
+        return net_fetch_config_once();
+    }
+
+    // wait_for_backend=true: retries both "WiFi not up yet" and "shim not reachable yet" alike --
+    // net_fetch_config_once() already fails fast in the first case and within
+    // CONFIG_FETCH_TIMEOUT_MS in the second, so simply retrying it covers both. For a wake path
+    // that's about to use the network right after (a button-caused wake's first turn skips the
+    // idle/wait gate entirely -- main.c), a single best-effort attempt could easily lose the race
+    // against WiFi's normal join time. Still bounded, so a genuinely unreachable network degrades
+    // exactly as it always has (STT's own "no WiFi" skip + the runloop's error tone) instead of
+    // leaving the wake cycle stuck silent forever.
+    for (int attempt = 1; attempt <= FORCE_FETCH_MAX_ATTEMPTS; attempt++)
+    {
+        if (net_fetch_config_once() == ESP_OK) return ESP_OK;
+        if (attempt < FORCE_FETCH_MAX_ATTEMPTS)
+        {
+            vTaskDelay(pdMS_TO_TICKS(FORCE_FETCH_RETRY_DELAY_MS));
+        }
+    }
+    ESP_LOGW(TAG, "config: still unavailable after %d attempts — proceeding on current config",
+             FORCE_FETCH_MAX_ATTEMPTS);
+    return ESP_FAIL;
 }

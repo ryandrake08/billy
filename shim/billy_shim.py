@@ -10,6 +10,8 @@ hop through here. Contract:
 
   POST /v1/respond  {session, text}      -> text/event-stream of {"sentence", "voice"} then [DONE]
   POST /v1/reset    {session}            -> {"reset": <session>}
+  GET  /v1/config                        -> firmware config overrides (fish_config.py) -- fetched
+                                             by the fish every turn loop cycle
   GET  /health                           -> shim + upstream llama.cpp status
 
 Run:  uvicorn billy_shim:app --host 0.0.0.0 --port 8000
@@ -25,6 +27,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from text import PERSONA, NO_THINK, VOICE, strip_think, sentences_from, strip_markup
+from fish_config import OVERRIDES
 
 LLM_URL = os.environ.get("BILLY_LLM_URL", "http://localhost:8080").rstrip("/")
 LLM_MODEL = os.environ.get("BILLY_LLM_MODEL", "Qwen3-8B")
@@ -127,6 +130,15 @@ def reset(req: ResetReq):
     _SESSIONS.pop(req.session, None)
     _LAST_SEEN.pop(req.session, None)
     return {"reset": req.session}
+
+
+@app.get("/v1/config")
+def config():
+    """Runtime-tunable firmware constants the fish doesn't already default to -- the firmware
+    fetches this at the top of every turn loop cycle and only overwrites the fields present here,
+    so retuning after final assembly is an edit to fish_config.py + a shim restart, not a
+    firmware rebuild+reflash. Empty means "use the firmware's own compiled-in defaults"."""
+    return OVERRIDES
 
 
 @app.get("/health")

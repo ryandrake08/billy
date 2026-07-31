@@ -18,6 +18,21 @@ typedef esp_err_t (*sentence_cb_t)(const char *sentence, const char *voice, void
 // (without spinning) if credentials are missing.
 esp_err_t net_init(void);
 
+// Fetch runtime-tunable constants from the shim's GET /v1/config and apply them (fish_config.h).
+// Called once at the top of every runloop cycle (main.c) rather than once at boot, so a config
+// change on the shim reaches a long-lived WAKEWORD-mode fish with no reboot needed.
+//
+// wait_for_backend=false: a single best-effort, bounded (a few seconds) attempt. On any failure
+// (no WiFi, shim unreachable, bad response) the values already in effect -- compiled-in or from
+// an earlier fetch -- are left untouched. Used for the routine idle-cycle call, which must never
+// meaningfully delay sleep or a WAKEWORD-mode loop.
+//
+// wait_for_backend=true: retries for longer (still bounded, never forever) until WiFi is up and
+// the fetch succeeds. Needed on a wake path that skips straight into a turn with no idle/wait
+// gate first (a button-caused wake, main.c) -- since WiFi's join is fully async, that turn's STT
+// call could otherwise easily run before the join completes.
+esp_err_t net_fetch_config(bool wait_for_backend);
+
 // STT: POST audio to whisper /inference -> transcript text.
 esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len);
 
