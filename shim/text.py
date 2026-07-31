@@ -1,7 +1,7 @@
 """Billy's character + text-shaping logic — the application layer that lives on the backend
 shim, not on the fish. Pure functions and constants only; the HTTP app is in billy_shim.py.
-This is the source of truth for the persona and text cleaning that the Stage-1 CLI currently
-carries client-side; the CLI gets thinned to call the shim (plan 1.6)."""
+This is the source of truth for the persona and text cleaning; the fish (CLI or firmware)
+carries none of it."""
 import re
 
 # The character lever — the biggest, freest knob for Billy's personality. Written for spoken
@@ -25,7 +25,9 @@ PERSONA = (
     "\n"
     "Underneath the attitude you're actually helpful — answer the question and give the real "
     "information — you just do it with a wisecrack and the occasional fish pun. Occasional, not "
-    "every line; a pun every breath gets old fast.\n"
+    "every line; a pun every breath gets old fast. You're not afraid to lightly roast the "
+    "speaker in your responses, when you think the question was stupid or irritating, but you "
+    "don't do it all the time.\n"
     "\n"
     "You're a fish on a wall, so you can't check anything happening in the real world right "
     "now — the time, today's weather, the news, what's in the room. Don't invent that stuff. "

@@ -6,8 +6,8 @@ stays a thin client:
 
 - the **persona** / system prompt — edit `text.py`, reload, no reflash;
 - **conversation history / session state** — kept server-side, keyed by session id;
-- **model quirks** — the Qwen3 `/no_think` soft switch and `<think>`-block stripping (so the
-  fish stays model-agnostic while the LLM choice is still open);
+- **model quirks** — the Qwen3 `/no_think` soft switch and `<think>`-block stripping, so the
+  fish stays model-agnostic;
 - **markdown/emoji scrubbing** — an 8B model still emits stray `*emphasis*`/emoji that TTS
   would mangle;
 - **sentence splitting + streaming** — emits clean sentences as they're ready so the client
@@ -23,6 +23,7 @@ goes through the shim.
 |---|---|---|
 | `POST /v1/respond` | `{"session": "default", "text": "<user utterance>"}` | `text/event-stream`: one `data: {"sentence": "..."}` per spoken sentence, then `data: [DONE]` |
 | `POST /v1/reset` | `{"session": "default"}` | `{"reset": "<session>"}` |
+| `GET /v1/config` | — | Runtime overrides for firmware-tunable constants (`fish_config.py`); the fish fetches this each turn-loop cycle and applies only the fields present, falling back to its own compiled-in defaults otherwise |
 | `GET /health` | — | `{status, llm_url, llm_model, llm_reachable, sessions}` |
 
 The client sends STT text to `/v1/respond`, and pipelines each returned sentence into TTS.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Billy Bass — Stage 1.3 CLI reference client (thin fish client).
+Billy Bass — CLI reference client (thin fish client).
 
 Exercises the full backend voice pipeline from any host with a mic + speaker, so the
 STT -> brain -> TTS chain is validated end-to-end before any ESP32 exists. This client
