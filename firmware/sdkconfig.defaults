@@ -1,15 +1,23 @@
-# Target: ESP32-S3-WROOM-1 N8R8 (8 MB flash, 8 MB PSRAM). `idf.py set-target esp32s3` applies
-# the target; this pins it too.
+# Target: bench hardware is ESP32-S3-WROOM-1 N8R8 (8 MB flash, 8 MB octal PSRAM), but flash/
+# PSRAM below are deliberately budgeted against a smaller candidate SKU (N4R2, 4 MB flash / 2 MB
+# quad PSRAM) to right-size the final BOM part.
 CONFIG_IDF_TARGET="esp32s3"
 
-# 8 MB flash — the N8R8's actual size. The default 2 MB tripped a size-mismatch warning at boot
-# and left the app cramped in a 1 MB partition. The custom table (partitions.csv) gives the app
-# room to grow. (PSRAM stays off until audio buffering needs it.)
-CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+# Capped to 4 MB (the N4R2 candidate's size) rather than the N8R8 dev board's actual 8 MB --
+# safe to test on this hardware, since configuring smaller than the physical chip just leaves
+# the rest unused, not a functional risk. App binary is ~1.3 MB; the custom table (partitions.csv)
+# gives it a 3 MB slot, comfortably under 4 MB.
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
 CONFIG_PARTITION_TABLE_CUSTOM=y
 CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
 
-# PSRAM (N8R8 = 8 MB octal) — needed to buffer captured utterances and TTS audio, which are too
-# large for the ~290 KB of internal DRAM left after WiFi. heap_caps_malloc(MALLOC_CAP_SPIRAM).
+# Needed to buffer captured utterances and TTS audio, which are too large for the ~290 KB of
+# internal DRAM left after WiFi. heap_caps_malloc(MALLOC_CAP_SPIRAM).
+#
+# MODE_OCT matches the bench N8R8's actual (octal) PSRAM chip -- unlike flash size, this is NOT
+# a safe stand-in for the N4R2 candidate's quad PSRAM: octal and quad are different chips/SPI
+# protocols, not a size setting, so flipping this to MODE_QUAD against the N8R8's physically
+# octal-wired PSRAM would fail PSRAM init here rather than emulate a smaller quad part. Leave as
+# OCT until the N4R2 is actually in hand, then switch to MODE_QUAD.
 CONFIG_SPIRAM=y
 CONFIG_SPIRAM_MODE_OCT=y
