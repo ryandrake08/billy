@@ -10,14 +10,20 @@ SCOPING.md
 HOMELAB_SETUP.md
 WIRING.md
 
-# Build artifacts (cmake, ESP-IDF, etc.)
-build/
-.cache/
+# Build artifacts (cmake, ESP-IDF, etc.) -- no trailing slash: these may be plain
+# directories or symlinks onto local storage (see firmware/clean.sh), and a trailing
+# slash only matches the former.
+build
+.cache
+
+# Sample schematics
+board/Adafruit*
+board/basic-esp32s3-dev-board
 
 # ESP-IDF generated (keep sdkconfig.defaults; the rest is per-machine / fetched)
 sdkconfig
 sdkconfig.old
-managed_components/
+managed_components
 dependencies.lock
 
 # macOS
