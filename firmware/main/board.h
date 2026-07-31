@@ -36,6 +36,5 @@
 #define BOARD_PHOTOCELL_ADC    9  // ADC1 (ADC2 is unusable while WiFi is on)
 
 // --- Status LED: WS2812-family single RGB pixel. Bench: DevKitC-1's onboard WS2812. Final board:
-// a discrete WS2812B (5050 or 2020 package — WIRING.md §1/§9.5), an official BOM item now, not
-// just a bench aid. Same GPIO on the bare WROOM-1 module (not strapping/flash/native-USB).
+// a discrete WS2812B (5050 or 2020 package). Same GPIO on the bare WROOM-1 module.
 #define BOARD_STATUS_LED      38

@@ -170,6 +170,15 @@ static void runloop_task(void *arg)
         // Return head to relaxed state
         fish_hal_head_relax();
 
+        // Cumulative low-water mark since boot -- the worst-case PSRAM usage any turn has hit
+        // so far, not just this one. Bench this against a 2 MB budget (N4R2 candidate) before
+        // committing to it: run several turns, including a long utterance near capture_max_ms
+        // and long TTS sentences, then check this log's peak-used figure stays under ~2 MB.
+        ESP_LOGI(TAG, "PSRAM watermark: %u bytes peak used of %u total",
+                 (unsigned) (heap_caps_get_total_size(MALLOC_CAP_SPIRAM)
+                             - heap_caps_get_minimum_free_size(MALLOC_CAP_SPIRAM)),
+                 (unsigned) heap_caps_get_total_size(MALLOC_CAP_SPIRAM));
+
         // loop back to idle
     }
 }

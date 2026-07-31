@@ -30,7 +30,7 @@ OVERRIDES = {
     # "mouth_env_release": 0.15,
     # "mouth_mid_threshold": 0.3,     # envelope above this -> MID; below -> CLOSED
     # "mouth_open_threshold": 0.65,   # envelope above this -> OPEN (full duty); below -> MID
-    # "mouth_mid_duty_pct": 80,       # WIRING.md §6.1: the distinct partial-deflection duty
+    # "mouth_mid_duty_pct": 80,       # mouth partial deflection for better speaking choreography
 
     # Tail choreography timing -- hal.c fish_hal_tail_flap()
     # "tail_flap_ms": 250,     # one flap: drive out, then let the spring return it

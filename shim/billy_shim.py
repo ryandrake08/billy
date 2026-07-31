@@ -35,7 +35,7 @@ LLM_MODEL = os.environ.get("BILLY_LLM_MODEL", "Qwen3-8B")
 app = FastAPI(title="Billy shim", version="1.0")
 
 # In-memory conversation history, keyed by session id. Held server-side so the fish never
-# accumulates the growing message array (§8.3). Fine for a single fish; swap for a store if
+# accumulates the growing message array. Fine for a single fish; swap for a store if
 # multiple sessions ever need to persist across restarts.
 _SESSIONS: dict[str, list[dict]] = {}
 _LAST_SEEN: dict[str, float] = {}   # session -> monotonic time of its last turn

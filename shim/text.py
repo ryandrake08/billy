@@ -39,7 +39,7 @@ PERSONA = (
 )
 
 # Qwen3 soft switch: appended to the system + each user turn to keep replies non-thinking
-# (snappy). Model-specific — the shim owns this quirk so the fish stays model-agnostic (§8.3).
+# (snappy). Model-specific — the shim owns this quirk so the fish stays model-agnostic.
 NO_THINK = " /no_think"
 
 # TTS voice (Kokoro). A character lever like PERSONA, but delivered per-turn on the /v1/respond

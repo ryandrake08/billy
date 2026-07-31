@@ -142,8 +142,8 @@ void fish_hal_init(void)
     // holds this pin low through sleep) -- level is already the desired 0, so this can't glitch it.
     gpio_hold_dis(BOARD_DRV_NSLEEP);
 
-    // nFAULT: open-drain from both chips, wire-OR'd. External pull-up is mandatory (SCOPING.md
-    // §4.1); the internal pull is harmless alongside it.
+    // nFAULT: open-drain from both chips, wire-OR'd. External pull-up is mandatory; the
+    // internal pull is harmless alongside it.
     gpio_config_t nfault_gpio = {
         .pin_bit_mask = 1ULL << BOARD_DRV_NFAULT,
         .mode = GPIO_MODE_INPUT,
@@ -398,14 +398,14 @@ void fish_hal_error_tone(void)
 // A one-pole envelope follower over each amp-write chunk (~10.7 ms @ 24 kHz): fast attack (mouth
 // snaps to a new level on onset), slower release (holds a level briefly through short gaps
 // instead of chattering on every one). The mechanism can't usefully track duty proportionally --
-// bench testing found it barely moves below ~65% (WIRING.md §6.1) -- so this is a small number of
+// a bench duty sweep found it barely moves below ~65% -- so this is a small number of
 // discrete gates, not a continuous value, same reasoning as head/tail staying pure on/off. Mouth
 // gets a third, MID level (unlike head/tail, which stay binary open/close -- there's no plausible
 // use case for a partial head or tail gesture, but a partial mouth reads as quieter/plainer speech
-// vs. a wide-open emphasis, which is worth the extra state): WIRING.md §6.1's bench duty sweep
+// vs. a wide-open emphasis, which is worth the extra state): that same bench duty sweep
 // found ~80% duty is a real, visually distinct partial deflection on this mechanism (not just a
-// weaker copy of 100% -- the sweep's own words: "80% look[s] like a ceiling, but 100% is
-// noticeably stronger"), so it's used here as MID rather than picked arbitrarily. Reference level,
+// weaker copy of 100% -- "80% looks like a ceiling, but 100% is noticeably stronger"), so it's
+// used here as MID rather than picked arbitrarily. Reference level,
 // rates, and thresholds are runtime-tunable (fish_config.h) -- still first-pass
 // estimates, worth tuning by ear once the toy's real mechanism (vs. bench motors) is in the loop.
 
@@ -636,10 +636,11 @@ void fish_hal_selftest(void)
 // minimum duty that actually overcomes the mechanism's spring preload/gearing -- stops
 // immediately on any fault rather than moving on to the next motor. No forced stall -- the
 // motor shafts are friction-fit to their gears, so a deliberate stall risks the gears more than
-// it proves the driver's OCP works (WIRING.md §6.2). Watch the motor itself while this runs; the
+// it proves the driver's OCP works. Watch the motor itself while this runs; the
 // firmware has no current sense, only nFAULT. NOTE: the duty->motion
-// threshold tracks the motor rail's actual voltage (no buck -- WIRING.md §0), so a sweep run on a
-// sagged battery will read higher thresholds than the same sweep on a fresh one.
+// threshold tracks the motor rail's actual voltage (there's no buck between the battery and the
+// motors), so a sweep run on a sagged battery will read higher thresholds than the same sweep on
+// a fresh one.
 void fish_hal_motor_selftest(void)
 {
     ESP_LOGI(TAG, "motor self-test — one motor at a time, sweeping duty to find the motion threshold");
@@ -884,12 +885,12 @@ static bool wait_for_wakeword(void)
 }
 
 // BUTTON mode: real deep sleep, not a polling loop -- this is the whole point of the mode
-// (months of standby on 4xC NiMH, SCOPING.md §5). Deep sleep is a full chip reset: nothing after
+// (months of standby on 4xC NiMH). Deep sleep is a full chip reset: nothing after
 // esp_deep_sleep_start() runs, and the next code to execute is app_main() from scratch on wake.
 // The digital domain (and its GPIO config/levels) is lost across that reset except for pins
 // explicitly held -- SD_MODE and nSLEEP both need to stay exactly where they are (muted / parked)
-// for the whole sleep, or the amp and DRV8833s would come back up floating instead (WIRING.md
-// §9.6 -- nSLEEP floating high would undo the DRV8833s' uA-standby state, the actual point of
+// for the whole sleep, or the amp and DRV8833s would come back up floating instead (nSLEEP
+// floating high would undo the DRV8833s' uA-standby state, the actual point of
 // this milestone). ESP32-S3 needs the *global* gpio_deep_sleep_hold_en() for a per-pin
 // gpio_hold_en() to actually survive deep sleep (not just light-sleep/reset) -- see hal.c's
 // gpio_hold_dis() calls in fish_hal_init(), which release these same holds on wake.
@@ -983,7 +984,7 @@ bool fish_hal_wait_for_wake(void)
 }
 
 // --- Motor choreography: tail flap + head raise/relax. Mouth PWM is driven separately, off the
-// playback envelope (see mouth_track_chunk above). Approx timings from SCOPING.md §4/§6.
+// playback envelope (see mouth_track_chunk above). Timings are approximate, bench-tuned by eye.
 
 // Timing is runtime-tunable (fish_config.h) -- tail_flap_ms drives out then lets the
 // spring return it; tail_settle_ms is the spring-return travel + mechanical ring-down before it's
@@ -1013,7 +1014,8 @@ void fish_hal_tail_flap(void)
 
 // SPEAK: raise the head and hold it (non-blocking -- the spring-return motor stays driven for as
 // long as fish_hal_head_relax() is withheld, which the runloop does until the whole reply is
-// done, not just on audio silence -- a documented BillAI bug otherwise, SCOPING.md §6).
+// done, not just on audio silence -- a known failure mode in similar builds otherwise, where
+// relaxing on any silence gap between streamed sentences makes the head never settle).
 void fish_hal_head_out(void)
 {
     ESP_LOGI(TAG, "head out — 'I'm talking'");

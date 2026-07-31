@@ -6,8 +6,6 @@
 
 // Compiled-in defaults -- also this build's fallback for any field the shim's response doesn't
 // include (the shim only ever sends deltas from these, shim/fish_config.py's OVERRIDES).
-// Values are the ones bench-verified in WIRING.md/SCOPING.md §4/§6, so a fresh flash behaves
-// exactly as it did before these became runtime-configurable.
 static fish_config_t s_config = {
     .vad_onset_rms            = 6000,       // 24-bit scale: idle floor ~2000, speech >7000
     .vad_silence_ms           = 600,        // end the turn after this much sub-threshold audio
@@ -22,7 +20,7 @@ static fish_config_t s_config = {
     .mouth_env_release        = 0.15f,
     .mouth_mid_threshold      = 0.3f,       // envelope above this -> MID; below -> CLOSED
     .mouth_open_threshold     = 0.65f,      // envelope above this -> OPEN; below -> MID
-    .mouth_mid_duty_pct       = 80,         // WIRING.md §6.1's distinct partial-deflection duty
+    .mouth_mid_duty_pct       = 80,         // middle mouth position duty cycle
 
     .tail_flap_ms             = 250,
     .tail_settle_ms           = 350,

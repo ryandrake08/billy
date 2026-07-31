@@ -26,8 +26,7 @@ typedef struct
 // error code in use here.
 #define FISH_ERR_AUDIO_HW ((esp_err_t) 0x8001)
 
-// Status colors for the WS2812 status LED (BOARD_STATUS_LED) — a permanent diagnostic indicator,
-// present on the final board too (WIRING.md §1/§9.5), not just a bench aid.
+// Status colors for the WS2812 status LED (BOARD_STATUS_LED)
 typedef enum
 {
     FISH_STATUS_BOOT,       // white  — power-on / booting, before the turn loop starts
@@ -51,10 +50,9 @@ void fish_hal_set_status(fish_status_t status);
 void fish_hal_selftest(void);
 
 // Bench motor self-test (not in the E2E boot path, currently unused by main.c): one motor at a
-// time, sweeping duty (20/35/50/65/80/100%, 2 s each) to find the minimum duty that overcomes
-// the mechanism's spring preload/gearing -- stopping immediately on any nFAULT trip. No forced
-// stall -- see WIRING.md §6.2 (friction-fit motor shafts make a deliberate stall risky to the
-// gears). Requires fish_hal_init() to have already run.
+// time, sweeping duty to find the minimum duty that overcomes the mechanism's spring
+// preload/gearing -- stopping immediately on any nFAULT trip. Requires fish_hal_init() to
+// have already run.
 void fish_hal_motor_selftest(void);
 
 // Progressive combined-motor load test: head, then head+tail, then head+tail+mouth, each at
@@ -70,9 +68,8 @@ void fish_hal_prompt_tone(void);
 // prompt/self-test tones -- for a backend/network failure (STT or the shim brain-hop).
 void fish_hal_error_tone(void);
 
-// Raw photocell ADC reading (12-bit, 0-4095 over the 0-3.3V range via 12 dB attenuation). No
-// consumer yet -- kept warm for a future hook (novelty wake / presence / ambient light,
-// SCOPING.md §4) rather than left to fish_hal_init()'s one-shot boot log. Requires
+// Raw photocell ADC reading (12-bit, 0-4095 over the 0-3.3V range via 12 dB attenuation).
+// Currently used to inhibit false positive wakes when ambient light is low. Requires
 // fish_hal_init() to have already run.
 int fish_hal_read_photocell(void);
 
