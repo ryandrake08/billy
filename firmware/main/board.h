@@ -12,9 +12,9 @@
 #define BOARD_AMP_SD_MODE     17  // drive low to mute / power-down the amp (pops, deep sleep)
 
 // --- Microphone: ICS-43434 / INMP441, I2S1 RX (capture) ---
-#define BOARD_MIC_I2S_SCK      5
+#define BOARD_MIC_I2S_SCK      4
 #define BOARD_MIC_I2S_WS       6
-#define BOARD_MIC_I2S_SD       4  // mic L/R pin tied to GND -> left channel
+#define BOARD_MIC_I2S_SD       5  // mic L/R pin tied to GND -> left channel
 
 // --- Motor drivers: 2x DRV8833 (three spring-return motors) ---
 // Each motor is driven one direction only: IN1 = PWM, IN2 held low (the spring returns it).
@@ -23,10 +23,10 @@
 // wire-OR'd onto one input).
 #define BOARD_MOUTH_IN1       10  // drv1 AIN1, PWM (LEDC): mouth open amount for lip-sync
 #define BOARD_MOUTH_IN2       11  // drv1 AIN2, held low (mouth unidirectional; spring return)
-#define BOARD_HEAD_IN1        12  // drv1 BIN1, PWM: head raise
-#define BOARD_HEAD_IN2        13  // drv1 BIN2, held low (head unidirectional; spring return)
-#define BOARD_TAIL_IN1        21  // drv2 AIN1, PWM: tail flap
-#define BOARD_TAIL_IN2        47  // drv2 AIN2, held low (tail unidirectional; spring return)
+#define BOARD_HEAD_IN1        21  // drv2 AIN1, PWM: head raise
+#define BOARD_HEAD_IN2        47  // drv2 AIN2, held low (head unidirectional; spring return)
+#define BOARD_TAIL_IN1        12  // drv1 BIN1, PWM: tail flap
+#define BOARD_TAIL_IN2        13  // drv1 BIN2, held low (tail unidirectional; spring return)
 #define BOARD_DRV_NSLEEP      14  // both chips: high = enabled; drive low in deep sleep -> ~uA
 #define BOARD_DRV_NFAULT       8  // both chips wire-OR'd (open-drain + pull-up): low = OCP/thermal/UVLO
 
