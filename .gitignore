@@ -5,10 +5,7 @@ __pycache__/
 venv/
 
 # Planning artifacts/docs
-BUGS.md
-SCOPING.md
-HOMELAB_SETUP.md
-WIRING.md
+.devdocs/
 
 # Build artifacts (cmake, ESP-IDF, etc.) -- no trailing slash: these may be plain
 # directories or symlinks onto local storage (see firmware/clean.sh), and a trailing
@@ -17,8 +14,13 @@ build
 .cache
 
 # Sample schematics
-board/Adafruit*
-board/basic-esp32s3-dev-board
+board/tmp/
+
+# KiCad per-user/local state and backups -- not design data
+*.kicad_prl
+*.bak
+~*.lck
+.history/
 
 # ESP-IDF generated (keep sdkconfig.defaults; the rest is per-machine / fetched)
 sdkconfig
