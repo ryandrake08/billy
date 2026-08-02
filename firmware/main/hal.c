@@ -101,7 +101,23 @@ static void motor_set_duty(motor_channel_t ch, uint32_t duty)
 
 void fish_hal_init(void)
 {
-    // Status LED first, before anything below that could ESP_ERROR_CHECK-panic -- so even a
+    // Status LED VDD gate first, and before the led_strip/RMT setup below -- the LED's supply is
+    // switched (low-side FET) rather than tied straight to 3V3, so power has to actually be up
+    // before the first RMT frame goes out, or the boot-status color would be clocked into a dark
+    // LED and never seen.
+    gpio_config_t status_led_en_gpio = {
+        .pin_bit_mask = 1ULL << BOARD_STATUS_LED_EN,
+        .mode = GPIO_MODE_OUTPUT,
+    };
+    ESP_ERROR_CHECK(gpio_config(&status_led_en_gpio));
+    gpio_set_level(BOARD_STATUS_LED_EN, 1);
+
+    // Same hold-release as nSLEEP/SD_MODE below -- level is already the desired 1 (LED powered)
+    // before the hold is released, so waking from deep sleep can't leave the LED glitching or
+    // unpowered.
+    gpio_hold_dis(BOARD_STATUS_LED_EN);
+
+    // Status LED itself, before anything below that could ESP_ERROR_CHECK-panic -- so even a
     // failed motor/amp/mic/photocell bring-up at least shows boot-yellow first, rather than
     // leaving the LED dark with no sign the chip powered on at all.
     led_strip_config_t strip_cfg = {
@@ -888,11 +904,12 @@ static bool wait_for_wakeword(void)
 // (months of standby on 4xC NiMH). Deep sleep is a full chip reset: nothing after
 // esp_deep_sleep_start() runs, and the next code to execute is app_main() from scratch on wake.
 // The digital domain (and its GPIO config/levels) is lost across that reset except for pins
-// explicitly held -- SD_MODE and nSLEEP both need to stay exactly where they are (muted / parked)
-// for the whole sleep, or the amp and DRV8833s would come back up floating instead (nSLEEP
-// floating high would undo the DRV8833s' uA-standby state, the actual point of
-// this milestone). ESP32-S3 needs the *global* gpio_deep_sleep_hold_en() for a per-pin
-// gpio_hold_en() to actually survive deep sleep (not just light-sleep/reset) -- see hal.c's
+// explicitly held -- SD_MODE, nSLEEP, and the status LED's VDD gate all need to stay exactly
+// where they are (muted / parked / unpowered) for the whole sleep, or the amp, DRV8833s, and LED
+// would come back up floating instead (nSLEEP floating high would undo the DRV8833s' uA-standby
+// state, the actual point of this milestone). ESP32-S3 needs the *global*
+// gpio_deep_sleep_hold_en() for a per-pin gpio_hold_en() to actually survive deep sleep (not just
+// light-sleep/reset) -- see hal.c's
 // gpio_hold_dis() calls in fish_hal_init(), which release these same holds on wake.
 static void enter_deep_sleep_for_button_wake(void)
 {
@@ -900,10 +917,13 @@ static void enter_deep_sleep_for_button_wake(void)
                   "GPIO %d mode-switch flip", BOARD_BUTTON, BOARD_MODE_SW);
 
     // A WS2812 latches whatever color it last received and keeps displaying it with no further
-    // refresh needed -- left alone it would keep showing IDLE green (and drawing its current)
-    // for the whole sleep. Clear it to black before the RMT peripheral driving it powers down.
+    // refresh needed -- left alone it would keep showing IDLE green for the whole sleep. Clear it
+    // to black *before* cutting BOARD_STATUS_LED_EN below, so DIN is already idling low (not
+    // mid-toggle) at the moment VDD goes away.
     led_strip_clear(s_status_led);
 
+    gpio_set_level(BOARD_STATUS_LED_EN, 0); // cut the LED's VDD -- 0 current for the whole sleep
+    gpio_hold_en(BOARD_STATUS_LED_EN);
     gpio_set_level(BOARD_AMP_SD_MODE, 0);   // mute before power-down
     gpio_hold_en(BOARD_AMP_SD_MODE);
     gpio_hold_en(BOARD_DRV_NSLEEP);         // already low (motor_disable(), just above)

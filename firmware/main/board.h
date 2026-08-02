@@ -35,6 +35,8 @@
 #define BOARD_MODE_SW          1  // stock ON-ON DPDT, 2-position, one pole used: button-wake (floating/high) vs wakeword-wake (grounded/low); has an EXTERNAL ~10k pull-up
 #define BOARD_PHOTOCELL_ADC    9  // ADC1 (ADC2 is unusable while WiFi is on)
 
-// --- Status LED: WS2812-family single RGB pixel. Bench: DevKitC-1's onboard WS2812. Final board:
-// a discrete WS2812B (5050 or 2020 package). Same GPIO on the bare WROOM-1 module.
-#define BOARD_STATUS_LED      38
+// --- Status LED: WS2812-family single RGB pixel. Bench: DevKitC-1's onboard WS2812 (DIN only,
+// VDD unswitched). Final board: a discrete WS2812B (5050 or 2020 package) with VDD gated by a
+// low-side FET so it draws zero current in deep sleep.
+#define BOARD_STATUS_LED      38  // data (DIN), through a series resistor
+#define BOARD_STATUS_LED_EN   18  // VDD gate (low-side FET): high = LED powered, low = off
