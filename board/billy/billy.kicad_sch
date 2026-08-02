@@ -6251,12 +6251,20 @@
 		(uuid "f1ddb425-9ea0-4a67-bc23-3e896fef7735")
 	)
 	(no_connect
+		(at 67.31 210.82)
+		(uuid "0ab05e99-8b17-4e31-87c6-b4d737164d39")
+	)
+	(no_connect
 		(at 243.84 165.1)
 		(uuid "0d03ddd4-bd25-48c0-8ea8-45423dde476f")
 	)
 	(no_connect
 		(at 332.74 207.01)
 		(uuid "11aca00e-f7a3-4280-8bdd-c7ecb3d82c56")
+	)
+	(no_connect
+		(at 332.74 204.47)
+		(uuid "2151ec3d-9eb1-4142-ab05-f44c5f3771bd")
 	)
 	(no_connect
 		(at 218.44 167.64)
@@ -6275,12 +6283,20 @@
 		(uuid "37deb948-677f-4680-a95d-47640623e715")
 	)
 	(no_connect
+		(at 223.52 243.84)
+		(uuid "53bd5d99-d0e0-4cbc-abb2-c199252b2f72")
+	)
+	(no_connect
 		(at 218.44 154.94)
 		(uuid "729ddbb7-55d6-4cca-9580-774ff7143805")
 	)
 	(no_connect
 		(at 332.74 199.39)
 		(uuid "963d1f3d-9978-4595-814e-b268e72b5ef0")
+	)
+	(no_connect
+		(at 223.52 241.3)
+		(uuid "e7f0dae0-c7b4-4aad-98e8-4c8bae679446")
 	)
 	(wire
 		(pts
@@ -9930,7 +9946,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 383.2352 139.7 0)
 			(hide yes)
 			(show_name no)
@@ -9963,7 +9979,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C15849"
+		(property "LCSC" "C1530"
 			(at 382.27 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -10053,7 +10069,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C56816"
 			(at 361.95 50.8 0)
 			(hide yes)
 			(show_name no)
@@ -10284,7 +10300,7 @@
 				)
 			)
 		)
-		(property "Value" "0.15"
+		(property "Value" "50m"
 			(at 368.3 121.92 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10327,7 +10343,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C14709"
 			(at 368.3 124.46 90)
 			(hide yes)
 			(show_name no)
@@ -10387,7 +10403,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 238.4552 58.42 0)
 			(hide yes)
 			(show_name no)
@@ -10420,7 +10436,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C15849"
+		(property "LCSC" "C52923"
 			(at 237.49 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -10467,7 +10483,7 @@
 				)
 			)
 		)
-		(property "Value" "0.15"
+		(property "Value" "50m"
 			(at 368.3 129.54 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10510,7 +10526,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C14709"
 			(at 368.3 127 90)
 			(hide yes)
 			(show_name no)
@@ -10776,7 +10792,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C19078229"
 			(at 153.67 177.8 0)
 			(hide yes)
 			(show_name no)
@@ -11101,7 +11117,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "AO3400A"
 			(at 264.16 215.9 90)
 			(hide yes)
 			(show_name no)
@@ -11164,7 +11180,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 199.898 111.76 90)
 			(hide yes)
 			(show_name no)
@@ -11197,7 +11213,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C473037"
 			(at 198.12 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -11257,7 +11273,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 373.6848 139.7 0)
 			(hide yes)
 			(show_name no)
@@ -11290,7 +11306,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C15849"
+		(property "LCSC" "C1530"
 			(at 374.65 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -11385,7 +11401,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "AO3400A"
 			(at 153.67 207.01 90)
 			(hide yes)
 			(show_name no)
@@ -11481,7 +11497,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C25804"
 			(at 266.7 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -11664,7 +11680,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C918120"
 			(at 318.77 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -11943,7 +11959,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C918120"
 			(at 288.29 123.19 0)
 			(hide yes)
 			(show_name no)
@@ -12094,7 +12110,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 157.48 193.3448 0)
 			(hide yes)
 			(show_name no)
@@ -12127,7 +12143,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C50254"
+		(property "LCSC" "C12530"
 			(at 153.67 194.31 90)
 			(hide yes)
 			(show_name no)
@@ -12220,7 +12236,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C910544"
 			(at 349.25 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -13075,7 +13091,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C918120"
 			(at 227.33 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -13108,7 +13124,7 @@
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp yes)
@@ -13295,7 +13311,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "DRV8833PWP"
+		(property "Value" "DRV8833PWPR"
 			(at 233.2833 175.26 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13341,7 +13357,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C50506"
 			(at 231.14 157.48 0)
 			(hide yes)
 			(show_name no)
@@ -13524,7 +13540,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 194.0052 60.96 0)
 			(hide yes)
 			(show_name no)
@@ -13557,7 +13573,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C15849"
+		(property "LCSC" "C52923"
 			(at 193.04 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -13684,7 +13700,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "DRV8833PWP"
+		(property "Value" "DRV8833PWPR"
 			(at 233.2833 128.27 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13730,7 +13746,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C50506"
 			(at 231.14 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -13946,7 +13962,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C918120"
 			(at 389.89 124.46 0)
 			(hide yes)
 			(show_name no)
@@ -14004,7 +14020,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 157.48 240.3348 0)
 			(hide yes)
 			(show_name no)
@@ -14037,7 +14053,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C50254"
+		(property "LCSC" "C12530"
 			(at 153.67 241.3 90)
 			(hide yes)
 			(show_name no)
@@ -14130,7 +14146,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C23186"
 			(at 242.57 229.87 0)
 			(hide yes)
 			(show_name no)
@@ -14379,7 +14395,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C2913203"
 			(at 96.52 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -14871,7 +14887,7 @@
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp yes)
@@ -15069,7 +15085,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 284.1752 58.42 0)
 			(hide yes)
 			(show_name no)
@@ -15102,7 +15118,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C15849"
+		(property "LCSC" "C52923"
 			(at 283.21 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -15197,7 +15213,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "AO3400A"
 			(at 153.67 160.02 90)
 			(hide yes)
 			(show_name no)
@@ -15296,6 +15312,17 @@
 				)
 			)
 		)
+		(property "LCSC" "AO3400A"
+			(at 57.15 226.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "3da5e3e7-0cc2-46f7-849f-f71fbfc7e14b")
 		)
@@ -15348,7 +15375,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "billy:SW-SMD_L3.9-W3.0-P4.45"
+		(property "Footprint" "Button_Switch_SMD:SW_SPST_TS-1088-xR020"
 			(at 194.31 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -15404,6 +15431,17 @@
 			)
 		)
 		(property "MP" "TS-1088-AR02016"
+			(at 186.69 57.15 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C720477"
 			(at 186.69 57.15 90)
 			(hide yes)
 			(show_name no)
@@ -15496,7 +15534,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C25804"
 			(at 283.21 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -15589,7 +15627,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C918120"
 			(at 288.29 113.03 0)
 			(hide yes)
 			(show_name no)
@@ -15682,7 +15720,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C918120"
 			(at 288.29 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -15775,7 +15813,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C22935"
 			(at 330.2 142.24 0)
 			(hide yes)
 			(show_name no)
@@ -16176,6 +16214,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C23179"
+			(at 48.26 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "48268b7a-d8b1-4472-8240-1ce42412e489")
 		)
@@ -16316,7 +16365,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 203.708 156.21 90)
 			(hide yes)
 			(show_name no)
@@ -16349,7 +16398,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C473037"
 			(at 201.93 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -16769,7 +16818,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C23242"
 			(at 370.84 196.85 0)
 			(hide yes)
 			(show_name no)
@@ -16827,7 +16876,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 267.97 249.2248 0)
 			(hide yes)
 			(show_name no)
@@ -16860,7 +16909,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C50254"
+		(property "LCSC" "C12530"
 			(at 264.16 250.19 90)
 			(hide yes)
 			(show_name no)
@@ -17031,7 +17080,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C23186"
 			(at 193.04 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -17202,7 +17251,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C918120"
 			(at 273.05 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -17388,7 +17437,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C25804"
 			(at 323.85 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -17650,7 +17699,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C25803"
 			(at 327.66 196.85 90)
 			(hide yes)
 			(show_name no)
@@ -17740,7 +17789,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C19078229"
 			(at 264.16 233.68 0)
 			(hide yes)
 			(show_name no)
@@ -17923,7 +17972,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C23352"
 			(at 370.84 207.01 0)
 			(hide yes)
 			(show_name no)
@@ -18308,7 +18357,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C23186"
 			(at 233.68 229.87 0)
 			(hide yes)
 			(show_name no)
@@ -18398,7 +18447,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C19078229"
 			(at 153.67 224.79 0)
 			(hide yes)
 			(show_name no)
@@ -19079,7 +19128,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C25804"
 			(at 237.49 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -19162,6 +19211,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 52.07 229.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25804"
 			(at 52.07 229.87 0)
 			(hide yes)
 			(show_name no)
@@ -19377,7 +19437,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 200.152 111.76 90)
 			(hide yes)
 			(show_name no)
@@ -19410,7 +19470,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C473037"
 			(at 201.93 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -19579,7 +19639,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C918121"
 			(at 114.3 160.02 0)
 			(hide yes)
 			(show_name no)
@@ -19808,49 +19868,49 @@
 			"19ed79a6-e72c-4988-a550-3ccf0e3efbcc" "1bc71986-2798-4a30-b25b-8e6b4ac44db6"
 			"1bd4ec78-61bf-46b6-ba9c-5c9bb0601d5d" "1c1464a1-ff49-44f9-a33e-287c63a7c2cd"
 			"1d86fe23-2c67-4c65-ba46-30f35ec08835" "1f52db5b-4e44-4d9b-adc7-56101b981449"
-			"221cdd43-2a6f-400a-8eb5-bf2bb3c85417" "25942cec-64a7-4619-a578-710b3a76ec4e"
-			"25f96680-376f-4a51-806e-2dab7f6fcdc4" "27cac774-47fa-4a0c-8b73-3a3a7e6a5758"
-			"283e4dd1-ae7e-4deb-9e6a-57fd0128e868" "286da8c0-d369-4b6f-89ef-943c6cd1bf09"
-			"29fac36d-76c5-4ee5-987b-f0a2cf94db0d" "2cc73c11-1eed-402e-9eb1-56941798baf7"
-			"30236579-56a3-4262-989d-5309d228a450" "31128498-568a-462d-b01f-a3fc7381d318"
-			"3420c302-3271-43d0-af13-eeaf601911d6" "37084a0e-f9f3-46c7-83f7-3978aef667b0"
-			"37deb948-677f-4680-a95d-47640623e715" "3af7d858-a763-4486-97cb-9e581f6d2c95"
-			"3df46832-62b1-430f-8582-077b51f9a6c3" "432b382d-6c88-45b8-bc22-9f562dfab011"
-			"45a9f07f-966a-4b15-8cb1-0c705f0ffb2f" "47bb0ac5-91d8-4b13-b804-ed4049f4bf40"
-			"48c12230-f7b5-43ae-95a3-e03b79a81171" "48ccc71b-dd22-401b-9daa-400044406c7d"
-			"49233e86-4561-4bf9-8f4f-5dac704739e6" "4bbde3f0-adc7-4900-ba33-623a853bd676"
-			"4c244517-d6a8-46bf-9011-80be56274b5c" "4ca729b8-30a3-402f-9aca-17eb5dfb4559"
-			"4e8dc920-17d8-4658-a92c-56842834266c" "508243f6-dcac-43b6-800f-ec92723abee7"
-			"5198ca18-d6af-4492-b95d-bee36c07fb59" "55e48ae8-9ff2-4efb-9298-3f8c10210269"
-			"56996d21-e84f-448f-bce0-acf2f31c7d18" "56e75967-8b61-4ae3-b4b6-e22eac1b4f4d"
-			"606499d2-6399-4f8d-832f-12f103e851a7" "729ddbb7-55d6-4cca-9580-774ff7143805"
-			"7414c9a5-73fd-4558-84a2-4968590dce29" "751ffd83-90b3-47bc-9443-e39f4f7520a8"
-			"75736ce8-cd56-453d-aace-5d6278a31d00" "770072db-52a2-4b75-b1c2-896c691a2514"
-			"790c0fc9-bcef-432c-9386-cf152e43122e" "793bbdb8-6d85-455c-98a7-14ad90a37c44"
-			"7acd978f-d7f1-4f34-a14b-dbc9bf00ba77" "7e742309-8cb7-4f1c-83ce-f2f4d886d371"
-			"7f5e8c82-826e-43ec-8093-9146c3ae3332" "80a8db4a-15d1-4e33-933a-fbd66f1e7368"
-			"82636659-8705-4e75-b030-8ee75b98ab30" "846305d7-8457-47e9-99c0-d9eae910bb23"
-			"879b17df-02b9-4bbe-8686-7287a8fb1447" "897d5ae3-37e6-4270-933a-4c175e468009"
-			"9a1bb343-02a3-46f8-af74-7c8db3194472" "9a6c8d50-e0e4-4fd7-ba02-a779c065f9b5"
-			"9b9df5db-9981-4017-bfc3-4862bb8047e3" "9bac37cf-a13b-4b6e-a3b6-c191263063e7"
-			"9c7f3c5c-7428-4486-bafa-f15c0bb4322e" "9d3c6cf6-a889-40ec-be62-ce8494f67da8"
-			"9d760ec5-cdbf-4c26-a8c7-b433d182594d" "9daf42a0-4dc7-4e2a-a2f6-79dd789aefb8"
-			"a0958e48-f5c1-4db2-90b8-cc10b44337c5" "a4c0badc-a3cf-4f6b-b61f-43f70569b7d0"
-			"a4cc5540-d693-44a7-80f6-96d64c81edfb" "a8bef826-dad1-4b61-86ee-e248c500a74b"
-			"ab2b8c63-3afe-4361-a25f-d9749cab1205" "ae409b77-3431-45d6-bfe3-697d93d4bf45"
-			"b306702e-18ec-4ccf-b9fe-b43051d4f781" "b4e3f861-15ff-48c5-b83e-9f7ed6d3e882"
-			"b79d8612-f88e-49d4-8a6c-03dd7e8987ca" "b9587208-ecd2-48c3-b2c7-e027737d9edf"
-			"bedf2925-bf7b-4160-a7a6-4edf281cff8f" "c3829860-d846-45ee-bdc3-9d80254141a3"
-			"c3a6e735-5f2b-4a20-8665-ca35d32bb393" "c66d52d4-ca17-4623-9211-1c9eca8f18aa"
-			"c909f852-6de2-4cb5-b00a-7f1689af4b82" "cd1fd80a-5de1-457c-93d2-5a0c1e1dddd0"
-			"cdf09270-9229-4dd8-8ca3-63bfef988b55" "da30b7b8-692c-4eb0-bd8b-8893f63918fb"
-			"de505a58-b7d5-41f1-8100-2b9433f7a9e1" "df450dbf-ebca-4ec1-a80f-c645948517a6"
-			"e18d6660-7f72-4243-9522-01ff2fb1a5ed" "e34ac3f2-452e-4402-9b9b-ff3abc58627f"
-			"e5dc9341-2fe0-4108-80bc-41b015db9909" "e6b35589-ad98-4ec2-bbcc-39403671eebf"
-			"eaf5a712-2264-4c40-b7ec-ae6ec45fd5ab" "f12af466-b436-412e-9d21-fd02f704f030"
-			"f330fae4-c44c-4317-9e37-0ff97ff5c3e7" "f61fb02e-3146-4063-842c-7fa160e29e86"
-			"fa28417f-1f8f-429d-a21f-932ad85653fe" "face4375-53fe-4af3-9a29-3afff3463a27"
-			"faee63d2-7848-4e80-8f2d-1e77528aa919"
+			"2151ec3d-9eb1-4142-ab05-f44c5f3771bd" "221cdd43-2a6f-400a-8eb5-bf2bb3c85417"
+			"25942cec-64a7-4619-a578-710b3a76ec4e" "25f96680-376f-4a51-806e-2dab7f6fcdc4"
+			"27cac774-47fa-4a0c-8b73-3a3a7e6a5758" "283e4dd1-ae7e-4deb-9e6a-57fd0128e868"
+			"286da8c0-d369-4b6f-89ef-943c6cd1bf09" "29fac36d-76c5-4ee5-987b-f0a2cf94db0d"
+			"2cc73c11-1eed-402e-9eb1-56941798baf7" "30236579-56a3-4262-989d-5309d228a450"
+			"31128498-568a-462d-b01f-a3fc7381d318" "3420c302-3271-43d0-af13-eeaf601911d6"
+			"37084a0e-f9f3-46c7-83f7-3978aef667b0" "37deb948-677f-4680-a95d-47640623e715"
+			"3af7d858-a763-4486-97cb-9e581f6d2c95" "3df46832-62b1-430f-8582-077b51f9a6c3"
+			"432b382d-6c88-45b8-bc22-9f562dfab011" "45a9f07f-966a-4b15-8cb1-0c705f0ffb2f"
+			"47bb0ac5-91d8-4b13-b804-ed4049f4bf40" "48c12230-f7b5-43ae-95a3-e03b79a81171"
+			"48ccc71b-dd22-401b-9daa-400044406c7d" "49233e86-4561-4bf9-8f4f-5dac704739e6"
+			"4bbde3f0-adc7-4900-ba33-623a853bd676" "4c244517-d6a8-46bf-9011-80be56274b5c"
+			"4ca729b8-30a3-402f-9aca-17eb5dfb4559" "4e8dc920-17d8-4658-a92c-56842834266c"
+			"508243f6-dcac-43b6-800f-ec92723abee7" "5198ca18-d6af-4492-b95d-bee36c07fb59"
+			"55e48ae8-9ff2-4efb-9298-3f8c10210269" "56996d21-e84f-448f-bce0-acf2f31c7d18"
+			"56e75967-8b61-4ae3-b4b6-e22eac1b4f4d" "606499d2-6399-4f8d-832f-12f103e851a7"
+			"729ddbb7-55d6-4cca-9580-774ff7143805" "7414c9a5-73fd-4558-84a2-4968590dce29"
+			"751ffd83-90b3-47bc-9443-e39f4f7520a8" "75736ce8-cd56-453d-aace-5d6278a31d00"
+			"770072db-52a2-4b75-b1c2-896c691a2514" "790c0fc9-bcef-432c-9386-cf152e43122e"
+			"793bbdb8-6d85-455c-98a7-14ad90a37c44" "7acd978f-d7f1-4f34-a14b-dbc9bf00ba77"
+			"7e742309-8cb7-4f1c-83ce-f2f4d886d371" "7f5e8c82-826e-43ec-8093-9146c3ae3332"
+			"80a8db4a-15d1-4e33-933a-fbd66f1e7368" "82636659-8705-4e75-b030-8ee75b98ab30"
+			"846305d7-8457-47e9-99c0-d9eae910bb23" "879b17df-02b9-4bbe-8686-7287a8fb1447"
+			"897d5ae3-37e6-4270-933a-4c175e468009" "9a1bb343-02a3-46f8-af74-7c8db3194472"
+			"9a6c8d50-e0e4-4fd7-ba02-a779c065f9b5" "9b9df5db-9981-4017-bfc3-4862bb8047e3"
+			"9bac37cf-a13b-4b6e-a3b6-c191263063e7" "9c7f3c5c-7428-4486-bafa-f15c0bb4322e"
+			"9d3c6cf6-a889-40ec-be62-ce8494f67da8" "9d760ec5-cdbf-4c26-a8c7-b433d182594d"
+			"9daf42a0-4dc7-4e2a-a2f6-79dd789aefb8" "a0958e48-f5c1-4db2-90b8-cc10b44337c5"
+			"a4c0badc-a3cf-4f6b-b61f-43f70569b7d0" "a4cc5540-d693-44a7-80f6-96d64c81edfb"
+			"a8bef826-dad1-4b61-86ee-e248c500a74b" "ab2b8c63-3afe-4361-a25f-d9749cab1205"
+			"ae409b77-3431-45d6-bfe3-697d93d4bf45" "b306702e-18ec-4ccf-b9fe-b43051d4f781"
+			"b4e3f861-15ff-48c5-b83e-9f7ed6d3e882" "b79d8612-f88e-49d4-8a6c-03dd7e8987ca"
+			"b9587208-ecd2-48c3-b2c7-e027737d9edf" "bedf2925-bf7b-4160-a7a6-4edf281cff8f"
+			"c3829860-d846-45ee-bdc3-9d80254141a3" "c3a6e735-5f2b-4a20-8665-ca35d32bb393"
+			"c66d52d4-ca17-4623-9211-1c9eca8f18aa" "c909f852-6de2-4cb5-b00a-7f1689af4b82"
+			"cd1fd80a-5de1-457c-93d2-5a0c1e1dddd0" "cdf09270-9229-4dd8-8ca3-63bfef988b55"
+			"da30b7b8-692c-4eb0-bd8b-8893f63918fb" "de505a58-b7d5-41f1-8100-2b9433f7a9e1"
+			"df450dbf-ebca-4ec1-a80f-c645948517a6" "e18d6660-7f72-4243-9522-01ff2fb1a5ed"
+			"e34ac3f2-452e-4402-9b9b-ff3abc58627f" "e5dc9341-2fe0-4108-80bc-41b015db9909"
+			"e6b35589-ad98-4ec2-bbcc-39403671eebf" "eaf5a712-2264-4c40-b7ec-ae6ec45fd5ab"
+			"f12af466-b436-412e-9d21-fd02f704f030" "f330fae4-c44c-4317-9e37-0ff97ff5c3e7"
+			"f61fb02e-3146-4063-842c-7fa160e29e86" "fa28417f-1f8f-429d-a21f-932ad85653fe"
+			"face4375-53fe-4af3-9a29-3afff3463a27" "faee63d2-7848-4e80-8f2d-1e77528aa919"
 		)
 	)
 	(group ""
