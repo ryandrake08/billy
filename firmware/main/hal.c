@@ -293,7 +293,7 @@ int fish_hal_read_photocell(void)
 // names the caller for that log line. Threshold is runtime-tunable (fish_config.h) --
 // bench-calibrated raw readings ran ~400-1200 across dim-to-bright room light, dropped to 120-150
 // with only monitor glow (room lights off), and 40-85 with only ambient window light; the default
-// of 100 sits between the monitor-glow and window-only bands.
+// of 50 sits within the window-only band.
 static bool photocell_bright_enough(const char *context)
 {
     int threshold = fish_config_get()->photocell_wake_threshold;
