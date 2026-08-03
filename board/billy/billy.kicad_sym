@@ -30,8 +30,8 @@
 				)
 			)
 		)
-		(property "Footprint" "Adafruit MPM3610:MPM3610"
-			(at 0 0 0)
+		(property "Footprint" "billy:QFN-20"
+			(at 0 5.08 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(hide yes)
@@ -74,21 +74,12 @@
 			)
 		)
 		(symbol "MPM3610_1_0"
-			(text "Integrated buck DC/DC"
-				(at 0 10.16 0)
-				(effects
-					(font
-						(size 1.524 1.2954)
-					)
-				)
-			)
 			(text "MPM3610"
-				(at 5.08 -15.24 0)
+				(at 0 15.494 0)
 				(effects
 					(font
 						(size 1.778 1.5113)
 					)
-					(justify left bottom)
 				)
 			)
 			(pin input line
@@ -110,7 +101,7 @@
 				)
 			)
 			(pin power_out line
-				(at 17.78 7.62 180)
+				(at 17.78 12.7 180)
 				(length 5.08)
 				(name "VCC"
 					(effects
@@ -146,7 +137,7 @@
 				)
 			)
 			(pin passive line
-				(at -17.78 -7.62 0)
+				(at -17.78 -2.54 0)
 				(length 5.08)
 				(name "SW"
 					(effects
@@ -158,13 +149,13 @@
 				(number "4"
 					(effects
 						(font
-							(size 0 0)
+							(size 1.524 1.524)
 						)
 					)
 				)
 			)
 			(pin passive line
-				(at -17.78 -7.62 0)
+				(at -17.78 -5.08 0)
 				(length 5.08)
 				(name "SW"
 					(effects
@@ -176,7 +167,7 @@
 				(number "5"
 					(effects
 						(font
-							(size 0 0)
+							(size 1.524 1.524)
 						)
 					)
 				)
@@ -194,13 +185,13 @@
 				(number "6"
 					(effects
 						(font
-							(size 0 0)
+							(size 1.524 1.524)
 						)
 					)
 				)
 			)
 			(pin power_out line
-				(at 17.78 5.08 180)
+				(at 17.78 10.16 180)
 				(length 5.08)
 				(name "OUT"
 					(effects
@@ -217,8 +208,8 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at 17.78 5.08 180)
+			(pin power_out line
+				(at 17.78 10.16 180)
 				(length 5.08)
 				(name "OUT"
 					(effects
@@ -235,8 +226,8 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at 17.78 5.08 180)
+			(pin power_out line
+				(at 17.78 10.16 180)
 				(length 5.08)
 				(name "OUT"
 					(effects
@@ -326,7 +317,7 @@
 				)
 			)
 			(pin power_in line
-				(at -17.78 5.08 0)
+				(at -17.78 10.16 0)
 				(length 5.08)
 				(name "IN"
 					(effects
@@ -344,7 +335,7 @@
 				)
 			)
 			(pin input line
-				(at -17.78 0 0)
+				(at -17.78 5.08 0)
 				(length 5.08)
 				(name "EN"
 					(effects
@@ -362,7 +353,7 @@
 				)
 			)
 			(pin input line
-				(at -17.78 -2.54 0)
+				(at -17.78 2.54 0)
 				(length 5.08)
 				(name "AAM"
 					(effects
@@ -382,7 +373,7 @@
 		)
 		(symbol "MPM3610_1_1"
 			(rectangle
-				(start -12.7 12.7)
+				(start -12.7 17.78)
 				(end 12.7 -12.7)
 				(stroke
 					(width 0)
@@ -395,6 +386,7 @@
 			(pin no_connect line
 				(at 17.78 -7.62 180)
 				(length 5.08)
+				(hide yes)
 				(name "NC"
 					(effects
 						(font
@@ -413,6 +405,7 @@
 			(pin no_connect line
 				(at 17.78 -10.16 180)
 				(length 5.08)
+				(hide yes)
 				(name "NC"
 					(effects
 						(font
@@ -528,7 +521,7 @@
 					)
 				)
 			)
-			(pin output line
+			(pin input line
 				(at 3.81 8.89 270)
 				(length 2.54)
 				(name "GATE_PD"
@@ -611,199 +604,6 @@
 					)
 				)
 				(number "6"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-		)
-		(embedded_fonts no)
-	)
-	(symbol "TS-1088-AR02016"
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(duplicate_pin_numbers_are_jumpers no)
-		(property "Reference" "SW1"
-			(at 1.2701 -1.905 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "TS-1088-AR02016"
-			(at -1.2699 -1.905 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "easyeda2kicad:SW-SMD_L3.9-W3.0-P4.45"
-			(at 0 -7.62 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "https://lcsc.com/product-detail/Tactile-Switches_XUNPU-TS-1088-AR02016_C720477.html"
-			(at 0 -10.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 0 0 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC Part" "C720477"
-			(at 0 -12.7 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MF" "XUNPU"
-			(at 0 0 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MP" "TS-1088-AR02016"
-			(at 0 0 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(symbol "TS-1088-AR02016_0_1"
-			(polyline
-				(pts
-					(xy -5.08 0) (xy -2.54 0)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy -2.29 0.51) (xy 2.03 1.78)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(circle
-				(center -2.03 0)
-				(radius 0.51)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(circle
-				(center 2.03 0)
-				(radius 0.51)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy 5.08 0) (xy 2.54 0)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(pin unspecified line
-				(at -7.62 0 0)
-				(length 2.54)
-				(name "1"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "1"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 7.62 0 180)
-				(length 2.54)
-				(name "2"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "2"
 					(effects
 						(font
 							(size 1.27 1.27)

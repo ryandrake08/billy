@@ -74,9 +74,18 @@
           "gap": 0.0,
           "via_gap": 0.0,
           "width": 0.0
+        },
+        {
+          "gap": 0.175,
+          "via_gap": 0.9,
+          "width": 0.15
         }
       ],
       "drc_exclusions": [
+        [
+          "items_not_allowed|149950000|83750000|008111d2-9261-4566-9226-04d854b704c5|00000000-0000-0000-0000-000000000000",
+          "Antenna deliberately sticking out of board"
+        ],
         [
           "lib_footprint_mismatch|214665000|75000000|5e5062d3-62ad-438c-9341-f2f82da2312d|00000000-0000-0000-0000-000000000000",
           "Changed footprint just for this board"
@@ -169,7 +178,7 @@
         "min_microvia_drill": 0.1,
         "min_resolved_spokes": 2,
         "min_silk_clearance": 0.0,
-        "min_text_height": 0.8,
+        "min_text_height": 0.4,
         "min_text_thickness": 0.08,
         "min_through_hole_diameter": 0.3,
         "min_track_width": 0.2,
@@ -225,6 +234,8 @@
       "track_widths": [
         0.0,
         0.25,
+        0.3,
+        0.4,
         0.5,
         1.0,
         1.25,
@@ -291,7 +302,12 @@
     "equivalence_files": []
   },
   "erc": {
-    "erc_exclusions": [],
+    "erc_exclusions": [
+      [
+        "pin_to_pin|3517900|1447800|01b182f6-167d-4b5d-b721-57912406d9be|80dee3e7-7ce0-42bd-becb-1bb20fcd62ab|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8",
+        "Datasheet specifies PAD tied to ground"
+      ]
+    ],
     "meta": {
       "version": 0
     },
@@ -497,7 +513,7 @@
       "no_connect_dangling": "warning",
       "pin_not_connected": "error",
       "pin_not_driven": "error",
-      "pin_to_pin": "warning",
+      "pin_to_pin": "error",
       "power_pin_not_driven": "error",
       "same_local_global_label": "warning",
       "similar_label_and_power": "warning",
@@ -728,7 +744,7 @@
         "uuid": "bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
       }
     ],
-    "used_designators": "#PWR1,#PWR4-40,D1,Q1-4,C1-20,SW1,U1-7,F1-2,L1-2,R1-18,H1-4,1,IC1,J1-11",
+    "used_designators": "#FLG1-5,Q1-4,D1,#PWR1,#PWR4-44,C1-20,SW1,U1-7,F1-2,L1-2,R1-18,H1-4,TP1-3,1,IC1,J1-11",
     "variants": []
   },
   "sheets": [
