@@ -87,10 +87,6 @@
           "Antenna deliberately sticking out of board"
         ],
         [
-          "lib_footprint_mismatch|214665000|75000000|5e5062d3-62ad-438c-9341-f2f82da2312d|00000000-0000-0000-0000-000000000000",
-          "Changed footprint just for this board"
-        ],
-        [
           "silk_edge_clearance|150000000|65750000|fd2c06a9-5d14-4d62-9aa1-5b980e7ff377|68df558c-a0cf-4f7a-a3d5-76403e61d404",
           "Antenna deliberately sticking out of board"
         ],
@@ -744,7 +740,7 @@
         "uuid": "bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
       }
     ],
-    "used_designators": "#FLG1-5,Q1-4,D1,#PWR1,#PWR4-44,C1-20,SW1,U1-7,F1-2,L1-2,R1-18,H1-4,TP1-3,1,IC1,J1-11",
+    "used_designators": "#FLG1-5,Q1-4,D1,#PWR1-2,#PWR4-44,C1-21,SW1,U1-8,F1-2,L1-2,R1-18,H1-4,TP1-3,1,IC1,J1-11",
     "variants": []
   },
   "sheets": [
