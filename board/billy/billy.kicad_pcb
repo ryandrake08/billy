@@ -2130,7 +2130,7 @@
 			(uuid "17bcb75f-6756-4c4c-8866-450a2a0a8130")
 		)
 		(embedded_fonts no)
-		(model "${KICAD10_3DMODEL_DIR}/Package_SO.3dshapes/TSSOP-16-1EP_4.4x5mm_Pitch0.65mm_EP3.4x5mm.step"
+		(model "${KICAD10_3DMODEL_DIR}/Package_SO.3dshapes/HTSSOP-16-1EP_4.4x5mm_P0.65mm_EP3.4x5mm.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -2562,7 +2562,7 @@
 			(uuid "7d12643e-177a-4d01-b73a-26d0b8d234dd")
 		)
 		(embedded_fonts no)
-		(model "${KICAD10_3DMODEL_DIR}/Fuse.3dshapes/Fuseholder_Littelfuse_Nano2_154x.step"
+		(model "${KIPRJMOD}/billy.3dshapes/Fuseholder_Littelfuse_Nano2_154x.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -2570,7 +2570,7 @@
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 0)
+				(xyz -90 -0 -0)
 			)
 		)
 	)
@@ -10730,7 +10730,7 @@
 			(uuid "175e1e27-d45e-422a-859e-efb28ed46581")
 		)
 		(embedded_fonts no)
-		(model "${KICAD10_3DMODEL_DIR}/Package_SO.3dshapes/TSSOP-16-1EP_4.4x5mm_Pitch0.65mm_EP3.4x5mm.step"
+		(model "${KICAD10_3DMODEL_DIR}/Package_SO.3dshapes/HTSSOP-16-1EP_4.4x5mm_P0.65mm_EP3.4x5mm.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -12739,7 +12739,7 @@
 		(descr "TQFN, 16 Pin (https://pdfserv.maximintegrated.com/package_dwgs/21-0136.PDF (T1633-5), https://pdfserv.maximintegrated.com/land_patterns/90-0032.PDF)")
 		(tags "TQFN NoLead")
 		(property "Reference" "U3"
-			(at -2.25 -3.985 180)
+			(at -2.25 -3.985 0)
 			(layer "F.SilkS")
 			(uuid "df8b1830-ca69-4a3e-b744-616903bda13c")
 			(effects
@@ -13336,7 +13336,7 @@
 			(uuid "137a74bb-3e55-437a-800f-241c6a1f69a8")
 		)
 		(embedded_fonts no)
-		(model "${KICAD10_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/TQFN-16-1EP_3x3mm_P0.5mm_EP1.23x1.23mm.step"
+		(model "${KIPRJMOD}/billy.3dshapes/TQFN-16-1EP_3x3mm_P0.5mm_EP1.23x1.23mm.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -13344,7 +13344,7 @@
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 0)
+				(xyz -90 -0 -0)
 			)
 		)
 	)
@@ -17691,6 +17691,17 @@
 			)
 		)
 		(embedded_fonts no)
+		(model "${KIPRJMOD}/billy.3dshapes/QFN-20.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz -90 -0 -0)
+			)
+		)
 	)
 	(footprint "Package_TO_SOT_SMD:SOT-23"
 		(layer "F.Cu")
@@ -19224,7 +19235,7 @@
 			(uuid "8a79a9f5-2c59-44c1-88c3-c70667498efd")
 		)
 		(embedded_fonts no)
-		(model "${KICAD10_3DMODEL_DIR}/Connector_USB.3dshapes/USB_Micro-B_Amphenol_10118194-0001LF_Horizontal.step"
+		(model "${KIPRJMOD}/billy.3dshapes/USB_Micro-B_Amphenol_10118194-0001LF_Horizontal.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -19232,7 +19243,7 @@
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 0)
+				(xyz -90 -0 -0)
 			)
 		)
 	)
@@ -19656,7 +19667,7 @@
 			(uuid "e1ac75a1-64e1-43dc-9cbf-4daf3725ccc9")
 		)
 		(embedded_fonts no)
-		(model "${KICAD10_3DMODEL_DIR}/Fuse.3dshapes/Fuseholder_Littelfuse_Nano2_154x.step"
+		(model "${KIPRJMOD}/billy.3dshapes/Fuseholder_Littelfuse_Nano2_154x.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -19664,7 +19675,7 @@
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 0)
+				(xyz -90 -0 -0)
 			)
 		)
 	)
@@ -28390,6 +28401,22 @@
 		(uuid "f93f3eba-8e52-4faf-b460-d5eaf88ef805")
 	)
 	(segment
+		(start 204 91.725)
+		(end 203.6 91.325)
+		(width 0.25)
+		(layer "F.Cu")
+		(net "Net-(IC1-AAM)")
+		(uuid "8e67952e-466e-4807-9f6d-1db2c8501a0e")
+	)
+	(segment
+		(start 204 92.55)
+		(end 204 91.725)
+		(width 0.25)
+		(layer "F.Cu")
+		(net "Net-(IC1-AAM)")
+		(uuid "92b73fa9-be31-4c00-af41-baac82063bad")
+	)
+	(segment
 		(start 196.27 66)
 		(end 197.8625 66)
 		(width 0.25)
@@ -28548,22 +28575,6 @@
 		(layer "F.Cu")
 		(net "Net-(J8-Pin_1)")
 		(uuid "aad05f5f-44a8-42a5-9e2a-dfe325439ae5")
-	)
-	(segment
-		(start 204 91.725)
-		(end 203.6 91.325)
-		(width 0.25)
-		(layer "F.Cu")
-		(net "Net-(IC1-AAM)")
-		(uuid "8e67952e-466e-4807-9f6d-1db2c8501a0e")
-	)
-	(segment
-		(start 204 92.55)
-		(end 204 91.725)
-		(width 0.25)
-		(layer "F.Cu")
-		(net "Net-(IC1-AAM)")
-		(uuid "92b73fa9-be31-4c00-af41-baac82063bad")
 	)
 	(zone
 		(net "GND")
