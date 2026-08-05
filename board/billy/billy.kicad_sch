@@ -5570,7 +5570,7 @@
 					)
 				)
 			)
-			(property "Value" ""
+			(property "Value" "MX74610T"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -6591,7 +6591,7 @@
 		(uuid "5b2b3979-0f1f-4907-918b-d19b090b3dce")
 	)
 	(junction
-		(at 213.36 213.36)
+		(at 222.25 213.36)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5dfc7f0e-6a99-4cb1-8886-1ad1c1f4012f")
@@ -6717,7 +6717,7 @@
 		(uuid "b74a0fa3-7a2e-4e01-94aa-33c4e9902635")
 	)
 	(junction
-		(at 228.6 213.36)
+		(at 237.49 213.36)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b95f95c6-432a-4da8-9fd9-af5bec08b023")
@@ -6747,12 +6747,6 @@
 		(uuid "cd86dd09-0a67-4529-9aae-ab6506276afc")
 	)
 	(junction
-		(at 252.73 213.36)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "cf8e9e6e-c61c-433c-a93e-08167f109163")
-	)
-	(junction
 		(at 391.16 186.69)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6765,7 +6759,7 @@
 		(uuid "de505a58-b7d5-41f1-8100-2b9433f7a9e1")
 	)
 	(junction
-		(at 213.36 228.6)
+		(at 222.25 228.6)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "dfa3b64c-71e0-459a-8f73-d44d15900579")
@@ -6787,6 +6781,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e98294d3-f1ed-4cff-bb01-e0f5c9861a0d")
+	)
+	(junction
+		(at 252.73 213.36)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e994740c-f34c-4103-a846-f3e0a0e72009")
 	)
 	(junction
 		(at 317.5 59.69)
@@ -7364,7 +7364,7 @@
 	)
 	(wire
 		(pts
-			(xy 213.36 213.36) (xy 228.6 213.36)
+			(xy 222.25 213.36) (xy 237.49 213.36)
 		)
 		(stroke
 			(width 0)
@@ -8054,7 +8054,7 @@
 	)
 	(wire
 		(pts
-			(xy 207.01 218.44) (xy 208.28 218.44)
+			(xy 207.01 218.44) (xy 217.17 218.44)
 		)
 		(stroke
 			(width 0)
@@ -8064,7 +8064,7 @@
 	)
 	(wire
 		(pts
-			(xy 228.6 223.52) (xy 228.6 228.6)
+			(xy 237.49 223.52) (xy 237.49 228.6)
 		)
 		(stroke
 			(width 0)
@@ -8134,7 +8134,7 @@
 	)
 	(wire
 		(pts
-			(xy 199.39 228.6) (xy 213.36 228.6)
+			(xy 199.39 228.6) (xy 222.25 228.6)
 		)
 		(stroke
 			(width 0)
@@ -8384,7 +8384,7 @@
 	)
 	(wire
 		(pts
-			(xy 228.6 213.36) (xy 228.6 215.9)
+			(xy 237.49 213.36) (xy 237.49 215.9)
 		)
 		(stroke
 			(width 0)
@@ -8414,7 +8414,7 @@
 	)
 	(wire
 		(pts
-			(xy 228.6 228.6) (xy 213.36 228.6)
+			(xy 237.49 228.6) (xy 222.25 228.6)
 		)
 		(stroke
 			(width 0)
@@ -8624,7 +8624,7 @@
 	)
 	(wire
 		(pts
-			(xy 213.36 228.6) (xy 213.36 226.06)
+			(xy 222.25 228.6) (xy 222.25 226.06)
 		)
 		(stroke
 			(width 0)
@@ -8774,7 +8774,7 @@
 	)
 	(wire
 		(pts
-			(xy 207.01 213.36) (xy 213.36 213.36)
+			(xy 207.01 213.36) (xy 222.25 213.36)
 		)
 		(stroke
 			(width 0)
@@ -8974,7 +8974,7 @@
 	)
 	(wire
 		(pts
-			(xy 228.6 213.36) (xy 252.73 213.36)
+			(xy 237.49 213.36) (xy 252.73 213.36)
 		)
 		(stroke
 			(width 0)
@@ -9074,7 +9074,7 @@
 	)
 	(wire
 		(pts
-			(xy 207.01 220.98) (xy 208.28 220.98)
+			(xy 207.01 220.98) (xy 217.17 220.98)
 		)
 		(stroke
 			(width 0)
@@ -9101,6 +9101,26 @@
 			(type default)
 		)
 		(uuid "fb8d0221-d177-458b-a27f-ef101ad648e6")
+	)
+	(label "J_N"
+		(at 207.01 220.98 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "754a3308-ee03-4262-a84e-70b9df1451e8")
+	)
+	(label "J_P"
+		(at 207.01 218.44 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "87959c38-3415-417c-9e02-673ff994e9aa")
 	)
 	(global_label "GPIO5"
 		(shape input)
@@ -9248,7 +9268,7 @@
 	)
 	(global_label "U_P"
 		(shape input)
-		(at 218.44 218.44 0)
+		(at 227.33 218.44 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9258,7 +9278,7 @@
 		)
 		(uuid "1fb2bc29-fb63-46a9-ae37-c42df3cd5f40")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 224.9933 218.44 0)
+			(at 233.8833 218.44 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10136,7 +10156,7 @@
 	)
 	(global_label "U_N"
 		(shape input)
-		(at 218.44 220.98 0)
+		(at 227.33 220.98 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -10146,7 +10166,7 @@
 		)
 		(uuid "c5f5961e-ce8a-401c-b54e-bddba7376986")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 225.0538 220.98 0)
+			(at 233.9438 220.98 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10814,7 +10834,7 @@
 	)
 	(symbol
 		(lib_id "Power_Protection:USBLC6-2SC6")
-		(at 213.36 218.44 0)
+		(at 222.25 218.44 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -10825,7 +10845,7 @@
 		(dnp no)
 		(uuid "0a5eb06b-5aac-4b70-9c61-57f4f9c22dd7")
 		(property "Reference" "U7"
-			(at 213.36 209.296 0)
+			(at 222.25 209.296 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10836,7 +10856,7 @@
 			)
 		)
 		(property "Value" "USBLC6-2SC6"
-			(at 213.36 211.582 0)
+			(at 222.25 211.582 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10847,7 +10867,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
-			(at 212.09 224.79 0)
+			(at 220.98 224.79 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10860,7 +10880,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.st.com/resource/en/datasheet/usblc6-2.pdf"
-			(at 212.09 226.695 0)
+			(at 220.98 226.695 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10872,7 +10892,7 @@
 			)
 		)
 		(property "Description" "Very low capacitance ESD protection diode, 2 data-line, SOT-23-6"
-			(at 213.36 218.44 0)
+			(at 222.25 218.44 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10883,7 +10903,7 @@
 			)
 		)
 		(property "LCSC" "C7519"
-			(at 213.36 218.44 0)
+			(at 222.25 218.44 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10894,7 +10914,7 @@
 			)
 		)
 		(property "KiLib_Generator" "package/gullwing"
-			(at 213.36 218.44 0)
+			(at 222.25 218.44 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11590,7 +11610,7 @@
 				)
 			)
 		)
-		(property "Value" ""
+		(property "Value" "MX74610T"
 			(at 152.4 177.8 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12324,7 +12344,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C5407473"
+		(property "LCSC" "C132563"
 			(at 199.39 218.44 0)
 			(hide yes)
 			(show_name no)
@@ -15870,7 +15890,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 228.6 219.71 0)
+		(at 237.49 219.71 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -15881,7 +15901,7 @@
 		(fields_autoplaced yes)
 		(uuid "759afe71-b340-4694-9da8-6aaf392935e4")
 		(property "Reference" "C19"
-			(at 232.41 218.4399 0)
+			(at 241.3 218.4399 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -15892,7 +15912,7 @@
 			)
 		)
 		(property "Value" "100n"
-			(at 232.41 220.9799 0)
+			(at 241.3 220.9799 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -15903,7 +15923,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 229.5652 223.52 0)
+			(at 238.4552 223.52 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15914,7 +15934,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 228.6 219.71 0)
+			(at 237.49 219.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15925,7 +15945,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 228.6 219.71 0)
+			(at 237.49 219.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15936,7 +15956,7 @@
 			)
 		)
 		(property "LCSC" "C1525"
-			(at 228.6 219.71 0)
+			(at 237.49 219.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15947,7 +15967,7 @@
 			)
 		)
 		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
-			(at 228.6 219.71 0)
+			(at 237.49 219.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20034,7 +20054,7 @@
 				)
 			)
 		)
-		(property "Value" ""
+		(property "Value" "MX74610T"
 			(at 264.16 233.68 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20857,7 +20877,7 @@
 				)
 			)
 		)
-		(property "Value" ""
+		(property "Value" "MX74610T"
 			(at 152.4 227.33 0)
 			(show_name no)
 			(do_not_autoplace no)
