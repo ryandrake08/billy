@@ -93,6 +93,10 @@
         [
           "silk_edge_clearance|150000000|83750000|fd2c06a9-5d14-4d62-9aa1-5b980e7ff377|76a9fbe8-178a-418e-8d65-e8ae9f8d61eb",
           "Antenna deliberately sticking out of board"
+        ],
+        [
+          "starved_thermal|183775000|68500000|ebe93c8a-d265-4321-9cd5-edbe92818429|4e7c96ef-c596-4c71-9e13-c1ad3eb7ab54|F.Cu",
+          "Acceptable with coopper pour"
         ]
       ],
       "meta": {
@@ -684,6 +688,12 @@
           "group_by": false,
           "label": "LCSC Part",
           "name": "LCSC Part",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "KiLib_Generator",
+          "name": "KiLib_Generator",
           "show": false
         }
       ],
