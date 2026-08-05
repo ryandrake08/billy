@@ -13188,7 +13188,7 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor, 16V, X7R/COG"
+		(property "Description" "Unpolarized capacitor, 25V, X5R"
 			(at 152.4 194.31 0)
 			(hide yes)
 			(show_name no)
@@ -13199,7 +13199,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C12530"
+		(property "LCSC" "C307418"
 			(at 152.4 194.31 90)
 			(hide yes)
 			(show_name no)
@@ -15501,7 +15501,7 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor, 16V, X7R/COG"
+		(property "Description" "Unpolarized capacitor, 25V, X5R"
 			(at 152.4 243.84 0)
 			(hide yes)
 			(show_name no)
@@ -15512,7 +15512,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C12530"
+		(property "LCSC" "C307418"
 			(at 152.4 243.84 90)
 			(hide yes)
 			(show_name no)
@@ -18513,7 +18513,7 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor, 25V, X5R"
 			(at 264.16 250.19 0)
 			(hide yes)
 			(show_name no)
@@ -18524,7 +18524,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C12530"
+		(property "LCSC" "C307418"
 			(at 264.16 250.19 90)
 			(hide yes)
 			(show_name no)
