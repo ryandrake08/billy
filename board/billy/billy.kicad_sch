@@ -6651,12 +6651,6 @@
 		(uuid "0ac5555a-0352-4528-ac42-962768181b51")
 	)
 	(junction
-		(at 275.59 220.98)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "0d67c830-0725-48b8-af4d-2af51e0844d1")
-	)
-	(junction
 		(at 264.16 220.98)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7498,6 +7492,16 @@
 	)
 	(wire
 		(pts
+			(xy 275.59 213.36) (xy 275.59 224.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2cfbbf64-2374-45a0-8556-7b44d36489f8")
+	)
+	(wire
+		(pts
 			(xy 73.66 148.59) (xy 76.2 148.59)
 		)
 		(stroke
@@ -7615,6 +7619,16 @@
 			(type default)
 		)
 		(uuid "3675ec80-d131-431c-a9b9-7ab8438a9195")
+	)
+	(wire
+		(pts
+			(xy 281.94 213.36) (xy 275.59 213.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3894ab54-39e8-444d-a53a-2eaa736285e5")
 	)
 	(wire
 		(pts
@@ -7935,16 +7949,6 @@
 			(type default)
 		)
 		(uuid "5a80d6a9-b41e-4200-9cde-a7ccc8379533")
-	)
-	(wire
-		(pts
-			(xy 275.59 213.36) (xy 275.59 220.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5b041324-7a91-4c50-b4dd-9f50c08cffa6")
 	)
 	(wire
 		(pts
@@ -8728,7 +8732,7 @@
 	)
 	(wire
 		(pts
-			(xy 273.05 220.98) (xy 275.59 220.98)
+			(xy 281.94 210.82) (xy 281.94 213.36)
 		)
 		(stroke
 			(width 0)
@@ -8965,16 +8969,6 @@
 			(type default)
 		)
 		(uuid "cd3817bb-73a8-42cf-aa0e-5132bae17c81")
-	)
-	(wire
-		(pts
-			(xy 275.59 220.98) (xy 275.59 224.79)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cd59c285-b7aa-4b32-a29c-d61fd93db741")
 	)
 	(wire
 		(pts
@@ -12832,7 +12826,7 @@
 				)
 			)
 		)
-		(property "Value" "AO3400A"
+		(property "Value" "AOSS32334C"
 			(at 264.16 209.55 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12855,7 +12849,7 @@
 				(justify left)
 			)
 		)
-		(property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3400A.pdf"
+		(property "Datasheet" "https://www.aosmd.com/res/datasheets/AOSS32334C.pdf"
 			(at 260.35 210.82 0)
 			(hide yes)
 			(show_name no)
@@ -12867,7 +12861,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "30V Vds, 5.7A Id, N-Channel MOSFET, SOT-23"
+		(property "Description" "30V Vds, 6.2A Id, N-Channel MOSFET, SOT-23"
 			(at 264.16 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -12889,7 +12883,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C20917"
+		(property "LCSC Part" "C3280157"
 			(at 264.16 215.9 90)
 			(hide yes)
 			(show_name no)
@@ -12911,7 +12905,7 @@
 				)
 			)
 		)
-		(property "MP" "AO3400A"
+		(property "MP" "AOSS32334C"
 			(at 264.16 215.9 90)
 			(hide yes)
 			(show_name no)
@@ -12922,7 +12916,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "AOS"
+		(property "DigiKey MF" ""
 			(at 264.16 215.9 90)
 			(hide yes)
 			(show_name no)
@@ -12933,7 +12927,7 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "AOSS32334C"
+		(property "DigiKey MP" ""
 			(at 264.16 215.9 90)
 			(hide yes)
 			(show_name no)
@@ -13631,7 +13625,7 @@
 				)
 			)
 		)
-		(property "Value" "AO3400A"
+		(property "Value" "AOSS32334C"
 			(at 152.4 203.2 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13654,7 +13648,7 @@
 				(justify left)
 			)
 		)
-		(property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3400A.pdf"
+		(property "Datasheet" "https://www.aosmd.com/res/datasheets/AOSS32334C.pdf"
 			(at 148.59 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -13666,7 +13660,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "30V Vds, 5.7A Id, N-Channel MOSFET, SOT-23"
+		(property "Description" "30V Vds, 6.2A Id, N-Channel MOSFET, SOT-23"
 			(at 152.4 209.55 0)
 			(hide yes)
 			(show_name no)
@@ -13688,7 +13682,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C20917"
+		(property "LCSC Part" "C3280157"
 			(at 152.4 209.55 90)
 			(hide yes)
 			(show_name no)
@@ -13710,7 +13704,7 @@
 				)
 			)
 		)
-		(property "MP" "AO3400A"
+		(property "MP" "AOSS32334C"
 			(at 152.4 209.55 90)
 			(hide yes)
 			(show_name no)
@@ -13721,7 +13715,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "AOS"
+		(property "DigiKey MF" ""
 			(at 152.4 209.55 90)
 			(hide yes)
 			(show_name no)
@@ -13732,7 +13726,7 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "AOSS32334C"
+		(property "DigiKey MP" ""
 			(at 152.4 209.55 90)
 			(hide yes)
 			(show_name no)
@@ -19873,7 +19867,7 @@
 				)
 			)
 		)
-		(property "Value" "AO3400A"
+		(property "Value" "AOSS32334C"
 			(at 152.4 153.67 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19896,7 +19890,7 @@
 				(justify left)
 			)
 		)
-		(property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3400A.pdf"
+		(property "Datasheet" "https://www.aosmd.com/res/datasheets/AOSS32334C.pdf"
 			(at 148.59 154.94 0)
 			(hide yes)
 			(show_name no)
@@ -19908,7 +19902,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "30V Vds, 5.7A Id, N-Channel MOSFET, SOT-23"
+		(property "Description" "30V Vds, 6.2A Id, N-Channel MOSFET, SOT-23"
 			(at 152.4 160.02 0)
 			(hide yes)
 			(show_name no)
@@ -19930,7 +19924,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C20917"
+		(property "LCSC Part" "C3280157"
 			(at 152.4 160.02 90)
 			(hide yes)
 			(show_name no)
@@ -19952,7 +19946,7 @@
 				)
 			)
 		)
-		(property "MP" "AO3400A"
+		(property "MP" "AOSS32334C"
 			(at 152.4 160.02 90)
 			(hide yes)
 			(show_name no)
@@ -19963,7 +19957,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "AOS"
+		(property "DigiKey MF" ""
 			(at 152.4 160.02 90)
 			(hide yes)
 			(show_name no)
@@ -19974,7 +19968,7 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "AOSS32334C"
+		(property "DigiKey MP" ""
 			(at 152.4 160.02 90)
 			(hide yes)
 			(show_name no)
@@ -20037,7 +20031,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "AO3400A"
+		(property "Value" "AOSS32334C"
 			(at 63.5 227.3299 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20061,7 +20055,7 @@
 				(justify left)
 			)
 		)
-		(property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3400A.pdf"
+		(property "Datasheet" "https://www.aosmd.com/res/datasheets/AOSS32334C.pdf"
 			(at 62.23 229.87 0)
 			(hide yes)
 			(show_name no)
@@ -20073,7 +20067,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "30V Vds, 5.7A Id, N-Channel MOSFET, SOT-23"
+		(property "Description" "30V Vds, 6.2A Id, N-Channel MOSFET, SOT-23"
 			(at 57.15 226.06 0)
 			(hide yes)
 			(show_name no)
@@ -20095,7 +20089,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C20917"
+		(property "LCSC Part" "C3280157"
 			(at 57.15 226.06 0)
 			(hide yes)
 			(show_name no)
@@ -20117,7 +20111,7 @@
 				)
 			)
 		)
-		(property "MP" "AO3400A"
+		(property "MP" "AOSS32334C"
 			(at 57.15 226.06 0)
 			(hide yes)
 			(show_name no)
@@ -20128,7 +20122,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "AOS"
+		(property "DigiKey MF" ""
 			(at 57.15 226.06 0)
 			(hide yes)
 			(show_name no)
@@ -20139,7 +20133,7 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "AOSS32334C"
+		(property "DigiKey MP" ""
 			(at 57.15 226.06 0)
 			(hide yes)
 			(show_name no)
@@ -25864,7 +25858,7 @@
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
-		(at 273.05 220.98 0)
+		(at 281.94 210.82 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -25872,10 +25866,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "eaa487c3-ba77-4791-835b-b930b7a8b823")
 		(property "Reference" "#FLG04"
-			(at 273.05 219.075 0)
+			(at 281.94 208.915 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25886,7 +25879,7 @@
 			)
 		)
 		(property "Value" "PWR_FLAG"
-			(at 273.05 215.9 0)
+			(at 289.56 211.328 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -25896,7 +25889,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 273.05 220.98 0)
+			(at 281.94 210.82 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25907,7 +25900,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 273.05 220.98 0)
+			(at 281.94 210.82 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25918,7 +25911,7 @@
 			)
 		)
 		(property "Description" "Special symbol for telling ERC where power comes from"
-			(at 273.05 220.98 0)
+			(at 281.94 210.82 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
