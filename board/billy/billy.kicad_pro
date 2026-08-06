@@ -296,7 +296,7 @@
     "erc_exclusions": [
       [
         "pin_to_pin|3517900|1447800|01b182f6-167d-4b5d-b721-57912406d9be|80dee3e7-7ce0-42bd-becb-1bb20fcd62ab|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8",
-        "Datasheet specifies PAD tied to ground"
+        "Wired per datasheet"
       ]
     ],
     "meta": {
@@ -511,7 +511,7 @@
       "similar_labels": "warning",
       "similar_power": "warning",
       "simulation_model_issue": "ignore",
-      "single_global_label": "ignore",
+      "single_global_label": "warning",
       "stacked_pin_name": "warning",
       "unannotated": "error",
       "unconnected_wire_endpoint": "warning",
@@ -753,7 +753,7 @@
         "uuid": "bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
       }
     ],
-    "used_designators": "#FLG1-5,F1-2,D1,#PWR1-46,#PWR48,Q1-4,U1-9,C1-24,SW1,L1-3,R1-18,H1-4,TP1-4,1,IC1,J1-12",
+    "used_designators": "J1-12,IC1,1,TP1-4,R1-18,H1-4,L1-3,U1-9,SW1,C1-27,Q1-4,#PWR1-46,#PWR48-54,D1,F1-2,#FLG1-5,#FLG7-8",
     "variants": []
   },
   "sheets": [
