@@ -19,7 +19,7 @@
 			)
 		)
 		(property "Value" "MX74610T"
-			(at 0 0 0)
+			(at 0 -4.572 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -71,14 +71,6 @@
 				)
 				(fill
 					(type background)
-				)
-			)
-			(text "MX74610T"
-				(at 0 -4.826 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
 				)
 			)
 			(pin passive line

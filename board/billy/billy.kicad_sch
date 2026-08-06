@@ -3478,6 +3478,188 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "MX74610T_1"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "U?"
+				(at 0 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "MX74610T"
+				(at 0 -4.572 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
+				(at 0 -1.27 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "MX74610T_1_1_1"
+				(rectangle
+					(start -12.7 6.35)
+					(end 12.7 -6.3499)
+					(stroke
+						(width 0)
+						(type solid)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(pin passive line
+					(at 11.43 8.89 270)
+					(length 2.54)
+					(name "CATHODE"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at 3.81 8.89 270)
+					(length 2.54)
+					(name "GATE_PD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at -3.81 8.89 270)
+					(length 2.54)
+					(name "GATE"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -11.43 8.89 270)
+					(length 2.54)
+					(name "ANODE"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -7.62 -8.89 90)
+					(length 2.54)
+					(name "V_CAPH"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 7.62 -8.89 90)
+					(length 2.54)
+					(name "V_CAPL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Mechanical:MountingHole"
 			(pin_names
 				(offset 1.016)
@@ -5571,7 +5753,7 @@
 				)
 			)
 			(property "Value" "MX74610T"
-				(at 0 0 0)
+				(at 0 -4.572 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
@@ -5625,14 +5807,6 @@
 						(type background)
 					)
 				)
-				(text "MX74610T"
-					(at 0 -4.826 0)
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
 				(pin passive line
 					(at 11.43 8.89 270)
 					(length 2.54)
@@ -5651,7 +5825,7 @@
 						)
 					)
 				)
-				(pin output line
+				(pin input line
 					(at 3.81 8.89 270)
 					(length 2.54)
 					(name "GATE_PD"
@@ -10432,7 +10606,7 @@
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(in_pos_files yes)
+		(in_pos_files no)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "03acb4d3-c846-485c-a386-42fc7342c86f")
@@ -10492,6 +10666,39 @@
 			)
 		)
 		(property "KiLib_Generator" "mounting_hardware/mounting_hole"
+			(at 48.26 151.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 48.26 151.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 48.26 151.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 48.26 151.13 0)
 			(hide yes)
 			(show_name no)
@@ -10578,7 +10785,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C1530"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 382.27 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -10589,7 +10796,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C1530"
+			(at 382.27 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "FH"
+			(at 382.27 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0402B221K500NT"
+			(at 382.27 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Vishay Vitramon"
+			(at 382.27 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "VJ0402Y221KXACW1BC"
+			(at 382.27 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 382.27 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -10679,7 +10941,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C492414"
+		(property "KiLib_Generator" "connector/pin_header_socket"
 			(at 396.24 50.8 0)
 			(hide yes)
 			(show_name no)
@@ -10690,7 +10952,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "connector/pin_header_socket"
+		(property "LCSC Part" "C492414"
+			(at 396.24 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "XFCN"
+			(at 396.24 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "PZ254R-11-06P"
+			(at 396.24 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Würth Elektronik"
+			(at 396.24 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "61300611021"
+			(at 396.24 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 396.24 50.8 0)
 			(hide yes)
 			(show_name no)
@@ -10795,7 +11112,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C19702"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 256.54 97.79 0)
 			(hide yes)
 			(show_name no)
@@ -10806,7 +11123,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C19702"
+			(at 256.54 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 256.54 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL10A106KP8NNNC"
+			(at 256.54 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 256.54 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 256.54 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 256.54 97.79 0)
 			(hide yes)
 			(show_name no)
@@ -10902,7 +11274,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7519"
+		(property "KiLib_Generator" "package/gullwing"
 			(at 222.25 218.44 0)
 			(hide yes)
 			(show_name no)
@@ -10913,7 +11285,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "package/gullwing"
+		(property "LCSC Part" "C7519"
+			(at 222.25 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "ST"
+			(at 222.25 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "USBLC6-2SC6"
+			(at 222.25 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 222.25 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 222.25 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 222.25 218.44 0)
 			(hide yes)
 			(show_name no)
@@ -11094,7 +11521,18 @@
 				)
 			)
 		)
-		(property "LCSC" "C14709"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+			(at 368.3 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C14709"
 			(at 368.3 124.46 90)
 			(hide yes)
 			(show_name no)
@@ -11105,8 +11543,52 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
-			(at 368.3 124.46 0)
+		(property "MF" "muRata"
+			(at 368.3 124.46 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "BLM18PG121SN1D"
+			(at 368.3 124.46 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 368.3 124.46 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 368.3 124.46 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
+			(at 368.3 124.46 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11275,7 +11757,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C52923"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 271.78 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -11286,7 +11768,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C52923"
+			(at 271.78 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 271.78 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL05A105KA5NQNC"
+			(at 271.78 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 271.78 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 271.78 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 271.78 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -11376,7 +11913,18 @@
 				)
 			)
 		)
-		(property "LCSC" "C14709"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+			(at 368.3 127 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C14709"
 			(at 368.3 127 90)
 			(hide yes)
 			(show_name no)
@@ -11387,8 +11935,52 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
-			(at 368.3 127 0)
+		(property "MF" "muRata"
+			(at 368.3 127 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "BLM18PG121SN1D"
+			(at 368.3 127 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 368.3 127 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 368.3 127 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
+			(at 368.3 127 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11434,7 +12026,7 @@
 				)
 			)
 		)
-		(property "Value" "WS2812B"
+		(property "Value" "WS2812B-V6"
 			(at 51.562 203.2 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11479,7 +12071,62 @@
 				)
 			)
 		)
-		(property "LCSC" "C4154882"
+		(property "LCSC Part" "C52941391"
+			(at 59.69 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Worldsemi"
+			(at 59.69 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "WS2812B-V6"
+			(at 59.69 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "SparkFun"
+			(at 59.69 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "16347"
+			(at 59.69 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 59.69 210.82 0)
 			(hide yes)
 			(show_name no)
@@ -11590,6 +12237,7 @@
 		)
 	)
 	(symbol
+		(lib_name "MX74610T_1")
 		(lib_id "billy:MX74610T")
 		(at 152.4 177.8 0)
 		(unit 1)
@@ -11611,7 +12259,7 @@
 			)
 		)
 		(property "Value" "MX74610T"
-			(at 152.4 177.8 0)
+			(at 152.4 182.626 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11653,7 +12301,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C19078229"
+		(property "KiLib_Generator" "package/gullwing"
 			(at 152.4 177.8 0)
 			(hide yes)
 			(show_name no)
@@ -11664,7 +12312,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "package/gullwing"
+		(property "LCSC Part" "C19078229"
+			(at 152.4 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Wuxi Maxinmicro"
+			(at 152.4 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "MX74610T"
+			(at 152.4 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "TI"
+			(at 152.4 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "LM74700QDBVRQ1"
+			(at 152.4 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 152.4 177.8 0)
 			(hide yes)
 			(show_name no)
@@ -11927,7 +12630,18 @@
 				)
 			)
 		)
-		(property "LCSC" "C20917"
+		(property "KiLib_Generator" "package/gullwing"
+			(at 264.16 215.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C20917"
 			(at 264.16 215.9 90)
 			(hide yes)
 			(show_name no)
@@ -11938,8 +12652,52 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "package/gullwing"
-			(at 264.16 215.9 0)
+		(property "MF" "AOS"
+			(at 264.16 215.9 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "AO3400A"
+			(at 264.16 215.9 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "AOS"
+			(at 264.16 215.9 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "AOSS32334C"
+			(at 264.16 215.9 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
+			(at 264.16 215.9 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12034,7 +12792,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C473037"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 198.12 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -12045,7 +12803,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C473037"
+			(at 198.12 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 198.12 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "HP06W2F200LT5E"
+			(at 198.12 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 198.12 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "CSR1206FKR200"
+			(at 198.12 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 198.12 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -12138,7 +12951,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C1546"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 358.14 194.31 0)
 			(hide yes)
 			(show_name no)
@@ -12149,7 +12962,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C1546"
+			(at 358.14 194.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "FH"
+			(at 358.14 194.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0402CG101J500NT"
+			(at 358.14 194.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Vishay Vitramon"
+			(at 358.14 194.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "VJ0402A101JXACW1BC"
+			(at 358.14 194.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 358.14 194.31 0)
 			(hide yes)
 			(show_name no)
@@ -12242,7 +13110,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C1530"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 374.65 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -12253,7 +13121,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C1530"
+			(at 374.65 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "FH"
+			(at 374.65 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0402B221K500NT"
+			(at 374.65 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Vishay Vitramon"
+			(at 374.65 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "VJ0402Y221KXACW1BC"
+			(at 374.65 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 374.65 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -12344,7 +13267,62 @@
 				)
 			)
 		)
-		(property "LCSC" "C132563"
+		(property "LCSC Part" "C132563"
+			(at 199.39 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Amphenol ICC"
+			(at 199.39 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "10118194-0001LF"
+			(at 199.39 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 199.39 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 199.39 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 199.39 218.44 0)
 			(hide yes)
 			(show_name no)
@@ -12451,7 +13429,18 @@
 				)
 			)
 		)
-		(property "LCSC" "C20917"
+		(property "KiLib_Generator" "package/gullwing"
+			(at 152.4 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C20917"
 			(at 152.4 209.55 90)
 			(hide yes)
 			(show_name no)
@@ -12462,8 +13451,52 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "package/gullwing"
-			(at 152.4 209.55 0)
+		(property "MF" "AOS"
+			(at 152.4 209.55 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "AO3400A"
+			(at 152.4 209.55 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "AOS"
+			(at 152.4 209.55 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "AOSS32334C"
+			(at 152.4 209.55 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
+			(at 152.4 209.55 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12558,7 +13591,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C25804"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 266.7 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -12569,7 +13602,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C25804"
+			(at 266.7 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 266.7 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF1002T5E"
+			(at 266.7 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 266.7 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT10K0"
+			(at 266.7 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 266.7 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -12660,7 +13748,62 @@
 				)
 			)
 		)
-		(property "LCSC" "C206917"
+		(property "LCSC Part" "C206917"
+			(at 133.35 157.48 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Littelfuse"
+			(at 133.35 157.48 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0154005.DRT"
+			(at 133.35 157.48 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 133.35 157.48 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 133.35 157.48 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 133.35 157.48 90)
 			(hide yes)
 			(show_name no)
@@ -12752,7 +13895,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C918120"
+		(property "KiLib_Generator" "terminal_block/Xinya"
 			(at 353.06 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -12763,7 +13906,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "terminal_block/Xinya"
+		(property "LCSC Part" "C918120"
+			(at 353.06 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "DORABO"
+			(at 353.06 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "DB125-2.54-2P-GN-S"
+			(at 353.06 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Phoenix Contact"
+			(at 353.06 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "1725656"
+			(at 353.06 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 353.06 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -12856,7 +14054,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C19702"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 256.54 144.78 0)
 			(hide yes)
 			(show_name no)
@@ -12867,7 +14065,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C19702"
+			(at 256.54 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 256.54 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL10A106KP8NNNC"
+			(at 256.54 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 256.54 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 256.54 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 256.54 144.78 0)
 			(hide yes)
 			(show_name no)
@@ -13038,7 +14291,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C1525"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 340.36 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -13049,7 +14302,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C1525"
+			(at 340.36 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 340.36 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL05B104KO5NNNC"
+			(at 340.36 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 340.36 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 340.36 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 340.36 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -13142,7 +14450,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C918120"
+		(property "KiLib_Generator" "terminal_block/Xinya"
 			(at 288.29 123.19 0)
 			(hide yes)
 			(show_name no)
@@ -13153,7 +14461,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "terminal_block/Xinya"
+		(property "LCSC Part" "C918120"
+			(at 288.29 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "DORABO"
+			(at 288.29 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "DB125-2.54-2P-GN-S"
+			(at 288.29 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Phoenix Contact"
+			(at 288.29 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "1725656"
+			(at 288.29 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 288.29 123.19 0)
 			(hide yes)
 			(show_name no)
@@ -13244,7 +14607,18 @@
 				)
 			)
 		)
-		(property "LCSC" "C6364812"
+		(property "KiLib_Generator" "inductor/SMD"
+			(at 351.79 186.69 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C6364812"
 			(at 351.79 186.69 90)
 			(hide yes)
 			(show_name no)
@@ -13255,8 +14629,52 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "inductor/SMD"
-			(at 351.79 186.69 0)
+		(property "MF" "APV"
+			(at 351.79 186.69 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "ANR4030T6R8M"
+			(at 351.79 186.69 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Laird-Signal Integrity Products"
+			(at 351.79 186.69 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "TYA40206R8M-10"
+			(at 351.79 186.69 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
+			(at 351.79 186.69 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13348,7 +14766,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C19702"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 330.2 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -13359,7 +14777,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C19702"
+			(at 330.2 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 330.2 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL10A106KP8NNNC"
+			(at 330.2 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 330.2 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 330.2 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 330.2 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -13450,7 +14923,18 @@
 				)
 			)
 		)
-		(property "LCSC" "C50254"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+			(at 152.4 194.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C50254"
 			(at 152.4 194.31 90)
 			(hide yes)
 			(show_name no)
@@ -13461,8 +14945,52 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
-			(at 152.4 194.31 0)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 152.4 194.31 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL31B225KBHNNNE"
+			(at 152.4 194.31 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 152.4 194.31 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 152.4 194.31 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
+			(at 152.4 194.31 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13554,7 +15082,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C910544"
+		(property "KiLib_Generator" "package/no_lead"
 			(at 349.25 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -13565,7 +15093,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "package/no_lead"
+		(property "LCSC Part" "C910544"
+			(at 349.25 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "MAXIM"
+			(at 349.25 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "MAX98357AETE+T"
+			(at 349.25 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 349.25 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 349.25 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 349.25 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -13781,7 +15364,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C15195"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 201.93 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -13792,7 +15375,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C15195"
+			(at 201.93 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 201.93 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL05B103KB5NNNC"
+			(at 201.93 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 201.93 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 201.93 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 201.93 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -14664,7 +16302,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C918120"
+		(property "KiLib_Generator" "terminal_block/Xinya"
 			(at 261.62 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -14675,7 +16313,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "terminal_block/Xinya"
+		(property "LCSC Part" "C918120"
+			(at 261.62 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "DORABO"
+			(at 261.62 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "DB125-2.54-2P-GN-S"
+			(at 261.62 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Phoenix Contact"
+			(at 261.62 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "1725656"
+			(at 261.62 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 261.62 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -14708,7 +16401,7 @@
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
-		(in_bom no)
+		(in_bom yes)
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp yes)
@@ -14768,7 +16461,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 323.85 142.24 0)
 			(hide yes)
 			(show_name no)
@@ -14779,7 +16472,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C25803"
+			(at 323.85 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 323.85 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF1003T5E"
+			(at 323.85 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 323.85 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT100K"
+			(at 323.85 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 323.85 142.24 0)
 			(hide yes)
 			(show_name no)
@@ -14949,7 +16697,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C492401"
+		(property "KiLib_Generator" "connector/pin_header_socket"
 			(at 181.61 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -14960,7 +16708,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "connector/pin_header_socket"
+		(property "LCSC Part" "C492401"
+			(at 181.61 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "XFCN"
+			(at 181.61 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "PZ254V-11-02P"
+			(at 181.61 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Würth Elektronik"
+			(at 181.61 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "61300211121"
+			(at 181.61 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 181.61 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -15055,7 +16858,62 @@
 				)
 			)
 		)
-		(property "LCSC" "C50506"
+		(property "LCSC Part" "C50506"
+			(at 231.14 157.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "TI"
+			(at 231.14 157.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "DRV8833PWPR"
+			(at 231.14 157.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 231.14 157.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 231.14 157.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 231.14 157.48 0)
 			(hide yes)
 			(show_name no)
@@ -15271,7 +17129,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C52923"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 227.33 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -15282,7 +17140,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C52923"
+			(at 227.33 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 227.33 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL05A105KA5NQNC"
+			(at 227.33 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 227.33 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 227.33 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 227.33 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -15455,7 +17368,62 @@
 				)
 			)
 		)
-		(property "LCSC" "C50506"
+		(property "LCSC Part" "C50506"
+			(at 231.14 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "TI"
+			(at 231.14 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "DRV8833PWPR"
+			(at 231.14 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 231.14 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 231.14 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 231.14 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -15534,7 +17502,7 @@
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(in_pos_files yes)
+		(in_pos_files no)
 		(dnp no)
 		(uuid "6115522d-dc9f-43ef-9aca-9fc33f037ab8")
 		(property "Reference" "TP1"
@@ -15582,6 +17550,39 @@
 			)
 		)
 		(property "Description" "test point"
+			(at 73.66 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 73.66 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 73.66 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 73.66 138.43 0)
 			(hide yes)
 			(show_name no)
@@ -15749,7 +17750,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C918120"
+		(property "KiLib_Generator" "terminal_block/Xinya"
 			(at 389.89 124.46 0)
 			(hide yes)
 			(show_name no)
@@ -15760,7 +17761,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "terminal_block/Xinya"
+		(property "LCSC Part" "C918120"
+			(at 389.89 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "DORABO"
+			(at 389.89 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "DB125-2.54-2P-GN-S"
+			(at 389.89 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Phoenix Contact"
+			(at 389.89 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "1725656"
+			(at 389.89 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 389.89 124.46 0)
 			(hide yes)
 			(show_name no)
@@ -15851,7 +17907,18 @@
 				)
 			)
 		)
-		(property "LCSC" "C50254"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+			(at 152.4 243.84 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C50254"
 			(at 152.4 243.84 90)
 			(hide yes)
 			(show_name no)
@@ -15862,8 +17929,52 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
-			(at 152.4 243.84 0)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 152.4 243.84 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL31B225KBHNNNE"
+			(at 152.4 243.84 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 152.4 243.84 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 152.4 243.84 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
+			(at 152.4 243.84 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15955,7 +18066,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C1525"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 237.49 219.71 0)
 			(hide yes)
 			(show_name no)
@@ -15966,7 +18077,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C1525"
+			(at 237.49 219.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 237.49 219.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL05B104KO5NNNC"
+			(at 237.49 219.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 237.49 219.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 237.49 219.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 237.49 219.71 0)
 			(hide yes)
 			(show_name no)
@@ -16214,7 +18380,62 @@
 				)
 			)
 		)
-		(property "LCSC" "C2913203"
+		(property "LCSC Part" "C2913203"
+			(at 73.66 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "ESPRESSIF"
+			(at 73.66 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "ESP32-S3-WROOM-1-N4R2"
+			(at 73.66 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 73.66 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 73.66 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 73.66 66.04 0)
 			(hide yes)
 			(show_name no)
@@ -16424,7 +18645,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C401766"
+		(property "KiLib_Generator" "capacitor/SMD/elec_round_polarized"
 			(at 185.42 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -16435,7 +18656,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "capacitor/SMD/elec_round_polarized"
+		(property "LCSC Part" "C401766"
+			(at 185.42 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "PANASONIC"
+			(at 185.42 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "EEEFT1E102UP"
+			(at 185.42 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 185.42 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 185.42 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 185.42 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -16684,7 +18960,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C15195"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 201.93 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -16695,7 +18971,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C15195"
+			(at 201.93 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 201.93 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL05B103KB5NNNC"
+			(at 201.93 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 201.93 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 201.93 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 201.93 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -16728,7 +19059,7 @@
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
-		(in_bom no)
+		(in_bom yes)
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp yes)
@@ -16788,7 +19119,7 @@
 				)
 			)
 		)
-		(property "LCSC" ""
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 323.85 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -16799,7 +19130,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C25803"
+			(at 323.85 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 323.85 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF1003T5E"
+			(at 323.85 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 323.85 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT100K"
+			(at 323.85 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 323.85 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -16970,7 +19356,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C52923"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 317.5 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -16981,7 +19367,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C52923"
+			(at 317.5 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 317.5 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL05A105KA5NQNC"
+			(at 317.5 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 317.5 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 317.5 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 317.5 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -17153,7 +19594,18 @@
 				)
 			)
 		)
-		(property "LCSC" "C20917"
+		(property "KiLib_Generator" "package/gullwing"
+			(at 152.4 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C20917"
 			(at 152.4 160.02 90)
 			(hide yes)
 			(show_name no)
@@ -17164,8 +19616,52 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "package/gullwing"
-			(at 152.4 160.02 0)
+		(property "MF" "AOS"
+			(at 152.4 160.02 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "AO3400A"
+			(at 152.4 160.02 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "AOS"
+			(at 152.4 160.02 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "AOSS32334C"
+			(at 152.4 160.02 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
+			(at 152.4 160.02 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17263,7 +19759,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C20917"
+		(property "KiLib_Generator" "package/gullwing"
 			(at 57.15 226.06 0)
 			(hide yes)
 			(show_name no)
@@ -17274,7 +19770,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "package/gullwing"
+		(property "LCSC Part" "C20917"
+			(at 57.15 226.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "AOS"
+			(at 57.15 226.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "AO3400A"
+			(at 57.15 226.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "AOS"
+			(at 57.15 226.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "AOSS32334C"
+			(at 57.15 226.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 57.15 226.06 0)
 			(hide yes)
 			(show_name no)
@@ -17403,7 +19954,29 @@
 				)
 			)
 		)
-		(property "LCSC" "C720477"
+		(property "DigiKey MF" "Alps Alpine"
+			(at 220.98 57.15 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "SKRKAGE020"
+			(at 220.98 57.15 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 220.98 57.15 90)
 			(hide yes)
 			(show_name no)
@@ -17496,7 +20069,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C25804"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 317.5 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -17507,7 +20080,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C25804"
+			(at 317.5 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 317.5 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF1002T5E"
+			(at 317.5 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 317.5 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT10K0"
+			(at 317.5 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 317.5 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -17600,7 +20228,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C918120"
+		(property "KiLib_Generator" "terminal_block/Xinya"
 			(at 288.29 113.03 0)
 			(hide yes)
 			(show_name no)
@@ -17611,7 +20239,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "terminal_block/Xinya"
+		(property "LCSC Part" "C918120"
+			(at 288.29 113.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "DORABO"
+			(at 288.29 113.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "DB125-2.54-2P-GN-S"
+			(at 288.29 113.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Phoenix Contact"
+			(at 288.29 113.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "1725656"
+			(at 288.29 113.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 288.29 113.03 0)
 			(hide yes)
 			(show_name no)
@@ -17704,7 +20387,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C918120"
+		(property "KiLib_Generator" "terminal_block/Xinya"
 			(at 288.29 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -17715,7 +20398,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "terminal_block/Xinya"
+		(property "LCSC Part" "C918120"
+			(at 288.29 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "DORABO"
+			(at 288.29 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "DB125-2.54-2P-GN-S"
+			(at 288.29 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Phoenix Contact"
+			(at 288.29 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "1725656"
+			(at 288.29 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 288.29 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -17808,7 +20546,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C22935"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 330.2 142.24 0)
 			(hide yes)
 			(show_name no)
@@ -17819,7 +20557,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C22935"
+			(at 330.2 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 330.2 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF1004T5E"
+			(at 330.2 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 330.2 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT1M00"
+			(at 330.2 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 330.2 142.24 0)
 			(hide yes)
 			(show_name no)
@@ -17931,7 +20724,7 @@
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(in_pos_files yes)
+		(in_pos_files no)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a17fed32-2460-49ae-ae25-5e520133f735")
@@ -18001,6 +20794,39 @@
 				)
 			)
 		)
+		(property "DigiKey MF" ""
+			(at 48.26 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 48.26 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
+			(at 48.26 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(instances
 			(project "billy"
 				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
@@ -18018,7 +20844,7 @@
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(in_pos_files yes)
+		(in_pos_files no)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a2600d5e-e6a2-4bec-989a-113ceae55f30")
@@ -18078,6 +20904,39 @@
 			)
 		)
 		(property "KiLib_Generator" "mounting_hardware/mounting_hole"
+			(at 48.26 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 48.26 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 48.26 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 48.26 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -18243,7 +21102,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C23179"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 48.26 210.82 0)
 			(hide yes)
 			(show_name no)
@@ -18254,7 +21113,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C23179"
+			(at 48.26 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 48.26 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF4700T5E"
+			(at 48.26 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 48.26 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT470R"
+			(at 48.26 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 48.26 210.82 0)
 			(hide yes)
 			(show_name no)
@@ -18345,7 +21259,62 @@
 				)
 			)
 		)
-		(property "LCSC" "C206917"
+		(property "LCSC Part" "C206917"
+			(at 133.35 207.01 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Littelfuse"
+			(at 133.35 207.01 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0154005.DRT"
+			(at 133.35 207.01 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 133.35 207.01 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 133.35 207.01 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 133.35 207.01 90)
 			(hide yes)
 			(show_name no)
@@ -18438,7 +21407,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C473037"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 201.93 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -18449,7 +21418,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C473037"
+			(at 201.93 156.21 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 201.93 156.21 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "HP06W2F200LT5E"
+			(at 201.93 156.21 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 201.93 156.21 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "CSR1206FKR200"
+			(at 201.93 156.21 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 201.93 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -18542,7 +21566,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C19702"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 309.88 201.93 0)
 			(hide yes)
 			(show_name no)
@@ -18553,7 +21577,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C19702"
+			(at 309.88 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 309.88 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL10A106KP8NNNC"
+			(at 309.88 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 309.88 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 309.88 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 309.88 201.93 0)
 			(hide yes)
 			(show_name no)
@@ -18958,7 +22037,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C23242"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 369.57 194.31 0)
 			(hide yes)
 			(show_name no)
@@ -18969,7 +22048,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C23242"
+			(at 369.57 194.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 369.57 194.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF7502T5E"
+			(at 369.57 194.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 369.57 194.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMEF0603FT75K0"
+			(at 369.57 194.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 369.57 194.31 0)
 			(hide yes)
 			(show_name no)
@@ -19060,7 +22194,18 @@
 				)
 			)
 		)
-		(property "LCSC" "C50254"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+			(at 264.16 250.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C50254"
 			(at 264.16 250.19 90)
 			(hide yes)
 			(show_name no)
@@ -19071,8 +22216,52 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
-			(at 264.16 250.19 0)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 264.16 250.19 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL31B225KBHNNNE"
+			(at 264.16 250.19 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 264.16 250.19 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 264.16 250.19 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
+			(at 264.16 250.19 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19242,7 +22431,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C25804"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 227.33 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -19253,7 +22442,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C25804"
+			(at 227.33 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 227.33 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF1002T5E"
+			(at 227.33 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 227.33 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT10K0"
+			(at 227.33 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 227.33 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -19424,7 +22668,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C918120"
+		(property "KiLib_Generator" "terminal_block/Xinya"
 			(at 307.34 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -19435,7 +22679,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "terminal_block/Xinya"
+		(property "LCSC Part" "C918120"
+			(at 307.34 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "DORABO"
+			(at 307.34 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "DB125-2.54-2P-GN-S"
+			(at 307.34 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Phoenix Contact"
+			(at 307.34 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "1725656"
+			(at 307.34 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 307.34 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -19528,7 +22827,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C1525"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 71.12 210.82 0)
 			(hide yes)
 			(show_name no)
@@ -19539,7 +22838,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C1525"
+			(at 71.12 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 71.12 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL05B104KO5NNNC"
+			(at 71.12 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 71.12 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 71.12 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 71.12 210.82 0)
 			(hide yes)
 			(show_name no)
@@ -19632,7 +22986,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C25804"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 358.14 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -19643,7 +22997,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C25804"
+			(at 358.14 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 358.14 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF1002T5E"
+			(at 358.14 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 358.14 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT10K0"
+			(at 358.14 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 358.14 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -19814,7 +23223,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C45783"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 379.73 201.93 0)
 			(hide yes)
 			(show_name no)
@@ -19825,7 +23234,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C45783"
+			(at 379.73 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 379.73 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL21A226MAQNNNE"
+			(at 379.73 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Samsung Electro-Mechanics"
+			(at 379.73 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "CL21A226MAYNNWE"
+			(at 379.73 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 379.73 201.93 0)
 			(hide yes)
 			(show_name no)
@@ -19859,7 +23323,7 @@
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(in_pos_files yes)
+		(in_pos_files no)
 		(dnp no)
 		(uuid "c9d807a5-e3b9-4ad5-9b2e-232ef49e97f0")
 		(property "Reference" "TP3"
@@ -19907,6 +23371,39 @@
 			)
 		)
 		(property "Description" "test point"
+			(at 73.66 157.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 73.66 157.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 73.66 157.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 73.66 157.48 0)
 			(hide yes)
 			(show_name no)
@@ -19996,7 +23493,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C45783"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 391.16 201.93 0)
 			(hide yes)
 			(show_name no)
@@ -20007,7 +23504,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C45783"
+			(at 391.16 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 391.16 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL21A226MAQNNNE"
+			(at 391.16 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Samsung Electro-Mechanics"
+			(at 391.16 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "CL21A226MAYNNWE"
+			(at 391.16 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 391.16 201.93 0)
 			(hide yes)
 			(show_name no)
@@ -20055,7 +23607,7 @@
 			)
 		)
 		(property "Value" "MX74610T"
-			(at 264.16 233.68 0)
+			(at 264.16 238.76 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -20097,7 +23649,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C19078229"
+		(property "KiLib_Generator" "package/gullwing"
 			(at 264.16 233.68 0)
 			(hide yes)
 			(show_name no)
@@ -20108,7 +23660,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "package/gullwing"
+		(property "LCSC Part" "C19078229"
+			(at 264.16 233.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Wuxi Maxinmicro"
+			(at 264.16 233.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "MX74610T"
+			(at 264.16 233.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "TI"
+			(at 264.16 233.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "LM74700QDBVRQ1"
+			(at 264.16 233.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 264.16 233.68 0)
 			(hide yes)
 			(show_name no)
@@ -20289,7 +23896,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C2071044"
+		(property "KiLib_Generator" "package/gullwing"
 			(at 325.12 189.23 0)
 			(hide yes)
 			(show_name no)
@@ -20300,7 +23907,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "package/gullwing"
+		(property "LCSC Part" "C2071044"
+			(at 325.12 189.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "DIODES"
+			(at 325.12 189.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "AP63201WU-7"
+			(at 325.12 189.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 325.12 189.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 325.12 189.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 325.12 189.23 0)
 			(hide yes)
 			(show_name no)
@@ -20405,7 +24067,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C23352"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 369.57 208.28 0)
 			(hide yes)
 			(show_name no)
@@ -20416,7 +24078,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C23352"
+			(at 369.57 208.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 369.57 208.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF2402T5E"
+			(at 369.57 208.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 369.57 208.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT24K0"
+			(at 369.57 208.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 369.57 208.28 0)
 			(hide yes)
 			(show_name no)
@@ -20684,7 +24401,7 @@
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(in_pos_files yes)
+		(in_pos_files no)
 		(dnp no)
 		(uuid "da52a5c3-3718-49d4-a30c-be5c77795da4")
 		(property "Reference" "TP2"
@@ -20732,6 +24449,39 @@
 			)
 		)
 		(property "Description" "test point"
+			(at 73.66 148.59 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 73.66 148.59 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 73.66 148.59 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 73.66 148.59 0)
 			(hide yes)
 			(show_name no)
@@ -20819,7 +24569,18 @@
 				)
 			)
 		)
-		(property "LCSC" "C1525"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+			(at 341.63 189.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C1525"
 			(at 341.63 189.23 90)
 			(hide yes)
 			(show_name no)
@@ -20830,8 +24591,52 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
-			(at 341.63 189.23 0)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 341.63 189.23 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL05B104KO5NNNC"
+			(at 341.63 189.23 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 341.63 189.23 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 341.63 189.23 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
+			(at 341.63 189.23 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20878,7 +24683,7 @@
 			)
 		)
 		(property "Value" "MX74610T"
-			(at 152.4 227.33 0)
+			(at 152.4 232.41 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -20920,7 +24725,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C19078229"
+		(property "KiLib_Generator" "package/gullwing"
 			(at 152.4 227.33 0)
 			(hide yes)
 			(show_name no)
@@ -20931,7 +24736,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "package/gullwing"
+		(property "LCSC Part" "C19078229"
+			(at 152.4 227.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Wuxi Maxinmicro"
+			(at 152.4 227.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "MX74610T"
+			(at 152.4 227.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "TI"
+			(at 152.4 227.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "LM74700QDBVRQ1"
+			(at 152.4 227.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 152.4 227.33 0)
 			(hide yes)
 			(show_name no)
@@ -21036,7 +24896,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C23630"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 246.38 144.78 0)
 			(hide yes)
 			(show_name no)
@@ -21047,7 +24907,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C23630"
+			(at 246.38 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 246.38 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL10A225KO8NNNC"
+			(at 246.38 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 246.38 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 246.38 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 246.38 144.78 0)
 			(hide yes)
 			(show_name no)
@@ -21218,7 +25133,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C23630"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 246.38 97.79 0)
 			(hide yes)
 			(show_name no)
@@ -21229,7 +25144,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C23630"
+			(at 246.38 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Samsung Electro-Mechanics"
+			(at 246.38 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "CL10A225KO8NNNC"
+			(at 246.38 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 246.38 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 246.38 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 246.38 97.79 0)
 			(hide yes)
 			(show_name no)
@@ -21634,7 +25604,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C25804"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 193.04 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -21645,7 +25615,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C25804"
+			(at 193.04 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 193.04 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF1002T5E"
+			(at 193.04 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 193.04 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT10K0"
+			(at 193.04 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 193.04 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -21816,7 +25841,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C25804"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 271.78 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -21827,7 +25852,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C25804"
+			(at 271.78 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 271.78 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF1002T5E"
+			(at 271.78 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 271.78 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT10K0"
+			(at 271.78 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 271.78 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -21997,7 +26077,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C25804"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 52.07 229.87 0)
 			(hide yes)
 			(show_name no)
@@ -22008,7 +26088,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C25804"
+			(at 52.07 229.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 52.07 229.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "0603WAF1002T5E"
+			(at 52.07 229.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 52.07 229.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "RMCF0603FT10K0"
+			(at 52.07 229.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 52.07 229.87 0)
 			(hide yes)
 			(show_name no)
@@ -22257,7 +26392,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C473037"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 201.93 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -22268,7 +26403,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+		(property "LCSC Part" "C473037"
+			(at 201.93 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "UNI-ROYAL"
+			(at 201.93 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "HP06W2F200LT5E"
+			(at 201.93 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Stackpole Electronics"
+			(at 201.93 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "CSR1206FKR200"
+			(at 201.93 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 201.93 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -22302,7 +26492,7 @@
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(in_pos_files yes)
+		(in_pos_files no)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fb299d49-f3e1-49e5-af5a-cccc50738c7f")
@@ -22362,6 +26552,39 @@
 			)
 		)
 		(property "KiLib_Generator" "mounting_hardware/mounting_hole"
+			(at 48.26 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" ""
+			(at 48.26 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" ""
+			(at 48.26 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 48.26 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -22446,7 +26669,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C492411"
+		(property "KiLib_Generator" "connector/pin_header_socket"
 			(at 151.13 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -22457,7 +26680,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "connector/pin_header_socket"
+		(property "LCSC Part" "C2937625"
+			(at 151.13 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "XFCN"
+			(at 151.13 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "PZ254V-11-03P"
+			(at 151.13 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Würth Elektronik"
+			(at 151.13 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "61300311121"
+			(at 151.13 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 151.13 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -22553,7 +26831,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C918121"
+		(property "KiLib_Generator" "terminal_block/Xinya"
 			(at 114.3 160.02 0)
 			(hide yes)
 			(show_name no)
@@ -22564,7 +26842,62 @@
 				)
 			)
 		)
-		(property "KiLib_Generator" "terminal_block/Xinya"
+		(property "LCSC Part" "C918121"
+			(at 114.3 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "DORABO"
+			(at 114.3 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "DB125-2.54-3P-GN-S"
+			(at 114.3 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MF" "Phoenix Contact"
+			(at 114.3 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey MP" "1725669"
+			(at 114.3 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" ""
 			(at 114.3 160.02 0)
 			(hide yes)
 			(show_name no)
