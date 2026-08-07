@@ -6,9 +6,9 @@
 #pragma once
 
 // --- Amplifier: MAX98357A, I2S0 TX (playback) ---
+#define BOARD_AMP_I2S_LRCLK    7
 #define BOARD_AMP_I2S_BCLK    15
-#define BOARD_AMP_I2S_LRCLK   16
-#define BOARD_AMP_I2S_DIN      7
+#define BOARD_AMP_I2S_DIN     16
 #define BOARD_AMP_SD_MODE     17  // drive low to mute / power-down the amp (pops, deep sleep)
 
 // --- Microphone: ICS-43434 / INMP441, I2S1 RX (capture) ---
@@ -28,7 +28,7 @@
 #define BOARD_TAIL_IN1        12  // drv1 BIN1, PWM: tail flap
 #define BOARD_TAIL_IN2        13  // drv1 BIN2, held low (tail unidirectional; spring return)
 #define BOARD_DRV_NSLEEP      14  // both chips: high = enabled; drive low in deep sleep -> ~uA
-#define BOARD_DRV_NFAULT       8  // both chips wire-OR'd (open-drain + pull-up): low = OCP/thermal/UVLO
+#define BOARD_DRV_NFAULT      48  // both chips wire-OR'd (open-drain + pull-up): low = OCP/thermal/UVLO
 
 // --- Inputs ---
 #define BOARD_BUTTON           2  // active-low + pull-up; has an EXTERNAL ~10k pull-up
@@ -40,3 +40,6 @@
 // low-side FET so it draws zero current in deep sleep.
 #define BOARD_STATUS_LED      38  // data (DIN), through a series resistor
 #define BOARD_STATUS_LED_EN   18  // VDD gate (low-side FET): high = LED powered, low = off
+
+// --- Misc scope-probe pin (J13): bare header, 150R series to the GPIO, 10k pulldown to GND ---
+#define BOARD_MISC_GPIO        8  // idles low; drive high/pulse from firmware to trigger a scope

@@ -59,6 +59,11 @@ void fish_hal_set_status(fish_status_t status)
     led_strip_refresh(s_status_led);
 }
 
+void fish_hal_set_misc_gpio(bool level)
+{
+    gpio_set_level(BOARD_MISC_GPIO, level);
+}
+
 // --- Motor drivers: 2x DRV8833, three unidirectional channels (mouth/head/tail) ----------------
 // Each motor is IN1 = LEDC PWM, IN2 held low (spring-return; board.h). nSLEEP gates both chips
 // together (high = enabled, low = ~uA parked); nFAULT is both chips' open-drain fault line,
@@ -209,6 +214,14 @@ void fish_hal_init(void)
     // hold is released, so waking from deep sleep can't leave the amp glitching or muted.
     gpio_hold_dis(BOARD_AMP_SD_MODE);
     ESP_LOGI(TAG, "init: amp SD_MODE high (unmuted)");
+
+    // Misc scope-probe pin: output, starts low (matches the external pulldown's idle state).
+    gpio_config_t misc_gpio = {
+        .pin_bit_mask = 1ULL << BOARD_MISC_GPIO,
+        .mode = GPIO_MODE_OUTPUT,
+    };
+    ESP_ERROR_CHECK(gpio_config(&misc_gpio));
+    gpio_set_level(BOARD_MISC_GPIO, 0);
 
     // Activation inputs: button (BOARD_BUTTON) and mode switch (BOARD_MODE_SW), both active-low
     // with internal pull-ups — a floating jumper reads high, grounding it reads low. The button

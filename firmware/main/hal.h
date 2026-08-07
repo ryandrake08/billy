@@ -46,6 +46,10 @@ void fish_hal_init(void);
 
 void fish_hal_set_status(fish_status_t status);
 
+// Drives the bare scope-probe pin (BOARD_MISC_GPIO, idles low via an external pulldown) high or
+// low. Not called anywhere yet -- for ad hoc use when debugging with an oscilloscope.
+void fish_hal_set_misc_gpio(bool level);
+
 // Bench audio self-test (not in the E2E boot path): 440 Hz tone, then a live mic-level log.
 void fish_hal_selftest(void);
 
