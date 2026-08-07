@@ -15073,7 +15073,7 @@
 				)
 			)
 		)
-		(property "Value" "TestPoint"
+		(property "Value" "Keystone_5011"
 			(at 0 2.75 0)
 			(layer "F.Fab")
 			(uuid "f5145d61-7e01-40ec-8ce6-e6b8af50e105")
@@ -15103,6 +15103,78 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C238127"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "6c1e2a3b-4f5d-4e6a-8b7c-9d0e1f2a3b4c")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "MF" "Keystone Electronics"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "7d2f3a4c-5e6f-4a7b-9c8d-0e1f2a3b4c5d")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "MP" "5011"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "8e3a4b5d-6f7a-4b8c-ad9e-1f2a3b4c5d6e")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "DigiKey MF" "Keystone Electronics"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "9f4b5c6e-7a8b-4c9d-be0f-2a3b4c5d6e7f")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "DigiKey MP" "5011"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "a05c6d7f-8b9c-4dae-cf10-3b4c5d6e7f8a")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "DigiKey Part" "36-5011-ND"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "b16d7e80-9cad-4ebf-d021-4c5d6e7f8a9b")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -15179,7 +15251,7 @@
 			(uuid "bd5d04bf-bbc1-4703-b869-f54aca9995b5")
 		)
 		(embedded_fonts no)
-		(model "${KICAD10_3DMODEL_DIR}/TestPoint.3dshapes/TestPoint_Keystone_5010-5014_Multipurpose.step"
+		(model "${KIPRJMOD}/billy.3dshapes/TestPoint_Keystone_5010-5014_Multipurpose.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -15187,7 +15259,7 @@
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 0)
+				(xyz -90 -0 -0)
 			)
 		)
 	)
