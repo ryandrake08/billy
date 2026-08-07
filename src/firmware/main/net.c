@@ -212,7 +212,7 @@ esp_err_t net_init(void)
 }
 
 // --- Transport contract ------------------------------------------------------------------
-// The three calls client/billy_cli.py demonstrates: STT direct to whisper /inference (:8081),
+// The three calls src/client/billy_cli.py demonstrates: STT direct to whisper /inference (:8081),
 // the brain hop to the shim /v1/respond (:8000, SSE), TTS direct to Kokoro /v1/audio/speech
 // (:8880).
 

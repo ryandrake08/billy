@@ -12,9 +12,10 @@ captures audio, conducts three HTTP calls, plays the reply, and animates the mou
 
 | Path | What |
 |---|---|
-| `client/` | Thin CLI reference client — the fish↔backend protocol the ESP32 reimplements. |
-| `firmware/` | The ESP32-S3 firmware controlling the motors, speaker, and microphone. See `firmware/README.md`. |
-| `shim/` | The backend application-logic/persona shim (FastAPI, in front of llama.cpp). |
+| `src/client/` | Thin CLI reference client — the fish↔backend protocol the ESP32 reimplements. |
+| `src/firmware/` | The ESP32-S3 firmware controlling the motors, speaker, and microphone. See `src/firmware/README.md`. |
+| `src/shim/` | The backend application-logic/persona shim (FastAPI, in front of llama.cpp). |
+| `src/partsync/` | Deterministic sync of the PCB schematic's vendor sourcing fields against JLCPCB/DigiKey/Mouser. |
 | `board/` | Custom PCB design (KiCad). |
 
 ## The backend services

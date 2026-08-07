@@ -48,6 +48,6 @@ Lives under `/opt/billy-shim` on the backend host, managed by the `billy-shim.se
 unit (`deploy/systemd/billy-shim.service`, enabled at boot). Redeploy after code changes:
 
 ```bash
-rsync -a --exclude '.venv' --exclude '__pycache__' shim/ your-host-or-ip:/opt/billy-shim/
+rsync -a --exclude '.venv' --exclude '__pycache__' src/shim/ your-host-or-ip:/opt/billy-shim/
 ssh your-host-or-ip systemctl restart billy-shim
 ```

@@ -5,7 +5,7 @@
 #include <string.h>
 
 // Compiled-in defaults -- also this build's fallback for any field the shim's response doesn't
-// include (the shim only ever sends deltas from these, shim/fish_config.py's OVERRIDES).
+// include (the shim only ever sends deltas from these, src/shim/fish_config.py's OVERRIDES).
 static fish_config_t s_config = {
     .vad_onset_rms            = 6000,       // 24-bit scale: idle floor ~2000, speech >7000
     .vad_silence_ms           = 600,        // end the turn after this much sub-threshold audio

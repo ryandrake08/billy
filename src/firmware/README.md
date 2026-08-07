@@ -16,13 +16,13 @@ Three layers, each with a single responsibility:
 | **hardware** | `hal.c/.h`, `board.h`, `components/wakeword` | Mic/amp I²S, 2× DRV8833 motors, button/switch/photocell, wake-word detection. `board.h` is the pin map. |
 
 The transport layer mirrors the three calls the CLI reference client makes
-(`client/billy_cli.py`), so the fish reimplements the same contract.
+(`src/client/billy_cli.py`), so the fish reimplements the same contract.
 
 ## Build
 
 ```bash
 source ~/.espressif/tools/activate_idf_v6.0.2.sh   # activate ESP-IDF v6.0.2
-cd firmware
+cd src/firmware
 
 # WiFi credentials and the backend host come from the build environment, never source control
 # (main/CMakeLists.txt injects them as compile definitions). BACKEND_HOST is required; export

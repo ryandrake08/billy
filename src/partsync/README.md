@@ -37,7 +37,7 @@ python3 partsync.py set-field --ref C11 --field "Mouser Part" --value "..." --cr
 
 ## Tests
 
-No pytest dependency, matching `client/`/`shim/`'s convention — run directly:
+No pytest dependency, matching `src/client/`/`src/shim/`'s convention — run directly:
 
 ```bash
 python3 test_sexpr.py

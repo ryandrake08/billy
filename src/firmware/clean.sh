@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Restores firmware/ to a pristine checkout: removes every ESP-IDF-generated and
+# Restores src/firmware/ to a pristine checkout: removes every ESP-IDF-generated and
 # macOS sidecar artifact (all gitignored — nothing here is tracked). Regenerated
 # on the next `idf.py set-target` / `idf.py build` from sdkconfig.defaults and
 # idf_component.yml.
