@@ -326,7 +326,7 @@ static bool photocell_bright_enough(const char *context)
 
 // Write mono samples to the stereo TX by duplicating each into L and R. `chunk_cb`, if non-NULL,
 // is invoked with each chunk right before it's written -- used to drive mouth-sync PWM off the
-// audio actually being played (see fish_hal_play_with_mouth below).
+// audio actually being played (see fish_hal_play below).
 typedef void (*amp_chunk_cb_t)(const int16_t *chunk, int n);
 
 static esp_err_t amp_write_mono(const int16_t *mono, size_t count, amp_chunk_cb_t chunk_cb)
@@ -487,25 +487,78 @@ static void mouth_close(void)
     motor_set_duty(MOTOR_MOUTH, 0);
 }
 
-esp_err_t fish_hal_play_with_mouth(const audio_buf_t *audio)
+// Linear-interpolation resample of `in` (in_count samples @ in_rate) into a freshly
+// PSRAM-allocated buffer @ out_rate, written through *out_count. Cheap and good enough for the
+// one thing that needs it -- playing a mic capture back on a TX clock fixed at AMP_SAMPLE_RATE --
+// not a general-purpose/high-quality resampler. Returns NULL on allocation failure.
+static int16_t *resample_linear(const int16_t *in, size_t in_count, int in_rate, int out_rate,
+                                 size_t *out_count)
+{
+    size_t n_out = (size_t) ((uint64_t) in_count * out_rate / in_rate);
+    int16_t *out = heap_caps_malloc(n_out * sizeof(int16_t), MALLOC_CAP_SPIRAM);
+    if (!out)
+    {
+        return NULL;
+    }
+
+    float step = (float) in_rate / (float) out_rate;
+    for (size_t i = 0; i < n_out; i++)
+    {
+        float  src_pos = (float) i * step;
+        size_t idx     = (size_t) src_pos;
+        float  frac    = src_pos - (float) idx;
+        int16_t s0 = in[idx];
+        int16_t s1 = (idx + 1 < in_count) ? in[idx + 1] : s0;
+        out[i] = (int16_t) ((float) s0 + ((float) s1 - (float) s0) * frac);
+    }
+    *out_count = n_out;
+    return out;
+}
+
+esp_err_t fish_hal_play(const audio_buf_t *audio, bool move_mouth)
 {
     if (!audio || !audio->samples || audio->count == 0)
     {
         return ESP_OK;
     }
+
+    const int16_t *samples = audio->samples;
+    size_t count = audio->count;
+    int16_t *resampled = NULL;
+
     if (audio->sample_rate != AMP_SAMPLE_RATE)
     {
-        // The TX clock is fixed at init time (see fish_hal_init()) — a mismatched rate would play
-        // at the wrong pitch/speed rather than getting resampled.
-        ESP_LOGW(TAG, "play: audio is %d Hz but amp is fixed at %d Hz — will play at the wrong "
-                      "speed", audio->sample_rate, AMP_SAMPLE_RATE);
+        // The TX clock is fixed at init time (see fish_hal_init()) -- resample to it rather than
+        // playing at the wrong pitch/speed. The normal TTS path is already at AMP_SAMPLE_RATE
+        // (Kokoro's native rate) and never reaches here; this is for callers like repeat-mode
+        // playback of a 16 kHz mic capture.
+        resampled = resample_linear(samples, count, audio->sample_rate, AMP_SAMPLE_RATE, &count);
+        if (!resampled)
+        {
+            ESP_LOGE(TAG, "play: resample allocation failed (%u samples)",
+                     (unsigned) audio->count);
+            return ESP_ERR_NO_MEM;
+        }
+        samples = resampled;
     }
-    motor_enable();
-    esp_err_t err = amp_write_mono(audio->samples, audio->count, mouth_track_chunk);
-    mouth_close();
+
+    esp_err_t err;
+    if (move_mouth)
+    {
+        motor_enable();
+        err = amp_write_mono(samples, count, mouth_track_chunk);
+        mouth_close();
+    }
+    else
+    {
+        err = amp_write_mono(samples, count, NULL);
+    }
+    heap_caps_free(resampled);
+
     if (err == ESP_OK)
     {
-        ESP_LOGI(TAG, "play: %u samples @ %d Hz", (unsigned) audio->count, audio->sample_rate);
+        ESP_LOGI(TAG, "play: %u samples @ %d Hz%s", (unsigned) audio->count, audio->sample_rate,
+                 resampled ? " (resampled)" : "");
     }
     return err;
 }

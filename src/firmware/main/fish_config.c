@@ -28,6 +28,8 @@ static fish_config_t s_config = {
     .stt_timeout_ms           = 30000,
     .respond_timeout_ms       = 120000,
     .tts_timeout_ms           = 120000,
+
+    .repeat_mode              = false,
 };
 
 const fish_config_t *fish_config_get(void)
@@ -52,10 +54,26 @@ static bool json_get_number(const char *json, const char *key, double *out)
     return true;
 }
 
+// Find a top-level `"key": true|false` in a flat JSON object and parse the boolean. Same
+// hand-rolled key lookup as json_get_number, for the one field that isn't numeric.
+static bool json_get_bool(const char *json, const char *key, bool *out)
+{
+    char pat[48];
+    int patlen = snprintf(pat, sizeof pat, "\"%s\"", key);
+    const char *p = strstr(json, pat);
+    if (!p) return false;
+    p += patlen;
+    while (*p == ' ' || *p == '\t' || *p == ':') p++;
+    if (strncmp(p, "true", 4) == 0)  { *out = true;  return true; }
+    if (strncmp(p, "false", 5) == 0) { *out = false; return true; }
+    return false;
+}
+
 void fish_config_apply_json(const char *json)
 {
     double v;
-    if (json_get_number(json, "vad_onset_rms", &v))             s_config.vad_onset_rms = (int) v;
+    bool b;
+    if (json_get_number(json, "vad_onset_rms", &v))              s_config.vad_onset_rms = (int) v;
     if (json_get_number(json, "vad_silence_ms", &v))             s_config.vad_silence_ms = (int) v;
     if (json_get_number(json, "vad_min_voiced_ms", &v))          s_config.vad_min_voiced_ms = (int) v;
     if (json_get_number(json, "vad_drain_ms", &v))               s_config.vad_drain_ms = (int) v;
@@ -76,4 +94,6 @@ void fish_config_apply_json(const char *json)
     if (json_get_number(json, "stt_timeout_ms", &v))             s_config.stt_timeout_ms = (int) v;
     if (json_get_number(json, "respond_timeout_ms", &v))         s_config.respond_timeout_ms = (int) v;
     if (json_get_number(json, "tts_timeout_ms", &v))             s_config.tts_timeout_ms = (int) v;
+
+    if (json_get_bool(json, "repeat_mode", &b))                  s_config.repeat_mode = b;
 }

@@ -5,6 +5,7 @@
 // fish_config_get() always returns something sane even if the shim is unreachable or a field is
 // missing/unparseable in its response.
 #pragma once
+#include <stdbool.h>
 
 typedef struct
 {
@@ -34,6 +35,11 @@ typedef struct
     int stt_timeout_ms;
     int respond_timeout_ms;
     int tts_timeout_ms;
+
+    // Debug -- main.c runloop_task(): play a just-captured utterance back over the amp (no mouth
+    // motor) before sending it to STT, so mic/acoustic quality can be checked by ear with no
+    // network round trip. hal.c fish_hal_play() resamples it to AMP_SAMPLE_RATE automatically.
+    bool repeat_mode;
 } fish_config_t;
 
 // Always returns a valid config -- the compiled-in defaults until/unless net_fetch_config()

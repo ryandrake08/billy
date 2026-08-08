@@ -22,7 +22,7 @@ OVERRIDES = {
     # "capture_max_ms": 10000,      # hard cap on one utterance
 
     # Photocell wake gate -- hal.c fish_hal_wait_for_wake() / fish_hal_boot_cause()
-    # "photocell_wake_threshold": 100,
+    # "photocell_wake_threshold": 50,
 
     # Mouth lip-sync envelope -- hal.c's playback envelope follower
     # "mouth_env_ref": 6000.0,        # RMS that saturates the envelope at 1.0 (16-bit PCM scale)
@@ -40,4 +40,7 @@ OVERRIDES = {
     # "stt_timeout_ms": 30000,        # whisper.cpp transcribing the whole utterance
     # "respond_timeout_ms": 120000,   # shim SSE stream: LLM generation across the whole reply
     # "tts_timeout_ms": 120000,       # Kokoro synthesizing one sentence
+
+    # Debug -- main.c runloop_task() / hal.c fish_hal_play()
+    # "repeat_mode": False,   # play the captured utterance back over the amp before STT (no mouth motor) -- check mic/acoustic quality by ear, no network hop
 }

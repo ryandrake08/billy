@@ -2,6 +2,7 @@
 #include "hal.h"
 #include "net.h"
 #include "wakeword.h"
+#include "fish_config.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -35,7 +36,7 @@ static esp_err_t speak_sentence(const char *sentence, const char *voice, void *c
     }
     else if (err == ESP_OK && audio.count > 0)
     {
-        err = fish_hal_play_with_mouth(&audio);
+        err = fish_hal_play(&audio, /* move_mouth = */ true);
     }
     heap_caps_free(audio.samples);
     return err;
@@ -112,6 +113,14 @@ static void runloop_task(void *arg)
             fish_hal_set_status(FISH_STATUS_ERROR);
             ESP_LOGE(TAG, "capture failed (PSRAM allocation) — rebooting");
             esp_restart();
+        }
+
+        // Debug: play the utterance straight back over the amp (no mouth motor) before it goes
+        // to STT, so mic/acoustic quality can be checked by ear with no network round trip.
+        // fish_hal_play() resamples it from MIC_SAMPLE_RATE to AMP_SAMPLE_RATE itself.
+        if (fish_config_get()->repeat_mode)
+        {
+            fish_hal_play(&utterance, /* move_mouth = */ false);
         }
 
         // Transcribe the utterance using speech-to-text backend

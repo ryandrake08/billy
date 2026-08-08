@@ -15,6 +15,7 @@ VALID_KEYS = {
     "mouth_mid_threshold", "mouth_open_threshold", "mouth_mid_duty_pct",
     "tail_flap_ms", "tail_settle_ms",
     "stt_timeout_ms", "respond_timeout_ms", "tts_timeout_ms",
+    "repeat_mode",
 }
 
 

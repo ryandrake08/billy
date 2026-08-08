@@ -140,7 +140,11 @@ void fish_hal_head_relax(void);
 // (audio_buf_t's own "no audio" contract) for the caller to skip STT on.
 esp_err_t fish_hal_capture_utterance(audio_buf_t *out);
 
-// SPEAK: play one mono PCM chunk at its own sample rate (mouth-motor sync comes later). Returns
-// FISH_ERR_AUDIO_HW if the amp TX write fails; ESP_OK otherwise (including for empty/null audio,
-// which is a no-op, not a failure).
-esp_err_t fish_hal_play_with_mouth(const audio_buf_t *audio);
+// SPEAK: play one mono PCM buffer through the amp. Resamples internally to AMP_SAMPLE_RATE if
+// `audio` isn't already at that rate (the TX clock is fixed at init time) -- the normal TTS path
+// is already at AMP_SAMPLE_RATE and never hits this. `move_mouth` drives the lip-sync motor off
+// the audio envelope when true; pass false for playback that shouldn't move the mechanism (e.g.
+// repeating a captured utterance back for debugging). Returns FISH_ERR_AUDIO_HW if the amp TX
+// write fails, ESP_ERR_NO_MEM if a needed resample allocation fails; ESP_OK otherwise (including
+// for empty/null audio, which is a no-op, not a failure).
+esp_err_t fish_hal_play(const audio_buf_t *audio, bool move_mouth);
