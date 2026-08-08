@@ -119,10 +119,12 @@ typedef enum
 // function's own result depends on the very config a forced fetch would change.
 fish_boot_cause_t fish_hal_boot_cause(void);
 
-// Block until an activation event (button press, or wake word in always-on mode). Returns true
-// for a real activation. Returns false if the mode switch flipped while waiting -- the caller
-// should re-enter IDLE (re-running fish_hal_prepare_sleep()) so the new mode gets a real shot at
-// it, rather than continuing to poll in the old mode's style.
+// Block until an activation event (button press, or wake word in always-on mode) passes the
+// photocell brightness gate. A single attempt, not a retry loop -- returns false both when the
+// mode switch flips while waiting and when a real wake candidate is rejected as too dark, so the
+// caller always re-enters IDLE (re-running fish_hal_prepare_sleep() and net_fetch_config())
+// between attempts rather than retrying silently inside this call. Returns true only for an
+// activation that's both real and photocell-approved.
 bool fish_hal_wait_for_wake(void);
 
 // Body choreography: a tail flap signals "I'm listening"; the head lifts to speak and

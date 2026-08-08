@@ -1049,24 +1049,18 @@ void fish_hal_prepare_sleep(void)
 
 bool fish_hal_wait_for_wake(void)
 {
-    for (;;)
+    // Read the current wake mode and run the correct wake detection.
+    wake_mode_t mode = current_wake_mode();
+    ESP_LOGI(TAG, "wait for wake — mode=%s", wake_mode_name(mode));
+    bool woke = (mode == WAKE_MODE_BUTTON) ? wait_for_button() : wait_for_wakeword();
+    if (!woke)
     {
-        wake_mode_t mode = current_wake_mode();
-        ESP_LOGI(TAG, "wait for wake — mode=%s", wake_mode_name(mode));
-        bool woke = (mode == WAKE_MODE_BUTTON) ? wait_for_button() : wait_for_wakeword();
-        if (!woke)
-        {
-            // The wait functions return false as soon as they see the mode switch flip (checked
-            // every poll tick / audio step). Return to the caller instead of re-dispatching here
-            // so it re-enters IDLE and calls fish_hal_prepare_sleep() again -- otherwise a flip
-            // to BUTTON mode would just start polling wait_for_button() forever without ever
-            // getting the real deep-sleep this mode is supposed to have.
-            ESP_LOGI(TAG, "wake: mode switch flipped — returning to idle");
-            return false;
-        }
-        if (photocell_bright_enough(wake_mode_name(mode))) return true;
-        // Too dark -- treat as a false positive and keep waiting in the same mode.
+        // The wait functions return false as soon as they see the mode switch flip (checked
+        // every poll tick / audio step).
+        ESP_LOGI(TAG, "wake: mode switch flipped — returning to idle");
+        return false;
     }
+    return photocell_bright_enough(wake_mode_name(mode));
 }
 
 // --- Motor choreography: tail flap + head raise/relax. Mouth PWM is driven separately, off the
