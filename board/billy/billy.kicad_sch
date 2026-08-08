@@ -11803,7 +11803,7 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "CL10A106KP8NNNC"
+		(property "DigiKey MP" "CL10A106KP8NNND"
 			(at 256.54 97.79 0)
 			(hide yes)
 			(show_name no)
@@ -15737,7 +15737,7 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "CL10A106KP8NNNC"
+		(property "DigiKey MP" "CL10A106KP8NNND"
 			(at 256.54 144.78 0)
 			(hide yes)
 			(show_name no)
@@ -16581,7 +16581,7 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "CL10A106KP8NNNC"
+		(property "DigiKey MP" "CL10A106KP8NNND"
 			(at 330.2 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -24873,7 +24873,7 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "CL21A226MAQNNNE"
+		(property "DigiKey MP" "CL21A226KOQNNNG"
 			(at 309.88 201.93 0)
 			(hide yes)
 			(show_name no)
@@ -27417,7 +27417,7 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "CL21A226MAQNNNE"
+		(property "DigiKey MP" "CL21A226KOQNNNG"
 			(at 379.73 201.93 0)
 			(hide yes)
 			(show_name no)
@@ -27753,7 +27753,7 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "CL21A226MAQNNNE"
+		(property "DigiKey MP" "CL21A226KOQNNNG"
 			(at 391.16 201.93 0)
 			(hide yes)
 			(show_name no)
