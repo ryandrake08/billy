@@ -47,4 +47,8 @@
 // --- Vmotor sense (J13): ADC1, resistor divider from Vdrive to GND -----------------------------
 // Rev.0 boards populate this test-point footprint as a bare scope-probe header instead (150R
 // series to the GPIO, 10k pulldown to GND, no divider) -- reads near 0 there, which is harmless.
+// BOARD_MISC_GPIO is the same pin under its Rev.0 scope-probe identity: fish_hal_set_misc_gpio()
+// reclaims it from ADC mode to drive it as a digital output for that header. Rev.0 test rigs
+// only -- calling it on Rev.1 hardware fights the Vdrive divider wired to this pin there.
 #define BOARD_VMOTOR_ADC       8  // ADC1_CH7 (ADC2 is unusable while WiFi is on)
+#define BOARD_MISC_GPIO        BOARD_VMOTOR_ADC

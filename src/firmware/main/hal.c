@@ -32,10 +32,12 @@ static const char *TAG = "hal";
 static i2s_chan_handle_t s_tx;
 static i2s_chan_handle_t s_rx;
 
-// Photocell: unit kept alive (not torn down after the boot-time log) so fish_hal_read_photocell()
-// stays available for whatever future consumer wants it -- see hal.h's doc comment.
-static adc_oneshot_unit_handle_t s_photocell_adc;
+// ADC1 unit, shared across channels (photocell + Vmotor sense) -- kept alive (not torn down
+// after the boot-time log) so the fish_hal_read_*() getters stay available for whatever future
+// consumer wants them -- see hal.h's doc comments.
+static adc_oneshot_unit_handle_t s_adc1;
 static adc_channel_t s_photocell_channel;
+static adc_channel_t s_vmotor_channel;
 
 // --- Status LED: single WS2812, driven over RMT via the led_strip component ------------------
 
@@ -61,6 +63,8 @@ void fish_hal_set_status(fish_status_t status)
 
 void fish_hal_set_misc_gpio(bool level)
 {
+    gpio_reset_pin(BOARD_MISC_GPIO);
+    gpio_set_direction(BOARD_MISC_GPIO, GPIO_MODE_OUTPUT);
     gpio_set_level(BOARD_MISC_GPIO, level);
 }
 
@@ -215,14 +219,6 @@ void fish_hal_init(void)
     gpio_hold_dis(BOARD_AMP_SD_MODE);
     ESP_LOGI(TAG, "init: amp SD_MODE high (unmuted)");
 
-    // Misc scope-probe pin: output, starts low (matches the external pulldown's idle state).
-    gpio_config_t misc_gpio = {
-        .pin_bit_mask = 1ULL << BOARD_MISC_GPIO,
-        .mode = GPIO_MODE_OUTPUT,
-    };
-    ESP_ERROR_CHECK(gpio_config(&misc_gpio));
-    gpio_set_level(BOARD_MISC_GPIO, 0);
-
     // Activation inputs: button (BOARD_BUTTON) and mode switch (BOARD_MODE_SW), both active-low
     // with internal pull-ups — a floating jumper reads high, grounding it reads low. The button
     // also has an EXTERNAL pull-up (board.h) for the deep-sleep wake path; the internal pull
@@ -235,21 +231,32 @@ void fish_hal_init(void)
     ESP_ERROR_CHECK(gpio_config(&in_gpio));
     ESP_LOGI(TAG, "init: activation inputs (button, mode switch) configured");
 
-    // Photocell: ADC1 oneshot, 12 dB attenuation for the full 0-3.3V range. No consumer yet, but
-    // the unit is kept alive (not torn down after this boot-time log) so fish_hal_read_photocell()
-    // stays available for whenever one lands -- see its doc comment.
-    adc_oneshot_unit_init_cfg_t photocell_unit_cfg = { .unit_id = ADC_UNIT_1 };
-    ESP_ERROR_CHECK(adc_oneshot_new_unit(&photocell_unit_cfg, &s_photocell_adc));
-    adc_unit_t photocell_unit;
-    ESP_ERROR_CHECK(adc_oneshot_io_to_channel(BOARD_PHOTOCELL_ADC, &photocell_unit, &s_photocell_channel));
-    adc_oneshot_chan_cfg_t photocell_chan_cfg = {
+    // ADC1 unit, shared by the photocell and Vmotor-sense channels below. 12 dB attenuation for
+    // the full 0-3.3V range on both. Kept alive (not torn down after these boot-time logs) so the
+    // fish_hal_read_*() getters stay available for whenever a consumer lands -- see their doc
+    // comments.
+    adc_oneshot_unit_init_cfg_t adc1_cfg = { .unit_id = ADC_UNIT_1 };
+    ESP_ERROR_CHECK(adc_oneshot_new_unit(&adc1_cfg, &s_adc1));
+    adc_oneshot_chan_cfg_t adc1_chan_cfg = {
         .atten = ADC_ATTEN_DB_12,
         .bitwidth = ADC_BITWIDTH_DEFAULT,
     };
-    ESP_ERROR_CHECK(adc_oneshot_config_channel(s_photocell_adc, s_photocell_channel, &photocell_chan_cfg));
+
+    adc_unit_t photocell_unit;
+    ESP_ERROR_CHECK(adc_oneshot_io_to_channel(BOARD_PHOTOCELL_ADC, &photocell_unit, &s_photocell_channel));
+    ESP_ERROR_CHECK(adc_oneshot_config_channel(s_adc1, s_photocell_channel, &adc1_chan_cfg));
     int photocell_raw = 0;
-    ESP_ERROR_CHECK(adc_oneshot_read(s_photocell_adc, s_photocell_channel, &photocell_raw));
+    ESP_ERROR_CHECK(adc_oneshot_read(s_adc1, s_photocell_channel, &photocell_raw));
     ESP_LOGI(TAG, "init: photocell ready (raw=%d)", photocell_raw);
+
+    // No consumer yet on either revision of this pad -- Rev.0 boards wire it as a bare
+    // scope-probe header instead of the Vdrive divider, so this reads near 0 there (see board.h).
+    adc_unit_t vmotor_unit;
+    ESP_ERROR_CHECK(adc_oneshot_io_to_channel(BOARD_VMOTOR_ADC, &vmotor_unit, &s_vmotor_channel));
+    ESP_ERROR_CHECK(adc_oneshot_config_channel(s_adc1, s_vmotor_channel, &adc1_chan_cfg));
+    int vmotor_raw = 0;
+    ESP_ERROR_CHECK(adc_oneshot_read(s_adc1, s_vmotor_channel, &vmotor_raw));
+    ESP_LOGI(TAG, "init: Vmotor sense ready (raw=%d)", vmotor_raw);
 
     // Amp: I2S0 TX, 16-bit stereo, fixed at AMP_SAMPLE_RATE. auto_clear_after_cb makes the
     // hardware zero each DMA buffer once it's sent and nothing new has replaced it, so the amp
@@ -297,7 +304,14 @@ void fish_hal_init(void)
 int fish_hal_read_photocell(void)
 {
     int raw = 0;
-    ESP_ERROR_CHECK(adc_oneshot_read(s_photocell_adc, s_photocell_channel, &raw));
+    ESP_ERROR_CHECK(adc_oneshot_read(s_adc1, s_photocell_channel, &raw));
+    return raw;
+}
+
+int fish_hal_read_vmotor(void)
+{
+    int raw = 0;
+    ESP_ERROR_CHECK(adc_oneshot_read(s_adc1, s_vmotor_channel, &raw));
     return raw;
 }
 

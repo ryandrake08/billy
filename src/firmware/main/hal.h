@@ -46,6 +46,14 @@ void fish_hal_init(void);
 
 void fish_hal_set_status(fish_status_t status);
 
+// Rev.0 debug only: reclaims BOARD_MISC_GPIO from ADC mode and drives it high or low, for the
+// bare scope-probe header on that board. Do not call on Rev.1 hardware -- the same pin there is
+// BOARD_VMOTOR_ADC, wired to the Vdrive divider, and this will fight it. Safe to call repeatedly;
+// each call reconfigures the pad fresh. After calling this, fish_hal_read_vmotor() will return
+// stale/invalid readings until fish_hal_init() re-runs (not automatic) -- fine on Rev.0, since
+// there's no real divider there for it to read anyway.
+void fish_hal_set_misc_gpio(bool level);
+
 // Raw Vmotor (Vdrive) ADC reading (12-bit, 0-4095 over the 0-3.3V range via 12 dB attenuation),
 // through the board.h divider. On Rev.0 boards, where this pad is a bare scope-probe header
 // instead of the divider, this reads near 0. Requires fish_hal_init() to have already run.

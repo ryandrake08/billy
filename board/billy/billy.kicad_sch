@@ -6528,9 +6528,9 @@
 		)
 		(uuid "c3a4dd26-fc37-4de1-a1d5-da69d6103ce1")
 	)
-	(text "MISC"
+	(text "V SENSE"
 		(exclude_from_sim no)
-		(at 154.94 65.278 0)
+		(at 154.686 65.278 0)
 		(effects
 			(font
 				(size 5.08 5.08)
@@ -6625,12 +6625,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "1bacd07c-4158-498b-869a-644c1e76b6de")
-	)
-	(junction
-		(at 156.21 86.36)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "1e91fb83-ea73-4c51-8dca-5865847866c6")
 	)
 	(junction
 		(at 128.27 129.54)
@@ -6944,6 +6938,12 @@
 		(color 0 0 0 0)
 		(uuid "f1ddb425-9ea0-4a67-bc23-3e896fef7735")
 	)
+	(junction
+		(at 154.94 87.63)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "fd2fac00-8cec-455e-94d8-6a9d29942a84")
+	)
 	(no_connect
 		(at 101.6 223.52)
 		(uuid "0ab05e99-8b17-4e31-87c6-b4d737164d39")
@@ -7091,6 +7091,16 @@
 			(type default)
 		)
 		(uuid "08849858-6d4a-4b45-8eb5-ffdc55e7d5dd")
+	)
+	(wire
+		(pts
+			(xy 152.4 87.63) (xy 154.94 87.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "08e6587a-4cc9-4d8e-a8ca-7e49d8e437b2")
 	)
 	(wire
 		(pts
@@ -8024,6 +8034,16 @@
 	)
 	(wire
 		(pts
+			(xy 154.94 76.2) (xy 154.94 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "679b9b63-e9aa-4ca8-b2c7-b9cb1be6c7be")
+	)
+	(wire
+		(pts
 			(xy 358.14 39.37) (xy 358.14 43.18)
 		)
 		(stroke
@@ -8184,16 +8204,6 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 86.36) (xy 156.21 86.36)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "79dbe8f2-893c-4315-ba97-5ca690ef3f0f")
-	)
-	(wire
-		(pts
 			(xy 322.58 184.15) (xy 322.58 189.23)
 		)
 		(stroke
@@ -8234,7 +8244,7 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 88.9) (xy 156.21 86.36)
+			(xy 154.94 88.9) (xy 154.94 87.63)
 		)
 		(stroke
 			(width 0)
@@ -8441,6 +8451,16 @@
 			(type default)
 		)
 		(uuid "9a6c8d50-e0e4-4fd7-ba02-a779c065f9b5")
+	)
+	(wire
+		(pts
+			(xy 154.94 87.63) (xy 154.94 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9a9b5dd8-8934-47db-90cb-1b6bf1cdbb07")
 	)
 	(wire
 		(pts
@@ -9021,16 +9041,6 @@
 			(type default)
 		)
 		(uuid "cf797c9b-f63e-4f08-871f-70b5237ae2f6")
-	)
-	(wire
-		(pts
-			(xy 167.64 86.36) (xy 166.37 86.36)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cfbd8280-5c0f-47f0-8cd2-7aceca0dc3a9")
 	)
 	(wire
 		(pts
@@ -10646,17 +10656,17 @@
 	)
 	(global_label "GPIO8"
 		(shape input)
-		(at 167.64 86.36 0)
+		(at 152.4 87.63 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify right)
 		)
 		(uuid "c4135e95-576e-4662-874f-faec06c9d4db")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 176.31 86.36 0)
+			(at 143.73 87.63 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10664,7 +10674,7 @@
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
 	)
@@ -13586,182 +13596,6 @@
 			(project "billy"
 				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
 					(reference "#PWR049")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint")
-		(at 156.21 86.36 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "1a2f30d6-0b30-43e2-ada4-3079e9254d87")
-		(property "Reference" "TP5"
-			(at 156.21 79.502 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Keystone_5011"
-			(at 156.21 81.28 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Keystone_5010-5014_Multipurpose"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "http://www.keyelco.com/product-pdf.cfm?p=1319"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Keystone 5010-5014 THM multipurpose test point (loop) -- scope probe grab point for BOARD_MISC_GPIO"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC Part" "C238127"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MF" "Keystone Electronics"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MP" "5011"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MF" "Keystone Electronics"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "5011"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" "36-5011-ND"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MF" "Keystone Electronics"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MP" "5011"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser Part" "534-5011"
-			(at 156.21 86.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "b43273a9-0380-4777-b6bf-4c9f4b76539a")
-		)
-		(instances
-			(project "billy"
-				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
-					(reference "TP5")
 					(unit 1)
 				)
 			)
@@ -17423,6 +17257,84 @@
 		)
 	)
 	(symbol
+		(lib_id "power:Vdrive")
+		(at 154.94 76.2 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "47016afb-1f3b-4ba7-b3f0-8c7616190ad5")
+		(property "Reference" "#PWR055"
+			(at 154.94 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 154.94 71.12 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 154.94 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 154.94 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 154.94 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d8580256-b724-431a-9c37-e97f8fccf022")
+		)
+		(instances
+			(project "billy"
+				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
+					(reference "#PWR055")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 201.93 115.57 0)
 		(unit 1)
@@ -18275,7 +18187,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 156.21 96.52 0)
+		(at 154.94 96.52 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -18286,7 +18198,7 @@
 		(fields_autoplaced yes)
 		(uuid "53831346-b430-4732-a765-902f430bdf8d")
 		(property "Reference" "#PWR054"
-			(at 156.21 102.87 0)
+			(at 154.94 102.87 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18297,7 +18209,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 156.21 101.6 0)
+			(at 154.94 101.6 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -18307,7 +18219,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 156.21 96.52 0)
+			(at 154.94 96.52 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18318,7 +18230,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 156.21 96.52 0)
+			(at 154.94 96.52 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18329,7 +18241,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 156.21 96.52 0)
+			(at 154.94 96.52 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29668,7 +29580,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 162.56 86.36 90)
+		(at 154.94 82.55 180)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -29679,27 +29591,29 @@
 		(fields_autoplaced yes)
 		(uuid "ee345f65-ffa2-4aa3-99e0-67ab96ddca15")
 		(property "Reference" "R13"
-			(at 162.56 80.01 90)
+			(at 157.48 81.2799 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify right)
 			)
 		)
-		(property "Value" "150"
-			(at 162.56 82.55 90)
+		(property "Value" "100k"
+			(at 157.48 83.8199 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify right)
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 162.56 88.138 90)
+			(at 156.718 82.55 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29710,7 +29624,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 162.56 86.36 0)
+			(at 154.94 82.55 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29720,8 +29634,8 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
-			(at 162.56 86.36 0)
+		(property "Description" "Resistor -- Vmotor-sense divider top leg (see R15, bottom leg); Vdrive to R13 to GPIO8/ADC node"
+			(at 154.94 82.55 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29732,7 +29646,7 @@
 			)
 		)
 		(property "DigiKey MF" "Stackpole Electronics"
-			(at 162.56 86.36 90)
+			(at 154.94 82.55 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29742,8 +29656,8 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "RMCF0603FT150R"
-			(at 162.56 86.36 90)
+		(property "DigiKey MP" "RMCF0603FT100K"
+			(at 154.94 82.55 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29753,8 +29667,8 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C22808"
-			(at 162.56 86.36 90)
+		(property "LCSC Part" "C25803"
+			(at 154.94 82.55 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29765,7 +29679,7 @@
 			)
 		)
 		(property "MF" "UNI-ROYAL"
-			(at 162.56 86.36 90)
+			(at 154.94 82.55 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29775,8 +29689,8 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1500T5E"
-			(at 162.56 86.36 90)
+		(property "MP" "0603WAF1003T5E"
+			(at 154.94 82.55 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29787,7 +29701,7 @@
 			)
 		)
 		(property "Mouser MF" ""
-			(at 162.56 86.36 90)
+			(at 154.94 82.55 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29798,7 +29712,7 @@
 			)
 		)
 		(property "Mouser MP" ""
-			(at 162.56 86.36 90)
+			(at 154.94 82.55 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29809,7 +29723,7 @@
 			)
 		)
 		(property "Mouser Part" ""
-			(at 162.56 86.36 90)
+			(at 154.94 82.55 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30105,7 +30019,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 156.21 92.71 0)
+		(at 154.94 92.71 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -30116,7 +30030,7 @@
 		(fields_autoplaced yes)
 		(uuid "f0d645cc-4969-4420-8aac-0d53eee9d98e")
 		(property "Reference" "R15"
-			(at 158.75 91.4399 0)
+			(at 157.48 91.4399 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -30126,8 +30040,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
-			(at 158.75 93.9799 0)
+		(property "Value" "75k"
+			(at 157.48 93.9799 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -30138,7 +30052,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 154.432 92.71 90)
+			(at 153.162 92.71 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30149,7 +30063,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 156.21 92.71 0)
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30159,8 +30073,8 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
-			(at 156.21 92.71 0)
+		(property "Description" "Resistor -- Vmotor-sense divider bottom leg (see R13, top leg)"
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30171,7 +30085,7 @@
 			)
 		)
 		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
-			(at 156.21 92.71 0)
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30181,8 +30095,8 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C25804"
-			(at 156.21 92.71 0)
+		(property "LCSC Part" ""
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30192,8 +30106,8 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
-			(at 156.21 92.71 0)
+		(property "MF" ""
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30203,8 +30117,8 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1002T5E"
-			(at 156.21 92.71 0)
+		(property "MP" ""
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30215,7 +30129,7 @@
 			)
 		)
 		(property "DigiKey MF" "Stackpole Electronics"
-			(at 156.21 92.71 0)
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30225,8 +30139,8 @@
 				)
 			)
 		)
-		(property "DigiKey MP" "RMCF0603FT10K0"
-			(at 156.21 92.71 0)
+		(property "DigiKey MP" "RMCF0603JT75K0"
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30237,7 +30151,7 @@
 			)
 		)
 		(property "DigiKey Part" ""
-			(at 156.21 92.71 0)
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30248,7 +30162,7 @@
 			)
 		)
 		(property "Mouser MF" ""
-			(at 156.21 92.71 0)
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30259,7 +30173,7 @@
 			)
 		)
 		(property "Mouser MP" ""
-			(at 156.21 92.71 0)
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30270,7 +30184,7 @@
 			)
 		)
 		(property "Mouser Part" ""
-			(at 156.21 92.71 0)
+			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30305,7 +30219,6 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "f12af466-b436-412e-9d21-fd02f704f030")
 		(property "Reference" "#PWR015"
 			(at 185.42 91.44 0)
