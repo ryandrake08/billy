@@ -46,9 +46,10 @@ void fish_hal_init(void);
 
 void fish_hal_set_status(fish_status_t status);
 
-// Drives the bare scope-probe pin (BOARD_MISC_GPIO, idles low via an external pulldown) high or
-// low. Not called anywhere yet -- for ad hoc use when debugging with an oscilloscope.
-void fish_hal_set_misc_gpio(bool level);
+// Raw Vmotor (Vdrive) ADC reading (12-bit, 0-4095 over the 0-3.3V range via 12 dB attenuation),
+// through the board.h divider. On Rev.0 boards, where this pad is a bare scope-probe header
+// instead of the divider, this reads near 0. Requires fish_hal_init() to have already run.
+int fish_hal_read_vmotor(void);
 
 // Bench audio self-test (not in the E2E boot path): 440 Hz tone, then a live mic-level log.
 void fish_hal_selftest(void);

@@ -1,4 +1,7 @@
-// Pin map for the Billy fish — ESP32-S3-WROOM-1 N8R8.
+// Pin map for the Billy fish. Dev board is an ESP32-S3-WROOM-1 N8R8 (octal PSRAM); the
+// board/billy main board (Rev.1) populates the N4R2 (quad PSRAM) variant. Firmware targets both,
+// so GPIO33-37 stay unused here: they're internally wired to the octal PSRAM bus on N8R8 and
+// unavailable as GPIO there, even though N4R2 exposes them.
 // Single source of truth for wiring: the HAL includes this; nothing else hard-codes a GPIO.
 // Values are GPIO numbers. Pin-selection rules are already honored: ADC1 for the photocell
 // (ADC2 is unusable while WiFi is on), an RTC-capable GPIO for the deep-sleep-wake button, and
@@ -41,5 +44,7 @@
 #define BOARD_STATUS_LED      38  // data (DIN), through a series resistor
 #define BOARD_STATUS_LED_EN   18  // VDD gate (low-side FET): high = LED powered, low = off
 
-// --- Misc scope-probe pin (J13): bare header, 150R series to the GPIO, 10k pulldown to GND ---
-#define BOARD_MISC_GPIO        8  // idles low; drive high/pulse from firmware to trigger a scope
+// --- Vmotor sense (J13): ADC1, resistor divider from Vdrive to GND -----------------------------
+// Rev.0 boards populate this test-point footprint as a bare scope-probe header instead (150R
+// series to the GPIO, 10k pulldown to GND, no divider) -- reads near 0 there, which is harmless.
+#define BOARD_VMOTOR_ADC       8  // ADC1_CH7 (ADC2 is unusable while WiFi is on)
