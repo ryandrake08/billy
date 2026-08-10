@@ -577,6 +577,26 @@ esp_err_t fish_hal_play(const audio_buf_t *audio, bool move_mouth)
     return err;
 }
 
+// --- Button handling -------------------------------------------------------------------------
+
+#define BUTTON_DEBOUNCE_MS   40    // press must persist this long to count (contact bounce)
+
+// Active-low: the jumper grounded to GND reads 0 = pressed.
+static bool button_pressed(void)
+{
+    return gpio_get_level(BOARD_BUTTON) == 0;
+}
+
+// Single-shot debounced press check: true only if the button is pressed now AND still pressed
+// after BUTTON_DEBOUNCE_MS (contact bounce filtering). Cheap to poll once per loop iteration --
+// only blocks for the debounce window when a press is actually seen.
+static bool button_press_debounced(void)
+{
+    if (!button_pressed()) return false;
+    vTaskDelay(pdMS_TO_TICKS(BUTTON_DEBOUNCE_MS));
+    return button_pressed();
+}
+
 // --- Mic capture with energy VAD -------------------------------------------------------------
 
 // Block size is a mic-read granularity choice, not a tunable -- stays compile-time. The onset/
@@ -588,6 +608,12 @@ esp_err_t fish_hal_play(const audio_buf_t *audio, bool move_mouth)
 
 esp_err_t fish_hal_capture_utterance(audio_buf_t *out)
 {
+    // The button that triggered this turn (BUTTON-mode activation, or a wakeword-mode manual
+    // override) may still be physically held down when capture starts -- wait for release first
+    // so that same press doesn't immediately read as an abort below.
+    while (button_pressed())
+        vTaskDelay(pdMS_TO_TICKS(VAD_BLOCK_MS));
+
     const fish_config_t *cfg = fish_config_get();
     const size_t max_samples = (size_t) MIC_SAMPLE_RATE * cfg->capture_max_ms / 1000;
     int16_t *pcm = heap_caps_malloc(max_samples * sizeof(int16_t), MALLOC_CAP_SPIRAM);
@@ -609,6 +635,15 @@ esp_err_t fish_hal_capture_utterance(audio_buf_t *out)
         size_t br = 0;
         if (i2s_channel_read(s_rx, raw, sizeof raw, &br, portMAX_DELAY) != ESP_OK)
             continue;
+        if (button_press_debounced())
+        {
+            ESP_LOGI(TAG, "listen: button press — aborting capture");
+            heap_caps_free(pcm);
+            out->samples = NULL;
+            out->count = 0;
+            out->sample_rate = MIC_SAMPLE_RATE;
+            return ESP_OK;
+        }
     }
 
     bool capturing = false;
@@ -619,6 +654,16 @@ esp_err_t fish_hal_capture_utterance(audio_buf_t *out)
     ESP_LOGI(TAG, "listen: waiting for speech...");
     while (count < max_samples)
     {
+        if (button_press_debounced())
+        {
+            ESP_LOGI(TAG, "listen: button press — aborting capture (%d ms voiced so far)", voiced_ms);
+            heap_caps_free(pcm);
+            out->samples = NULL;
+            out->count = 0;
+            out->sample_rate = MIC_SAMPLE_RATE;
+            return ESP_OK;
+        }
+
         size_t bytes_read = 0;
         if (i2s_channel_read(s_rx, raw, sizeof raw, &bytes_read, portMAX_DELAY) != ESP_OK)
             continue;
@@ -867,7 +912,6 @@ typedef enum
 } wake_mode_t;
 
 #define WAKE_POLL_MS         20    // poll interval for the mode switch (button mode) / button debounce
-#define BUTTON_DEBOUNCE_MS   40    // press must persist this long to count (contact bounce)
 
 static const char *wake_mode_name(wake_mode_t m)
 {
@@ -880,12 +924,6 @@ static wake_mode_t current_wake_mode(void)
     // BUTTON; grounding it selects hands-free WAKEWORD. Read fresh each turn so moving the jumper
     // takes effect immediately.
     return gpio_get_level(BOARD_MODE_SW) ? WAKE_MODE_BUTTON : WAKE_MODE_WAKEWORD;
-}
-
-// Active-low: the jumper grounded to GND reads 0 = pressed.
-static bool button_pressed(void)
-{
-    return gpio_get_level(BOARD_BUTTON) == 0;
 }
 
 static bool button_mode_active(void)   { return current_wake_mode() == WAKE_MODE_BUTTON; }
@@ -903,16 +941,6 @@ static bool wait_for_button_release(bool (*keep_waiting)(void))
         vTaskDelay(pdMS_TO_TICKS(WAKE_POLL_MS));
     }
     return true;
-}
-
-// Single-shot debounced press check: true only if the button is pressed now AND still pressed
-// after BUTTON_DEBOUNCE_MS (contact bounce filtering). Cheap to poll once per loop iteration --
-// only blocks for the debounce window when a press is actually seen.
-static bool button_press_debounced(void)
-{
-    if (!button_pressed()) return false;
-    vTaskDelay(pdMS_TO_TICKS(BUTTON_DEBOUNCE_MS));
-    return button_pressed();
 }
 
 // BUTTON mode: block until a fresh, debounced press. If the jumper is already grounded from the

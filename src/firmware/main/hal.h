@@ -147,8 +147,10 @@ void fish_hal_head_relax(void);
 // ESP_ERR_NO_MEM if the PSRAM allocation fails -- a fatal condition, not worth retrying, since a
 // single ~10 s mono 16-bit buffer failing to allocate points at PSRAM exhaustion/corruption
 // rather than transient pressure. Otherwise returns ESP_OK; a capture with no real speech (just
-// noise/clicks) is a normal outcome, not an error, and comes back as a zeroed *out
-// (audio_buf_t's own "no audio" contract) for the caller to skip STT on.
+// noise/clicks), or one abandoned partway through by a button press, is a normal outcome, not an
+// error, and comes back as a zeroed *out (audio_buf_t's own "no audio" contract) for the caller
+// to skip STT on -- the runloop's existing "heard nothing" path is what sends it back to idle,
+// so no separate handling is needed for an interrupted capture.
 esp_err_t fish_hal_capture_utterance(audio_buf_t *out);
 
 // SPEAK: play one mono PCM buffer through the amp. Resamples internally to AMP_SAMPLE_RATE if
