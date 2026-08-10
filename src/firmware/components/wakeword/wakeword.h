@@ -1,5 +1,5 @@
 // Wake-word detector — microWakeWord streaming model on TFLite-Micro, behind a C interface so the
-// C firmware (hal.c) can drive it without touching C++/TFLM. Ported from the ESPHome
+// C firmware (activation.c) can drive it without touching C++/TFLM. Ported from the ESPHome
 // micro_wake_word component (github.com/esphome/esphome, Apache-2.0) via the bare-ESP-IDF
 // reference at github.com/0xD34D/micro_wake_word_standalone; see wakeword.cpp and
 // models/ATTRIBUTION.md for the exact provenance of the ported logic and the model.
@@ -13,7 +13,7 @@ extern "C" {
 #endif
 
 // wakeword_feed() must be called with a multiple of this many samples (10 ms @ 16 kHz — the
-// model's feature-slice step). AUDIO_SAMPLE_RATE in hal.c is assumed to be 16 kHz throughout.
+// model's feature-slice step). MIC_SAMPLE_RATE in audio.c is assumed to be 16 kHz throughout.
 #define WAKEWORD_STEP_SAMPLES 160
 
 // Loads the audio frontend and the streaming model (trained "Hey Billy" model — see

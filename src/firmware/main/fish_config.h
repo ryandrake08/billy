@@ -9,17 +9,17 @@
 
 typedef struct
 {
-    // VAD (voice-activity detection) -- hal.c fish_hal_capture_utterance()
+    // VAD (voice-activity detection) -- audio.c audio_capture_utterance()
     int vad_onset_rms;
     int vad_silence_ms;
     int vad_min_voiced_ms;
     int vad_drain_ms;
     int capture_max_ms;
 
-    // Photocell wake gate -- hal.c fish_hal_wait_for_wake()
+    // Photocell wake gate -- activation.c activation_wait_for_wake()
     int photocell_wake_threshold;
 
-    // Mouth lip-sync envelope -- hal.c's playback envelope follower
+    // Mouth lip-sync envelope -- audio.c's playback envelope follower
     float mouth_env_ref;
     float mouth_env_attack;
     float mouth_env_release;
@@ -27,7 +27,7 @@ typedef struct
     float mouth_open_threshold;
     int   mouth_mid_duty_pct;
 
-    // Tail choreography timing -- hal.c fish_hal_tail_flap()
+    // Tail choreography timing -- motors.c motors_tail_flap()
     int tail_flap_ms;
     int tail_settle_ms;
 
@@ -38,7 +38,7 @@ typedef struct
 
     // Debug -- main.c runloop_task(): play a just-captured utterance back over the amp (no mouth
     // motor) before sending it to STT, so mic/acoustic quality can be checked by ear with no
-    // network round trip. hal.c fish_hal_play() resamples it to AMP_SAMPLE_RATE automatically.
+    // network round trip. audio.c audio_play() resamples it to AMP_SAMPLE_RATE automatically.
     bool repeat_mode;
 } fish_config_t;
 

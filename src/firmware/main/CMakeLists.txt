@@ -1,9 +1,9 @@
-# Transport needs the WiFi/event/netif/nvs stack + esp_http_client. The HAL drives I²S audio
-# (mic RX + amp TX), GPIO (amp SD_MODE + motor IN2/nSLEEP/nFAULT), motor PWM (esp_driver_ledc),
-# the photocell (esp_adc), and the WS2812 status LED (led_strip, a managed component — see
-# idf_component.yml).
+# Transport needs the WiFi/event/netif/nvs stack + esp_http_client. hal.c is the low-level driver
+# layer (I²S, GPIO, esp_driver_ledc PWM, esp_adc, led_strip -- a managed component, see
+# idf_component.yml); audio.c/motors.c/sensors.c/status_led.c/activation.c are the device-level
+# modules built on it.
 idf_component_register(
-    SRCS "main.c" "hal.c" "net.c" "fish_config.c"
+    SRCS "main.c" "hal.c" "sensors.c" "status_led.c" "motors.c" "audio.c" "activation.c" "net.c" "fish_config.c"
     INCLUDE_DIRS "."
     REQUIRES esp_wifi esp_event esp_netif nvs_flash esp_http_client esp_driver_i2s esp_driver_gpio esp_driver_ledc esp_adc led_strip wakeword
 )

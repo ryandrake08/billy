@@ -1,0 +1,45 @@
+// Motor drivers: 2x DRV8833, three unidirectional channels (mouth/head/tail). Device-level module
+// built on hal.h's generic hal_gpio_*/hal_pwm_* primitives.
+#pragma once
+#include <stdbool.h>
+#include <stdint.h>
+
+// GPIO (IN2 pins, nSLEEP, nFAULT) + one shared LEDC timer and three PWM channels. Call once,
+// before any other motors_* function.
+void motors_init(void);
+
+// nSLEEP low -- park both DRV8833s (~uA standby). Safe to call repeatedly; called every idle
+// cycle regardless of wake mode (see activation.c's prepare-sleep).
+void motors_park(void);
+
+// BUTTON-mode deep sleep only: holds nSLEEP low through the sleep (motors_park() sets the level;
+// this makes it survive the reset -- see activation.c's deep-sleep entry for why this is a
+// separate call from motors_park()).
+void motors_hold_for_sleep(void);
+
+// Enables both DRV8833s (nSLEEP high). Called by motors_* choreography below and by audio.c
+// before driving the mouth motor off the playback envelope.
+void motors_enable(void);
+
+// Mouth lip-sync gate, 0-100% duty. audio.c's envelope follower computes the target gate level
+// (closed/mid/open) off the audio being played and calls this -- motors.c owns the PWM duty-max
+// arithmetic so callers only ever think in percent.
+void motors_set_mouth_pct(uint8_t pct);
+
+// ACTIVATE: a single "I'm listening" gesture -- drive the tail out and let the spring return it.
+// Blocking; requires motors_init() to have already run.
+void motors_tail_flap(void);
+
+// SPEAK: raise the head and hold it (non-blocking -- stays driven until motors_head_relax()).
+void motors_head_out(void);
+void motors_head_relax(void);
+
+// Bench self-test (not in the E2E boot path): one motor at a time, sweeping duty to find the
+// minimum duty that overcomes the mechanism's spring preload/gearing -- stops immediately on any
+// nFAULT trip. Requires motors_init() to have already run.
+void motors_selftest(void);
+
+// Progressive combined-load test: head, then head+tail, then head+tail+mouth, each at 100% duty
+// for 2 s, then all off. Measures real combined-load rail sag. Stops immediately on any nFAULT
+// trip. Requires motors_init() to have already run.
+void motors_stresstest(void);

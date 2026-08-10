@@ -1,5 +1,9 @@
 // Billy fish firmware — entry point and top-level turn loop.
-#include "hal.h"
+#include "audio.h"
+#include "motors.h"
+#include "activation.h"
+#include "sensors.h"
+#include "status_led.h"
 #include "net.h"
 #include "wakeword.h"
 #include "fish_config.h"
@@ -17,7 +21,7 @@ static const char *TAG = "billy";
 // net_respond for each sentence, so playback pipelines with generation. Propagates (net_respond
 // stops the stream and passes it up) for conditions the runloop needs to reboot over -- playback
 // hardware failure, or PSRAM exhaustion, which will just recur on the next sentence's allocation
-// the same way fish_hal_capture_utterance's PSRAM failure recurs on retry. Any other TTS failure
+// the same way audio_capture_utterance's PSRAM failure recurs on retry. Any other TTS failure
 // is handled locally (tone + keep going) since it's a per-sentence network hiccup, not a reason to
 // abort the whole reply.
 static esp_err_t speak_sentence(const char *sentence, const char *voice, void *ctx)
@@ -31,12 +35,12 @@ static esp_err_t speak_sentence(const char *sentence, const char *voice, void *c
         // think the fish just finished speaking normally. Recoverable, so swallow it here rather
         // than propagating: net_respond keeps streaming the rest of the reply.
         ESP_LOGW(TAG, "TTS failed for sentence: \"%s\"", sentence);
-        fish_hal_error_tone();
+        audio_error_tone();
         err = ESP_OK;
     }
     else if (err == ESP_OK && audio.count > 0)
     {
-        err = fish_hal_play(&audio, /* move_mouth = */ true);
+        err = audio_play(&audio, /* move_mouth = */ true);
     }
     heap_caps_free(audio.samples);
     return err;
@@ -50,24 +54,24 @@ static void runloop_task(void *arg)
 {
     (void) arg;
 
-    // fish_hal_boot_cause() validates a button-pin wake against the photocell (fish_config_get()),
+    // activation_boot_cause() validates a button-pin wake against the photocell (fish_config_get()),
     // which by default is still whatever was compiled in -- nothing has fetched config yet at
     // this point in boot. So a config fetch needs to be forced *before* that validation runs, for
     // it to have a real shot at a fresh (or shim-overridden) threshold. That decision can't be
-    // based on fish_hal_boot_cause()'s own result -- that's the very thing the fetch would
-    // affect -- so it's based on the raw wake pin instead (fish_hal_deep_sleep_wake_pin()), which
-    // has no such dependency.
-    if (fish_hal_deep_sleep_wake_pin() == FISH_WAKE_PIN_BUTTON)
+    // based on activation_boot_cause()'s own result -- that's the very thing the fetch would
+    // affect -- so it's based on the raw wake pin instead (activation_deep_sleep_wake_pin()),
+    // which has no such dependency.
+    if (activation_deep_sleep_wake_pin() == WAKE_PIN_BUTTON)
     {
         net_fetch_config(/* wait_for_backend = */ true);
     }
 
     // A button press in BUTTON mode wakes the chip from deep sleep via a full reboot -- landing
-    // in idle here would immediately re-sleep on that same press (see fish_boot_cause_t's doc
+    // in idle here would immediately re-sleep on that same press (see boot_cause_t's doc
     // comment) without ever using it, so the first turn skips idle and treats the press that
     // caused it as the activation event. A mode-switch reboot (or no such cause at all) goes
     // through idle normally, like a cold boot.
-    bool skip_idle = (fish_hal_boot_cause() == FISH_BOOT_BUTTON);
+    bool skip_idle = (activation_boot_cause() == BOOT_BUTTON);
 
     for (;;)
     {
@@ -75,8 +79,8 @@ static void runloop_task(void *arg)
         // WAKEWORD-mode fish (which never reboots) can be retuned live with no reboot at all.
         // The one case that needs a forced, longer wait (a button-caused wake, about to skip
         // idle below and go straight into a turn that needs the network right after) already got
-        // it above, before fish_hal_boot_cause() ran -- this call always stays light so it never
-        // meaningfully delays sleep or a WAKEWORD-mode loop.
+        // it above, before activation_boot_cause() ran -- this call always stays light so it
+        // never meaningfully delays sleep or a WAKEWORD-mode loop.
         net_fetch_config(/* wait_for_backend = */ false);
 
         if (!skip_idle)
@@ -85,46 +89,46 @@ static void runloop_task(void *arg)
             // In button mode, this is a deep sleep. Activating the button or switch will boot the device
             // In wakeword mode, activating the button or wakeword will continue to the next state
             // In wakeword mode, activating the switch will interrupt the wait and return back to idle
-            fish_hal_set_status(FISH_STATUS_IDLE);
-            fish_hal_prepare_sleep();
-            if (!fish_hal_wait_for_wake())
+            led_set_status(LED_STATUS_IDLE);
+            activation_prepare_sleep();
+            if (!activation_wait_for_wake())
             {
                 // The mode switch flipped -- loop back so the next pass calls
-                // fish_hal_prepare_sleep() again with the fresh mode (real deep sleep if it's now
-                // BUTTON mode) instead of continuing to poll in the old mode's style.
+                // activation_prepare_sleep() again with the fresh mode (real deep sleep if it's
+                // now BUTTON mode) instead of continuing to poll in the old mode's style.
                 continue;
             }
         }
         skip_idle = false;
 
         // Prepare to listen -- fish plays a prompt tone and flaps its tail
-        fish_hal_set_status(FISH_STATUS_LISTEN);
-        fish_hal_prompt_tone();
-        fish_hal_tail_flap();
+        led_set_status(LED_STATUS_LISTEN);
+        audio_prompt_tone();
+        motors_tail_flap();
 
         // Capture an utterance from the microphone
         audio_buf_t utterance = {0};
-        if (fish_hal_capture_utterance(&utterance) != ESP_OK)   // blocks until speech, then silence
+        if (audio_capture_utterance(&utterance) != ESP_OK)   // blocks until speech, then silence
         {
             // PSRAM allocation failure -- not worth retrying capture again against the same
             // exhausted heap. A fresh boot clears that heap state entirely, so recover by
             // rebooting rather than halting; flash the error status first so it's visible
             // even though the reboot (and BUTTON mode's own deep-sleep reboots) will clear it.
-            fish_hal_set_status(FISH_STATUS_ERROR);
+            led_set_status(LED_STATUS_ERROR);
             ESP_LOGE(TAG, "capture failed (PSRAM allocation) — rebooting");
             esp_restart();
         }
 
         // Debug: play the utterance straight back over the amp (no mouth motor) before it goes
         // to STT, so mic/acoustic quality can be checked by ear with no network round trip.
-        // fish_hal_play() resamples it from MIC_SAMPLE_RATE to AMP_SAMPLE_RATE itself.
+        // audio_play() resamples it from the mic's rate to the amp's rate itself.
         if (fish_config_get()->repeat_mode)
         {
-            fish_hal_play(&utterance, /* move_mouth = */ false);
+            audio_play(&utterance, /* move_mouth = */ false);
         }
 
         // Transcribe the utterance using speech-to-text backend
-        fish_hal_set_status(FISH_STATUS_THINK);
+        led_set_status(LED_STATUS_THINK);
         char transcript[256];
         esp_err_t stt_err = net_stt(&utterance, transcript, sizeof transcript);
         heap_caps_free(utterance.samples);   // PCM no longer needed after STT
@@ -133,7 +137,7 @@ static void runloop_task(void *arg)
         {
             // Same device-wide, will-just-recur condition as the capture failure above -- reboot
             // rather than tone-and-retry into the same exhausted heap.
-            fish_hal_set_status(FISH_STATUS_ERROR);
+            led_set_status(LED_STATUS_ERROR);
             ESP_LOGE(TAG, "STT failed (heap/PSRAM exhausted) — rebooting");
             esp_restart();
         }
@@ -142,7 +146,7 @@ static void runloop_task(void *arg)
             // Backend/network failure, not "nothing to say" -- distinct cue so the user doesn't
             // think the fish just didn't hear them and repeat themselves into the same failure.
             ESP_LOGW(TAG, "STT failed — back to idle");
-            fish_hal_error_tone();
+            audio_error_tone();
             continue;
         }
 
@@ -153,8 +157,8 @@ static void runloop_task(void *arg)
         }
 
         // Pass utterance transcript to LLM backend shim app
-        fish_hal_set_status(FISH_STATUS_SPEAK);
-        fish_hal_head_out();
+        led_set_status(LED_STATUS_SPEAK);
+        motors_head_out();
 
         // The shim streams sentences; speak_sentence TTS+plays each as it arrives.
         esp_err_t respond_err = net_respond(transcript, speak_sentence, NULL);
@@ -165,7 +169,7 @@ static void runloop_task(void *arg)
             // itself may need PSRAM/the speaker) and continuing is pointless. A fresh boot clears
             // heap state and re-inits the amp/I2S from scratch, same rationale as the
             // capture-failure reboot above.
-            fish_hal_set_status(FISH_STATUS_ERROR);
+            led_set_status(LED_STATUS_ERROR);
             ESP_LOGE(TAG, "unrecoverable TTS/playback failure (%s) — rebooting",
                      esp_err_to_name(respond_err));
             esp_restart();
@@ -173,11 +177,11 @@ static void runloop_task(void *arg)
         else if (respond_err != ESP_OK)
         {
             ESP_LOGW(TAG, "brain hop failed");
-            fish_hal_error_tone();
+            audio_error_tone();
         }
 
         // Return head to relaxed state
-        fish_hal_head_relax();
+        motors_head_relax();
 
         // Cumulative low-water mark since boot -- the worst-case PSRAM usage any turn has hit
         // so far, not just this one. Bench this against a 2 MB budget (N4R2 candidate) before
@@ -194,8 +198,19 @@ static void runloop_task(void *arg)
 
 void app_main(void)
 {
-    // initialize all hardware
-    fish_hal_init();
+    // LED first -- so a panic anywhere below (the various *_init()'s ESP_ERROR_CHECKs, etc.)
+    // still leaves the status LED showing boot-white instead of unlit, giving some visible sign
+    // the chip powered on at all.
+    led_init();
+
+    // initialize the rest of the hardware -- order doesn't matter between these three, each owns
+    // an independent set of pins/peripherals
+    motors_init();
+    audio_init();
+    activation_init();
+
+    // photocell/Vmotor boot smoke-test reads (brings up the shared ADC1 unit itself)
+    sensors_init();
 
     // initialize wakeword subsystem
     if (!wakeword_init())
@@ -207,7 +222,7 @@ void app_main(void)
     // initialize network
     if (net_init() != ESP_OK)   // only fails on a config error (missing creds) -- not fixable by retrying
     {
-        fish_hal_set_status(FISH_STATUS_ERROR);
+        led_set_status(LED_STATUS_ERROR);
         ESP_LOGE(TAG, "WiFi config invalid — cannot bring up networking. Halting.");
         return;
     }
