@@ -11098,28 +11098,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" ""
-			(at 25.4 173.99 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" ""
-			(at 25.4 173.99 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" ""
 			(at 25.4 173.99 0)
 			(hide yes)
@@ -11154,6 +11132,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 25.4 173.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 25.4 173.99 0)
 			(hide yes)
 			(show_name no)
@@ -11262,7 +11251,7 @@
 				)
 			)
 		)
-		(property "MF" "FH"
+		(property "MF" "Vishay Vitramon"
 			(at 382.27 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -11273,7 +11262,7 @@
 				)
 			)
 		)
-		(property "MP" "0402B221K500NT"
+		(property "MP" "VJ0402Y221KXACW1BC"
 			(at 382.27 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -11284,29 +11273,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Vishay Vitramon"
-			(at 382.27 135.89 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "VJ0402Y221KXACW1BC"
-			(at 382.27 135.89 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "720-1616-1-ND"
 			(at 382.27 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -11339,7 +11306,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "77-VJ0402Y221KXACBC"
+			(at 382.27 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 50V X7R"
 			(at 382.27 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -11451,7 +11429,7 @@
 				)
 			)
 		)
-		(property "MF" "XFCN"
+		(property "MF" "Würth Elektronik"
 			(at 396.24 50.8 0)
 			(hide yes)
 			(show_name no)
@@ -11462,7 +11440,7 @@
 				)
 			)
 		)
-		(property "MP" "PZ254R-11-06P"
+		(property "MP" "61300611021"
 			(at 396.24 50.8 0)
 			(hide yes)
 			(show_name no)
@@ -11473,29 +11451,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Würth Elektronik"
-			(at 396.24 50.8 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "61300611021"
-			(at 396.24 50.8 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "732-5339-ND"
 			(at 396.24 50.8 0)
 			(hide yes)
 			(show_name no)
@@ -11528,7 +11484,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "710-61300611021"
+			(at 396.24 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 396.24 50.8 0)
 			(hide yes)
 			(show_name no)
@@ -11666,7 +11633,7 @@
 				)
 			)
 		)
-		(property "MP" "CL10A106KP8NNNC"
+		(property "MP" "CL10A106KO8NQNC"
 			(at 256.54 97.79 0)
 			(hide yes)
 			(show_name no)
@@ -11677,29 +11644,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 256.54 97.79 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL10A106KP8NNND"
-			(at 256.54 97.79 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-CL10A106KO8NQNCCT-ND"
 			(at 256.54 97.79 0)
 			(hide yes)
 			(show_name no)
@@ -11732,7 +11677,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL10A106KO8NQNC"
+			(at 256.54 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X5R"
 			(at 256.54 97.79 0)
 			(hide yes)
 			(show_name no)
@@ -11870,29 +11826,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "ST"
-			(at 238.76 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "USBLC6-2SC6"
-			(at 238.76 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "497-5235-1-ND"
 			(at 238.76 218.44 0)
 			(hide yes)
 			(show_name no)
@@ -11925,7 +11859,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "511-USBLC6-2SC6"
+			(at 238.76 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 238.76 218.44 0)
 			(hide yes)
 			(show_name no)
@@ -12063,7 +12008,7 @@
 				)
 			)
 		)
-		(property "Value" "50m"
+		(property "Value" "30m"
 			(at 368.3 121.92 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12139,7 +12084,7 @@
 				)
 			)
 		)
-		(property "MP" "BLM18PG121SN1D"
+		(property "MP" "BLM18KG121TN1D"
 			(at 368.3 124.46 90)
 			(hide yes)
 			(show_name no)
@@ -12150,29 +12095,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "muRata"
-			(at 368.3 124.46 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "BLM18PG121SN1D"
-			(at 368.3 124.46 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "490-5254-1-ND"
 			(at 368.3 124.46 90)
 			(hide yes)
 			(show_name no)
@@ -12205,7 +12128,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "81-BLM18KG121TN1D"
+			(at 368.3 124.46 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 368.3 124.46 90)
 			(hide yes)
 			(show_name no)
@@ -12419,29 +12353,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 271.78 54.61 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05A105KA5NQNC"
-			(at 271.78 54.61 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1445-1-ND"
 			(at 271.78 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -12474,7 +12386,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05A105KA5NQNC"
+			(at 271.78 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 25V X5R"
 			(at 271.78 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -12521,7 +12444,7 @@
 				)
 			)
 		)
-		(property "Value" "50m"
+		(property "Value" "30m"
 			(at 368.3 129.54 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12597,7 +12520,7 @@
 				)
 			)
 		)
-		(property "MP" "BLM18PG121SN1D"
+		(property "MP" "BLM18KG121TN1D"
 			(at 368.3 127 90)
 			(hide yes)
 			(show_name no)
@@ -12608,29 +12531,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "muRata"
-			(at 368.3 127 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "BLM18PG121SN1D"
-			(at 368.3 127 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "490-5254-1-ND"
 			(at 368.3 127 90)
 			(hide yes)
 			(show_name no)
@@ -12663,7 +12564,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "81-BLM18KG121TN1D"
+			(at 368.3 127 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 368.3 127 90)
 			(hide yes)
 			(show_name no)
@@ -12756,28 +12668,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "TI"
-			(at 158.75 250.19 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "LM74700QDBVTQ1"
-			(at 158.75 250.19 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" "296-53420-1-ND"
 			(at 158.75 250.19 0)
 			(hide yes)
@@ -12845,6 +12735,17 @@
 			)
 		)
 		(property "Mouser Part" "595-LM74700QDBVTQ1"
+			(at 158.75 250.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 158.75 250.19 0)
 			(hide yes)
 			(show_name no)
@@ -13025,28 +12926,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" ""
-			(at 50.8 190.5 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" ""
-			(at 50.8 190.5 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" ""
 			(at 50.8 190.5 0)
 			(hide yes)
@@ -13081,6 +12960,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 50.8 190.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 50.8 190.5 0)
 			(hide yes)
 			(show_name no)
@@ -13158,7 +13048,7 @@
 				(justify left top)
 			)
 		)
-		(property "Description" "RGB LED with integrated controller"
+		(property "Description" "RGB LED with integrated controller: WS2812B"
 			(at 93.98 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -13180,7 +13070,7 @@
 				)
 			)
 		)
-		(property "MF" "Worldsemi"
+		(property "MF" "SparkFun"
 			(at 93.98 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -13191,7 +13081,7 @@
 				)
 			)
 		)
-		(property "MP" "WS2812B-V6"
+		(property "MP" "16347"
 			(at 93.98 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -13202,29 +13092,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "SparkFun"
-			(at 93.98 223.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "16347"
-			(at 93.98 223.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1568-16347CT-ND"
 			(at 93.98 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -13258,6 +13126,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 93.98 223.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 93.98 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -13714,29 +13593,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "AOS"
-			(at 158.75 231.14 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "AOSS32334C"
-			(at 158.75 231.14 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "785-AOSS32334CCT-ND"
 			(at 158.75 231.14 90)
 			(hide yes)
 			(show_name no)
@@ -13770,6 +13627,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 158.75 231.14 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 158.75 231.14 90)
 			(hide yes)
 			(show_name no)
@@ -13887,7 +13755,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 198.12 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -13898,7 +13766,7 @@
 				)
 			)
 		)
-		(property "MP" "HP06W2F200LT5E"
+		(property "MP" "CSR1206FKR200"
 			(at 198.12 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -13909,29 +13777,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 198.12 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CSR1206FKR200"
-			(at 198.12 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "CSR1206FKR200CT-ND"
 			(at 198.12 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -13964,7 +13810,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-CSR1206FKR200"
+			(at 198.12 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.5W 100ppm"
 			(at 198.12 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -14079,7 +13936,7 @@
 				)
 			)
 		)
-		(property "MF" "FH"
+		(property "MF" "Vishay Vitramon"
 			(at 374.65 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -14090,7 +13947,7 @@
 				)
 			)
 		)
-		(property "MP" "0402B221K500NT"
+		(property "MP" "VJ0402Y221KXACW1BC"
 			(at 374.65 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -14101,29 +13958,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Vishay Vitramon"
-			(at 374.65 135.89 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "VJ0402Y221KXACW1BC"
-			(at 374.65 135.89 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "720-1616-1-ND"
 			(at 374.65 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -14156,7 +13991,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "77-VJ0402Y221KXACBC"
+			(at 374.65 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 50V X7R"
 			(at 374.65 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -14280,29 +14126,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Amphenol ICC"
-			(at 215.9 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "10118194-0001LF"
-			(at 215.9 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "609-4618-1-ND"
 			(at 215.9 218.44 0)
 			(hide yes)
 			(show_name no)
@@ -14336,6 +14160,17 @@
 			)
 		)
 		(property "Mouser Part" "649-10118194-0001LF"
+			(at 215.9 218.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 215.9 218.44 0)
 			(hide yes)
 			(show_name no)
@@ -14486,29 +14321,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "AOS"
-			(at 158.75 181.61 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "AOSS32334C"
-			(at 158.75 181.61 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "785-AOSS32334CCT-ND"
 			(at 158.75 181.61 90)
 			(hide yes)
 			(show_name no)
@@ -14542,6 +14355,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 158.75 181.61 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 158.75 181.61 90)
 			(hide yes)
 			(show_name no)
@@ -14659,7 +14483,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 266.7 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -14670,7 +14494,7 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1002T5E"
+		(property "MP" "RMCF0603FT10K0"
 			(at 266.7 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -14681,29 +14505,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 266.7 101.6 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603FT10K0"
-			(at 266.7 101.6 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "RMCF0603FT10K0CT-ND"
 			(at 266.7 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -14736,7 +14538,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT10K0"
+			(at 266.7 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
 			(at 266.7 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -14860,29 +14673,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Littelfuse"
-			(at 116.84 129.54 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "0154005.DRT"
-			(at 116.84 129.54 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "F1310CT-ND"
 			(at 116.84 129.54 90)
 			(hide yes)
 			(show_name no)
@@ -14916,6 +14707,17 @@
 			)
 		)
 		(property "Mouser Part" "576-0154005.DRT"
+			(at 116.84 129.54 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 116.84 129.54 90)
 			(hide yes)
 			(show_name no)
@@ -15029,7 +14831,7 @@
 				)
 			)
 		)
-		(property "MF" "DORABO"
+		(property "MF" "Phoenix Contact"
 			(at 353.06 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -15040,7 +14842,7 @@
 				)
 			)
 		)
-		(property "MP" "DB125-2.54-2P-GN-S"
+		(property "MP" "1725656"
 			(at 353.06 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -15051,29 +14853,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Phoenix Contact"
-			(at 353.06 45.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "1725656"
-			(at 353.06 45.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "277-1273-ND"
 			(at 353.06 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -15106,7 +14886,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "651-1725656"
+			(at 353.06 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 353.06 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -15232,7 +15023,7 @@
 				)
 			)
 		)
-		(property "MP" "CL10A106KP8NNNC"
+		(property "MP" "CL10A106KO8NQNC"
 			(at 256.54 144.78 0)
 			(hide yes)
 			(show_name no)
@@ -15243,29 +15034,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 256.54 144.78 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL10A106KP8NNND"
-			(at 256.54 144.78 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-CL10A106KO8NQNCCT-ND"
 			(at 256.54 144.78 0)
 			(hide yes)
 			(show_name no)
@@ -15298,7 +15067,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL10A106KO8NQNC"
+			(at 256.54 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X5R"
 			(at 256.54 144.78 0)
 			(hide yes)
 			(show_name no)
@@ -15513,29 +15293,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 340.36 110.49 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B104KO5NNNC"
-			(at 340.36 110.49 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1001-1-ND"
 			(at 340.36 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -15568,7 +15326,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B104KO5NNNC"
+			(at 340.36 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X7R"
 			(at 340.36 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -15683,7 +15452,7 @@
 				)
 			)
 		)
-		(property "MF" "DORABO"
+		(property "MF" "Phoenix Contact"
 			(at 288.29 123.19 0)
 			(hide yes)
 			(show_name no)
@@ -15694,7 +15463,7 @@
 				)
 			)
 		)
-		(property "MP" "DB125-2.54-2P-GN-S"
+		(property "MP" "1725656"
 			(at 288.29 123.19 0)
 			(hide yes)
 			(show_name no)
@@ -15705,29 +15474,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Phoenix Contact"
-			(at 288.29 123.19 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "1725656"
-			(at 288.29 123.19 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "277-1273-ND"
 			(at 288.29 123.19 0)
 			(hide yes)
 			(show_name no)
@@ -15760,7 +15507,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "651-1725656"
+			(at 288.29 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 288.29 123.19 0)
 			(hide yes)
 			(show_name no)
@@ -15873,7 +15631,7 @@
 				)
 			)
 		)
-		(property "MF" ""
+		(property "MF" "Laird-Signal Integrity Products"
 			(at 364.49 189.23 90)
 			(hide yes)
 			(show_name no)
@@ -15884,29 +15642,7 @@
 				)
 			)
 		)
-		(property "MP" ""
-			(at 364.49 189.23 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MF" "Laird-Signal Integrity Products"
-			(at 364.49 189.23 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "TYA40203R3M-10"
+		(property "MP" "TYA40203R3M-10"
 			(at 364.49 189.23 90)
 			(hide yes)
 			(show_name no)
@@ -15951,6 +15687,17 @@
 			)
 		)
 		(property "Mouser Part" "739-TYA40203R3M-10"
+			(at 364.49 189.23 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 364.49 189.23 90)
 			(hide yes)
 			(show_name no)
@@ -16076,7 +15823,7 @@
 				)
 			)
 		)
-		(property "MP" "CL10A106KP8NNNC"
+		(property "MP" "CL10A106KO8NQNC"
 			(at 330.2 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -16087,29 +15834,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 330.2 110.49 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL10A106KP8NNND"
-			(at 330.2 110.49 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-CL10A106KO8NQNCCT-ND"
 			(at 330.2 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -16142,7 +15867,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL10A106KO8NQNC"
+			(at 330.2 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X5R"
 			(at 330.2 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -16278,29 +16014,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 144.78 147.32 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B104KO5NNNC"
-			(at 144.78 147.32 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1001-1-ND"
 			(at 144.78 147.32 90)
 			(hide yes)
 			(show_name no)
@@ -16333,7 +16047,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B104KO5NNNC"
+			(at 144.78 147.32 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X7R"
 			(at 144.78 147.32 0)
 			(hide yes)
 			(show_name no)
@@ -16470,29 +16195,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "MAXIM"
-			(at 349.25 132.08 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "MAX98357AETE+T"
-			(at 349.25 132.08 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "MAX98357AETE+TCT-ND"
 			(at 349.25 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -16525,7 +16228,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "700-MAX98357AETE+T"
+			(at 349.25 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 349.25 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -16785,29 +16499,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 201.93 96.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B103KB5NNNC"
-			(at 201.93 96.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1028-1-ND"
 			(at 201.93 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -16840,7 +16532,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B103KB5NNNC"
+			(at 201.93 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 50V X7R"
 			(at 201.93 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -17890,7 +17593,7 @@
 				)
 			)
 		)
-		(property "MF" "DORABO"
+		(property "MF" "Phoenix Contact"
 			(at 261.62 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -17901,7 +17604,7 @@
 				)
 			)
 		)
-		(property "MP" "DB125-2.54-2P-GN-S"
+		(property "MP" "1725656"
 			(at 261.62 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -17912,29 +17615,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Phoenix Contact"
-			(at 261.62 53.34 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "1725656"
-			(at 261.62 53.34 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "277-1273-ND"
 			(at 261.62 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -17967,7 +17648,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "651-1725656"
+			(at 261.62 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 261.62 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -18082,7 +17774,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 321.31 142.24 0)
 			(hide yes)
 			(show_name no)
@@ -18093,7 +17785,7 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1003T5E"
+		(property "MP" "RMCF0603FT100K"
 			(at 321.31 142.24 0)
 			(hide yes)
 			(show_name no)
@@ -18104,29 +17796,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 321.31 142.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603FT100K"
-			(at 321.31 142.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "RMCF0603FT100KCT-ND"
 			(at 321.31 142.24 0)
 			(hide yes)
 			(show_name no)
@@ -18159,7 +17829,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT100K"
+			(at 321.31 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
 			(at 321.31 142.24 0)
 			(hide yes)
 			(show_name no)
@@ -18429,7 +18110,7 @@
 				)
 			)
 		)
-		(property "MF" "XFCN"
+		(property "MF" "Würth Elektronik"
 			(at 181.61 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -18440,7 +18121,7 @@
 				)
 			)
 		)
-		(property "MP" "PZ254V-11-02P"
+		(property "MP" "61300211121"
 			(at 181.61 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -18451,29 +18132,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Würth Elektronik"
-			(at 181.61 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "61300211121"
-			(at 181.61 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "732-5315-ND"
 			(at 181.61 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -18506,7 +18165,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "710-61300211121"
+			(at 181.61 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 181.61 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -18634,29 +18304,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "TI"
-			(at 231.14 157.48 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "DRV8833PWPR"
-			(at 231.14 157.48 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "296-29434-1-ND"
 			(at 231.14 157.48 0)
 			(hide yes)
 			(show_name no)
@@ -18689,7 +18337,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "595-DRV8833PWPR"
+			(at 231.14 157.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 231.14 157.48 0)
 			(hide yes)
 			(show_name no)
@@ -18871,29 +18530,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 128.27 140.97 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B104KO5NNNC"
-			(at 128.27 140.97 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1001-1-ND"
 			(at 128.27 140.97 0)
 			(hide yes)
 			(show_name no)
@@ -18926,7 +18563,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B104KO5NNNC"
+			(at 128.27 140.97 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X7R"
 			(at 128.27 140.97 0)
 			(hide yes)
 			(show_name no)
@@ -19219,29 +18867,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 227.33 57.15 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05A105KA5NQNC"
-			(at 227.33 57.15 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1445-1-ND"
 			(at 227.33 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -19274,7 +18900,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05A105KA5NQNC"
+			(at 227.33 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 25V X5R"
 			(at 227.33 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -19480,29 +19117,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "TI"
-			(at 231.14 110.49 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "DRV8833PWPR"
-			(at 231.14 110.49 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "296-29434-1-ND"
 			(at 231.14 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -19535,7 +19150,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "595-DRV8833PWPR"
+			(at 231.14 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 231.14 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -19672,28 +19298,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" ""
-			(at 50.8 161.29 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" ""
-			(at 50.8 161.29 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" ""
 			(at 50.8 161.29 0)
 			(hide yes)
@@ -19728,6 +19332,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 50.8 161.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 50.8 161.29 0)
 			(hide yes)
 			(show_name no)
@@ -19917,7 +19532,7 @@
 				)
 			)
 		)
-		(property "MF" "DORABO"
+		(property "MF" "Phoenix Contact"
 			(at 389.89 124.46 0)
 			(hide yes)
 			(show_name no)
@@ -19928,7 +19543,7 @@
 				)
 			)
 		)
-		(property "MP" "DB125-2.54-2P-GN-S"
+		(property "MP" "1725656"
 			(at 389.89 124.46 0)
 			(hide yes)
 			(show_name no)
@@ -19939,29 +19554,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Phoenix Contact"
-			(at 389.89 124.46 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "1725656"
-			(at 389.89 124.46 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "277-1273-ND"
 			(at 389.89 124.46 0)
 			(hide yes)
 			(show_name no)
@@ -19994,7 +19587,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "651-1725656"
+			(at 389.89 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 389.89 124.46 0)
 			(hide yes)
 			(show_name no)
@@ -20130,29 +19734,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 144.78 196.85 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B104KO5NNNC"
-			(at 144.78 196.85 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1001-1-ND"
 			(at 144.78 196.85 90)
 			(hide yes)
 			(show_name no)
@@ -20185,7 +19767,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B104KO5NNNC"
+			(at 144.78 196.85 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X7R"
 			(at 144.78 196.85 0)
 			(hide yes)
 			(show_name no)
@@ -20322,29 +19915,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 254 219.71 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B104KO5NNNC"
-			(at 254 219.71 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1001-1-ND"
 			(at 254 219.71 0)
 			(hide yes)
 			(show_name no)
@@ -20377,7 +19948,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B104KO5NNNC"
+			(at 254 219.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X7R"
 			(at 254 219.71 0)
 			(hide yes)
 			(show_name no)
@@ -20658,29 +20240,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "ESPRESSIF"
-			(at 73.66 66.04 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "ESP32-S3-WROOM-1-N4R2"
-			(at 73.66 66.04 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "5407-ESP32-S3-WROOM-1-N4R2CT-ND"
 			(at 73.66 66.04 0)
 			(hide yes)
 			(show_name no)
@@ -20713,7 +20273,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "356-ESP32S3WROM1N4R2"
+			(at 73.66 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 73.66 66.04 0)
 			(hide yes)
 			(show_name no)
@@ -20967,29 +20538,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "PANASONIC"
-			(at 185.42 96.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "EEEFT1E102UP"
-			(at 185.42 96.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "P122428CT-ND"
 			(at 185.42 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -21022,7 +20571,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "667-EEE-FT1E102UP"
+			(at 185.42 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "20% 25V"
 			(at 185.42 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -21315,29 +20875,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 201.93 143.51 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B103KB5NNNC"
-			(at 201.93 143.51 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1028-1-ND"
 			(at 201.93 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -21370,7 +20908,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B103KB5NNNC"
+			(at 201.93 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 50V X7R"
 			(at 201.93 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -21485,7 +21034,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 321.31 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -21496,7 +21045,7 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1003T5E"
+		(property "MP" "RMCF0603FT100K"
 			(at 321.31 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -21507,29 +21056,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 321.31 132.08 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603FT100K"
-			(at 321.31 132.08 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "RMCF0603FT100KCT-ND"
 			(at 321.31 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -21562,7 +21089,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT100K"
+			(at 321.31 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
 			(at 321.31 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -21855,29 +21393,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 317.5 54.61 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05A105KA5NQNC"
-			(at 317.5 54.61 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1445-1-ND"
 			(at 317.5 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -21910,7 +21426,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05A105KA5NQNC"
+			(at 317.5 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 25V X5R"
 			(at 317.5 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -22126,29 +21653,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "AOS"
-			(at 158.75 132.08 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "AOSS32334C"
-			(at 158.75 132.08 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "785-AOSS32334CCT-ND"
 			(at 158.75 132.08 90)
 			(hide yes)
 			(show_name no)
@@ -22182,6 +21687,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 158.75 132.08 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 158.75 132.08 90)
 			(hide yes)
 			(show_name no)
@@ -22401,29 +21917,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "AOS"
-			(at 91.44 238.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "AOSS32334C"
-			(at 91.44 238.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "785-AOSS32334CCT-ND"
 			(at 91.44 238.76 0)
 			(hide yes)
 			(show_name no)
@@ -22457,6 +21951,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 91.44 238.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 91.44 238.76 0)
 			(hide yes)
 			(show_name no)
@@ -22563,7 +22068,7 @@
 				)
 			)
 		)
-		(property "MF" "XUNPU"
+		(property "MF" "Alps Alpine"
 			(at 220.98 57.15 90)
 			(hide yes)
 			(show_name no)
@@ -22574,7 +22079,7 @@
 				)
 			)
 		)
-		(property "MP" "TS-1088-AR02016"
+		(property "MP" "SKRKAGE020"
 			(at 220.98 57.15 90)
 			(hide yes)
 			(show_name no)
@@ -22585,29 +22090,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Alps Alpine"
-			(at 220.98 57.15 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "SKRKAGE020"
-			(at 220.98 57.15 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "4809-SKRKAGE020CT-ND"
 			(at 220.98 57.15 90)
 			(hide yes)
 			(show_name no)
@@ -22640,7 +22123,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "688-SKRKAG"
+			(at 220.98 57.15 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 220.98 57.15 90)
 			(hide yes)
 			(show_name no)
@@ -22755,7 +22249,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 317.5 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -22766,7 +22260,7 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1002T5E"
+		(property "MP" "RMCF0603FT10K0"
 			(at 317.5 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -22777,29 +22271,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 317.5 43.18 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603FT10K0"
-			(at 317.5 43.18 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "RMCF0603FT10K0CT-ND"
 			(at 317.5 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -22832,7 +22304,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT10K0"
+			(at 317.5 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
 			(at 317.5 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -22947,7 +22430,7 @@
 				)
 			)
 		)
-		(property "MF" "DORABO"
+		(property "MF" "Phoenix Contact"
 			(at 288.29 113.03 0)
 			(hide yes)
 			(show_name no)
@@ -22958,7 +22441,7 @@
 				)
 			)
 		)
-		(property "MP" "DB125-2.54-2P-GN-S"
+		(property "MP" "1725656"
 			(at 288.29 113.03 0)
 			(hide yes)
 			(show_name no)
@@ -22969,29 +22452,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Phoenix Contact"
-			(at 288.29 113.03 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "1725656"
-			(at 288.29 113.03 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "277-1273-ND"
 			(at 288.29 113.03 0)
 			(hide yes)
 			(show_name no)
@@ -23024,7 +22485,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "651-1725656"
+			(at 288.29 113.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 288.29 113.03 0)
 			(hide yes)
 			(show_name no)
@@ -23217,7 +22689,7 @@
 				)
 			)
 		)
-		(property "MF" "DORABO"
+		(property "MF" "Phoenix Contact"
 			(at 288.29 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -23228,7 +22700,7 @@
 				)
 			)
 		)
-		(property "MP" "DB125-2.54-2P-GN-S"
+		(property "MP" "1725656"
 			(at 288.29 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -23239,29 +22711,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Phoenix Contact"
-			(at 288.29 118.11 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "1725656"
-			(at 288.29 118.11 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "277-1273-ND"
 			(at 288.29 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -23294,7 +22744,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "651-1725656"
+			(at 288.29 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 288.29 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -23476,28 +22937,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" ""
-			(at 25.4 181.61 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" ""
-			(at 25.4 181.61 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" ""
 			(at 25.4 181.61 0)
 			(hide yes)
@@ -23532,6 +22971,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 25.4 181.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 25.4 181.61 0)
 			(hide yes)
 			(show_name no)
@@ -23629,28 +23079,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" ""
-			(at 25.4 166.37 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" ""
-			(at 25.4 166.37 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" ""
 			(at 25.4 166.37 0)
 			(hide yes)
@@ -23685,6 +23113,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 25.4 166.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 25.4 166.37 0)
 			(hide yes)
 			(show_name no)
@@ -23872,7 +23311,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 82.55 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -23883,7 +23322,7 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF4700T5E"
+		(property "MP" "RMCF0603FT470R"
 			(at 82.55 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -23894,29 +23333,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 82.55 223.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603FT470R"
-			(at 82.55 223.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "RMCF0603FT470RCT-ND"
 			(at 82.55 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -23949,7 +23366,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT470R"
+			(at 82.55 223.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
 			(at 82.55 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -24073,29 +23501,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Littelfuse"
-			(at 116.84 179.07 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "0154005.DRT"
-			(at 116.84 179.07 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "F1310CT-ND"
 			(at 116.84 179.07 90)
 			(hide yes)
 			(show_name no)
@@ -24129,6 +23535,17 @@
 			)
 		)
 		(property "Mouser Part" "576-0154005.DRT"
+			(at 116.84 179.07 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 116.84 179.07 90)
 			(hide yes)
 			(show_name no)
@@ -24243,7 +23660,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 201.93 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -24254,7 +23671,7 @@
 				)
 			)
 		)
-		(property "MP" "HP06W2F200LT5E"
+		(property "MP" "CSR1206FKR200"
 			(at 201.93 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -24265,29 +23682,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 201.93 156.21 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CSR1206FKR200"
-			(at 201.93 156.21 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "CSR1206FKR200CT-ND"
 			(at 201.93 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -24320,7 +23715,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-CSR1206FKR200"
+			(at 201.93 156.21 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.5W 100ppm"
 			(at 201.93 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -24457,29 +23863,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 322.58 204.47 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL21A226KOQNNNG"
-			(at 322.58 204.47 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-7092-1-ND"
 			(at 322.58 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -24512,7 +23896,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL21A226MAQNNNE"
+			(at 322.58 204.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X5R"
 			(at 322.58 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -25037,29 +24432,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 144.78 246.38 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B104KO5NNNC"
-			(at 144.78 246.38 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1001-1-ND"
 			(at 144.78 246.38 90)
 			(hide yes)
 			(show_name no)
@@ -25092,7 +24465,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B104KO5NNNC"
+			(at 144.78 246.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X7R"
 			(at 144.78 246.38 0)
 			(hide yes)
 			(show_name no)
@@ -25307,29 +24691,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 128.27 190.5 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B104KO5NNNC"
-			(at 128.27 190.5 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1001-1-ND"
 			(at 128.27 190.5 0)
 			(hide yes)
 			(show_name no)
@@ -25362,7 +24724,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B104KO5NNNC"
+			(at 128.27 190.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X7R"
 			(at 128.27 190.5 0)
 			(hide yes)
 			(show_name no)
@@ -25455,28 +24828,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "TI"
-			(at 158.75 200.66 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "LM74700QDBVTQ1"
-			(at 158.75 200.66 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" "296-53420-1-ND"
 			(at 158.75 200.66 0)
 			(hide yes)
@@ -25544,6 +24895,17 @@
 			)
 		)
 		(property "Mouser Part" "595-LM74700QDBVTQ1"
+			(at 158.75 200.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 158.75 200.66 0)
 			(hide yes)
 			(show_name no)
@@ -25670,7 +25032,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 227.33 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -25681,7 +25043,7 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1002T5E"
+		(property "MP" "RMCF0603FT10K0"
 			(at 227.33 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -25692,29 +25054,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 227.33 43.18 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603FT10K0"
-			(at 227.33 43.18 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "RMCF0603FT10K0CT-ND"
 			(at 227.33 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -25747,7 +25087,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT10K0"
+			(at 227.33 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
 			(at 227.33 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -25940,7 +25291,7 @@
 				)
 			)
 		)
-		(property "MF" "DORABO"
+		(property "MF" "Phoenix Contact"
 			(at 307.34 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -25951,7 +25302,7 @@
 				)
 			)
 		)
-		(property "MP" "DB125-2.54-2P-GN-S"
+		(property "MP" "1725656"
 			(at 307.34 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -25962,29 +25313,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Phoenix Contact"
-			(at 307.34 53.34 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "1725656"
-			(at 307.34 53.34 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "277-1273-ND"
 			(at 307.34 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -26017,7 +25346,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "651-1725656"
+			(at 307.34 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 307.34 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -26154,29 +25494,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 105.41 223.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B104KO5NNNC"
-			(at 105.41 223.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1001-1-ND"
 			(at 105.41 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -26209,7 +25527,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B104KO5NNNC"
+			(at 105.41 223.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X7R"
 			(at 105.41 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -26302,28 +25631,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "TI"
-			(at 158.75 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "LM74700QDBVTQ1"
-			(at 158.75 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" "296-53420-1-ND"
 			(at 158.75 151.13 0)
 			(hide yes)
@@ -26391,6 +25698,17 @@
 			)
 		)
 		(property "Mouser Part" "595-LM74700QDBVTQ1"
+			(at 158.75 151.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 158.75 151.13 0)
 			(hide yes)
 			(show_name no)
@@ -26517,7 +25835,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 358.14 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -26528,7 +25846,7 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1002T5E"
+		(property "MP" "RMCF0603FT10K0"
 			(at 358.14 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -26539,29 +25857,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 358.14 53.34 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603FT10K0"
-			(at 358.14 53.34 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "RMCF0603FT10K0CT-ND"
 			(at 358.14 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -26594,7 +25890,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT10K0"
+			(at 358.14 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
 			(at 358.14 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -26809,29 +26116,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 370.84 204.47 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL21A226KOQNNNG"
-			(at 370.84 204.47 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-7092-1-ND"
 			(at 370.84 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -26864,7 +26149,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL21A226MAQNNNE"
+			(at 370.84 204.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X5R"
 			(at 370.84 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -26956,28 +26252,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" ""
-			(at 50.8 180.34 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" ""
-			(at 50.8 180.34 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" ""
 			(at 50.8 180.34 0)
 			(hide yes)
@@ -27012,6 +26286,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 50.8 180.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 50.8 180.34 0)
 			(hide yes)
 			(show_name no)
@@ -27145,29 +26430,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 382.27 204.47 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL21A226KOQNNNG"
-			(at 382.27 204.47 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-7092-1-ND"
 			(at 382.27 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -27200,7 +26463,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL21A226MAQNNNE"
+			(at 382.27 204.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X5R"
 			(at 382.27 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -27491,28 +26765,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "DIODES"
-			(at 337.82 191.77 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "AP63203WU-7"
-			(at 337.82 191.77 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" "AP63203WU-7DICT-ND"
 			(at 337.82 191.77 0)
 			(hide yes)
@@ -27547,6 +26799,17 @@
 			)
 		)
 		(property "Mouser Part" "621-AP63203QWU-7"
+			(at 337.82 191.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 337.82 191.77 0)
 			(hide yes)
 			(show_name no)
@@ -27772,29 +27035,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 128.27 240.03 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B104KO5NNNC"
-			(at 128.27 240.03 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1001-1-ND"
 			(at 128.27 240.03 0)
 			(hide yes)
 			(show_name no)
@@ -27827,7 +27068,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B104KO5NNNC"
+			(at 128.27 240.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X7R"
 			(at 128.27 240.03 0)
 			(hide yes)
 			(show_name no)
@@ -28075,28 +27327,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" ""
-			(at 50.8 171.45 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" ""
-			(at 50.8 171.45 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" ""
 			(at 50.8 171.45 0)
 			(hide yes)
@@ -28131,6 +27361,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 50.8 171.45 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 50.8 171.45 0)
 			(hide yes)
 			(show_name no)
@@ -28262,29 +27503,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 354.33 191.77 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL05B104KO5NNNC"
-			(at 354.33 191.77 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1001-1-ND"
 			(at 354.33 191.77 90)
 			(hide yes)
 			(show_name no)
@@ -28317,7 +27536,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL05B104KO5NNNC"
+			(at 354.33 191.77 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X7R"
 			(at 354.33 191.77 90)
 			(hide yes)
 			(show_name no)
@@ -28454,29 +27684,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 246.38 144.78 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL10A225KO8NNNC"
-			(at 246.38 144.78 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1040-1-ND"
 			(at 246.38 144.78 0)
 			(hide yes)
 			(show_name no)
@@ -28509,7 +27717,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL10A225KO8NNNC"
+			(at 246.38 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X5R"
 			(at 246.38 144.78 0)
 			(hide yes)
 			(show_name no)
@@ -28724,29 +27943,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Samsung Electro-Mechanics"
-			(at 246.38 97.79 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CL10A225KO8NNNC"
-			(at 246.38 97.79 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "1276-1040-1-ND"
 			(at 246.38 97.79 0)
 			(hide yes)
 			(show_name no)
@@ -28779,7 +27976,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "187-CL10A225KO8NNNC"
+			(at 246.38 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "10% 16V X5R"
 			(at 246.38 97.79 0)
 			(hide yes)
 			(show_name no)
@@ -29205,7 +28413,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 193.04 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -29216,7 +28424,7 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1002T5E"
+		(property "MP" "RMCF0603FT10K0"
 			(at 193.04 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -29227,29 +28435,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 193.04 43.18 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603FT10K0"
-			(at 193.04 43.18 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "RMCF0603FT10K0CT-ND"
 			(at 193.04 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -29282,7 +28468,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT10K0"
+			(at 193.04 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
 			(at 193.04 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -29475,7 +28672,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 271.78 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -29486,7 +28683,7 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1002T5E"
+		(property "MP" "RMCF0603FT10K0"
 			(at 271.78 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -29497,29 +28694,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 271.78 43.18 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603FT10K0"
-			(at 271.78 43.18 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "RMCF0603FT10K0CT-ND"
 			(at 271.78 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -29552,7 +28727,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT10K0"
+			(at 271.78 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
 			(at 271.78 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -29645,28 +28831,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 154.94 82.55 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603FT100K"
-			(at 154.94 82.55 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "LCSC Part" "C25803"
 			(at 154.94 82.55 90)
 			(hide yes)
@@ -29678,7 +28842,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 154.94 82.55 90)
 			(hide yes)
 			(show_name no)
@@ -29689,7 +28853,7 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1003T5E"
+		(property "MP" "RMCF0603FT100K"
 			(at 154.94 82.55 90)
 			(hide yes)
 			(show_name no)
@@ -29722,8 +28886,30 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT100K"
 			(at 154.94 82.55 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
+			(at 154.94 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" "RMCF0603FT100KCT-ND"
+			(at 154.94 82.55 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29914,7 +29100,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 86.36 242.57 0)
 			(hide yes)
 			(show_name no)
@@ -29925,7 +29111,7 @@
 				)
 			)
 		)
-		(property "MP" "0603WAF1002T5E"
+		(property "MP" "RMCF0603FT10K0"
 			(at 86.36 242.57 0)
 			(hide yes)
 			(show_name no)
@@ -29936,29 +29122,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 86.36 242.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603FT10K0"
-			(at 86.36 242.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "RMCF0603FT10K0CT-ND"
 			(at 86.36 242.57 0)
 			(hide yes)
 			(show_name no)
@@ -29991,7 +29155,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT10K0"
+			(at 86.36 242.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
 			(at 86.36 242.57 0)
 			(hide yes)
 			(show_name no)
@@ -30106,7 +29281,7 @@
 				)
 			)
 		)
-		(property "MF" ""
+		(property "MF" "Stackpole Electronics"
 			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
@@ -30117,7 +29292,7 @@
 				)
 			)
 		)
-		(property "MP" ""
+		(property "MP" "RMCF0603FT75K0"
 			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
@@ -30128,29 +29303,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 154.94 92.71 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "RMCF0603JT75K0"
-			(at 154.94 92.71 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "RMCF0603FT75K0CT-ND"
 			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
@@ -30183,7 +29336,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-RMCF0603FT75K0"
+			(at 154.94 92.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
 			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
@@ -30453,7 +29617,7 @@
 				)
 			)
 		)
-		(property "MF" "UNI-ROYAL"
+		(property "MF" "Stackpole Electronics"
 			(at 201.93 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -30464,7 +29628,7 @@
 				)
 			)
 		)
-		(property "MP" "HP06W2F200LT5E"
+		(property "MP" "CSR1206FKR200"
 			(at 201.93 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -30475,29 +29639,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Stackpole Electronics"
-			(at 201.93 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "CSR1206FKR200"
-			(at 201.93 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "CSR1206FKR200CT-ND"
 			(at 201.93 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -30530,7 +29672,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "708-CSR1206FKR200"
+			(at 201.93 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.5W 100ppm"
 			(at 201.93 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -30634,28 +29787,6 @@
 				)
 			)
 		)
-		(property "DigiKey MF" ""
-			(at 25.4 158.75 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" ""
-			(at 25.4 158.75 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(property "DigiKey Part" ""
 			(at 25.4 158.75 0)
 			(hide yes)
@@ -30690,6 +29821,17 @@
 			)
 		)
 		(property "Mouser Part" ""
+			(at 25.4 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 25.4 158.75 0)
 			(hide yes)
 			(show_name no)
@@ -30796,7 +29938,7 @@
 				)
 			)
 		)
-		(property "MF" "XFCN"
+		(property "MF" "Würth Elektronik"
 			(at 151.13 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -30807,7 +29949,7 @@
 				)
 			)
 		)
-		(property "MP" "PZ254V-11-03P"
+		(property "MP" "61300311121"
 			(at 151.13 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -30818,29 +29960,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Würth Elektronik"
-			(at 151.13 40.64 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "61300311121"
-			(at 151.13 40.64 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "732-5316-ND"
 			(at 151.13 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -30873,7 +29993,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "710-61300311121"
+			(at 151.13 40.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 151.13 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -30991,7 +30122,7 @@
 				)
 			)
 		)
-		(property "MF" "DORABO"
+		(property "MF" "Phoenix Contact"
 			(at 97.79 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -31002,7 +30133,7 @@
 				)
 			)
 		)
-		(property "MP" "DB125-2.54-3P-GN-S"
+		(property "MP" "1725669"
 			(at 97.79 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -31013,29 +30144,7 @@
 				)
 			)
 		)
-		(property "DigiKey MF" "Phoenix Contact"
-			(at 97.79 132.08 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey MP" "1725669"
-			(at 97.79 132.08 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
+		(property "DigiKey Part" "277-1274-ND"
 			(at 97.79 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -31068,7 +30177,18 @@
 				)
 			)
 		)
-		(property "Mouser Part" ""
+		(property "Mouser Part" "651-1725669"
+			(at 97.79 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" ""
 			(at 97.79 132.08 0)
 			(hide yes)
 			(show_name no)
