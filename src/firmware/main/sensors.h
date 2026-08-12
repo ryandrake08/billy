@@ -1,6 +1,5 @@
-// Interpreted ADC readings: the photocell and Vmotor-sense divider. Device-level module built on
-// hal.h's generic hal_adc_read() -- oversampling and calibration/threshold math live here, not in
-// the HAL (see .devdocs/WIRING.md §3h-2 for the Vmotor calibration data this is built from).
+// Interpreted ADC readings: the photocell and Vmotor-sense divider -- oversampling and
+// calibration/threshold math.
 #pragma once
 #include <stdbool.h>
 

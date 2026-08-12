@@ -109,7 +109,7 @@ static activation_event_t wait_for_wakeword(void)
     // First, wait until the button is released (so we return ACTIVATION_BUTTON on a real button press)
     if (!wait_for_button_release(wakeword_mode_active)) return ACTIVATION_MODE_SW;
 
-    wakeword_reset();
+    wakeword_reset();   // fresh listening session -- clear any stale window from a prior one
 
     int32_t raw[WAKEWORD_STEP_SAMPLES];
     int16_t pcm[WAKEWORD_STEP_SAMPLES];

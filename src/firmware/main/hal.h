@@ -1,8 +1,5 @@
 // True low-level HAL: generic primitives (GPIO, ADC1, LED strip, PWM, I2S, deep sleep),
 // parameterized by pin/channel, no fish-specific naming and no board.h dependency of its own.
-// Device-level modules built on this -- sensors.c, status_led.c, motors.c, audio.c, activation.c
-// -- own all the fish-specific setup (which pin means what, init ordering, calibration/algorithm
-// logic) and are what main.c actually calls.
 #pragma once
 #include <stdbool.h>
 #include <stddef.h>

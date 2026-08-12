@@ -1,6 +1,5 @@
 // Audio I/O: I²S mic (energy-VAD capture) + I²S amp (tone/playback), and the mouth lip-sync
-// envelope follower. Device-level module built on hal.h's generic hal_i2s_*/hal_gpio_*
-// primitives.
+// envelope follower.
 #pragma once
 #include <stdbool.h>
 #include <stddef.h>
@@ -17,12 +16,8 @@ typedef struct
 } audio_buf_t;
 
 // Signals a local audio-hardware fault (currently: the amp TX write failing), as distinct from
-// any ordinary ESP-IDF esp_err_t a network/backend call might also return. Callers several layers
-// up (net_respond's SSE loop, the runloop) use this to tell "the fish's own speaker is broken"
-// apart from "the backend/network had a hiccup" -- the former makes playing the usual error tone
-// pointless (it would just fail the same way), so it needs a distinct signal rather than being
-// lumped in with generic failures. 0x8001 sits well outside the range of any ESP-IDF or driver
-// error code in use here.
+// any ordinary ESP-IDF esp_err_t a network/backend call might also return. 0x8001 sits well
+// outside the range of any ESP-IDF or driver error code in use here.
 #define FISH_ERR_AUDIO_HW ((esp_err_t) 0x8001)
 
 // Amp SD_MODE high (unmuted) + both I²S controllers running continuously (mic RX, amp TX). Call
@@ -30,7 +25,7 @@ typedef struct
 void audio_init(void);
 
 // BUTTON-mode deep sleep only: mutes the amp (SD_MODE low) and holds that level through the
-// sleep. Called from activation.c's deep-sleep entry.
+// sleep.
 void audio_mute_for_sleep(void);
 
 // Raw mic RX read, one I2S read's worth of 32-bit slots (24-bit sample MSB-first, left channel
@@ -55,8 +50,7 @@ void audio_selftest(void);
 // exhaustion/corruption rather than transient pressure. Otherwise returns ESP_OK; a capture with
 // no real speech (just noise/clicks), or one abandoned partway through by a button press, is a
 // normal outcome, not an error, and comes back as a zeroed *out (audio_buf_t's own "no audio"
-// contract) for the caller to skip STT on -- the runloop's existing "heard nothing" path is what
-// sends it back to idle, so no separate handling is needed for an interrupted capture.
+// contract).
 esp_err_t audio_capture_utterance(audio_buf_t *out);
 
 // SPEAK: play one mono PCM buffer through the amp. Resamples internally to the amp's fixed output

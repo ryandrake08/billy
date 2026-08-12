@@ -428,7 +428,7 @@ esp_err_t audio_capture_utterance(audio_buf_t *out)
     }
 
     // A real utterance has a meaningful amount of voiced audio; anything less is a click/pop and
-    // would only make whisper hallucinate. Drop it and let the runloop listen again.
+    // would only make whisper hallucinate.
     if (voiced_ms < cfg->vad_min_voiced_ms)
     {
         ESP_LOGI(TAG, "listen: only %d ms voiced — ignoring (no real speech)", voiced_ms);

@@ -1,7 +1,6 @@
-// Transport layer: the fish<->backend contract. Mirrors the three calls the CLI reference
-// client makes (src/client/billy_cli.py) — STT direct to whisper, the brain hop to the shim,
-// TTS direct to Kokoro. This is the orchestrator seam: only this layer changes if
-// the fish ever moves from direct-HTTP to ESPHome/Home Assistant.
+// Transport layer: the fish<->backend contract -- STT direct to whisper, the brain hop to the
+// shim, TTS direct to Kokoro. This is the orchestrator seam: only this layer changes if the fish
+// ever moves from direct-HTTP to ESPHome/Home Assistant.
 #pragma once
 #include "audio.h"    // audio_buf_t, FISH_ERR_AUDIO_HW
 #include "esp_err.h"
@@ -19,18 +18,13 @@ typedef esp_err_t (*sentence_cb_t)(const char *sentence, const char *voice, void
 esp_err_t net_init(void);
 
 // Fetch runtime-tunable constants from the shim's GET /v1/config and apply them (fish_config.h).
-// Called once at the top of every runloop cycle (main.c) rather than once at boot, so a config
-// change on the shim reaches a long-lived WAKEWORD-mode fish with no reboot needed.
 //
 // wait_for_backend=false: a single best-effort, bounded (a few seconds) attempt. On any failure
 // (no WiFi, shim unreachable, bad response) the values already in effect -- compiled-in or from
-// an earlier fetch -- are left untouched. Used for the routine idle-cycle call, which must never
-// meaningfully delay sleep or a WAKEWORD-mode loop.
+// an earlier fetch -- are left untouched.
 //
 // wait_for_backend=true: retries for longer (still bounded, never forever) until WiFi is up and
-// the fetch succeeds. Needed on a wake path that skips straight into a turn with no idle/wait
-// gate first (a button-caused wake, main.c) -- since WiFi's join is fully async, that turn's STT
-// call could otherwise easily run before the join completes.
+// the fetch succeeds.
 esp_err_t net_fetch_config(bool wait_for_backend);
 
 // STT: POST audio to whisper /inference -> transcript text.

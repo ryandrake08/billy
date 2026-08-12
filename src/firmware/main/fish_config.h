@@ -1,25 +1,24 @@
-// Runtime-tunable firmware constants, fetched from the shim's GET /v1/config
-// (net_fetch_config(), net.c) at the top of every runloop cycle, so they can be retuned after
-// final assembly with an edit-and-restart on the shim, not a firmware rebuild+reflash. Each
-// field's initializer in fish_config.c is also this build's compiled-in fallback --
-// fish_config_get() always returns something sane even if the shim is unreachable or a field is
-// missing/unparseable in its response.
+// Runtime-tunable firmware constants, fetched from the shim's GET /v1/config so they can be
+// retuned after final assembly with an edit-and-restart on the shim, not a firmware
+// rebuild+reflash. Each field's initializer in fish_config.c is also this build's compiled-in
+// fallback -- fish_config_get() always returns something sane even if the shim is unreachable or
+// a field is missing/unparseable in its response.
 #pragma once
 #include <stdbool.h>
 
 typedef struct
 {
-    // VAD (voice-activity detection) -- audio.c audio_capture_utterance()
+    // VAD (voice-activity detection)
     int vad_onset_rms;
     int vad_silence_ms;
     int vad_min_voiced_ms;
     int vad_drain_ms;
     int capture_max_ms;
 
-    // Photocell wake gate -- main.c's runloop_task()
+    // Photocell wake gate
     int photocell_wake_threshold;
 
-    // Mouth lip-sync envelope -- audio.c's playback envelope follower
+    // Mouth lip-sync envelope
     float mouth_env_ref;
     float mouth_env_attack;
     float mouth_env_release;
@@ -27,18 +26,18 @@ typedef struct
     float mouth_open_threshold;
     int   mouth_mid_duty_pct;
 
-    // Tail choreography timing -- motors.c motors_tail_flap()
+    // Tail choreography timing
     int tail_flap_ms;
     int tail_settle_ms;
 
-    // Backend HTTP timeouts -- net.c
+    // Backend HTTP timeouts
     int stt_timeout_ms;
     int respond_timeout_ms;
     int tts_timeout_ms;
 
-    // Debug -- main.c runloop_task(): play a just-captured utterance back over the amp (no mouth
-    // motor) before sending it to STT, so mic/acoustic quality can be checked by ear with no
-    // network round trip. audio.c audio_play() resamples it to AMP_SAMPLE_RATE automatically.
+    // Debug: when enabled, play a just-captured utterance back over the amp (no mouth motor)
+    // before sending it to STT, so mic/acoustic quality can be checked by ear with no network
+    // round trip -- automatically resampled to the amp's output rate.
     bool repeat_mode;
 } fish_config_t;
 

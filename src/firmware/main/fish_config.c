@@ -13,7 +13,7 @@ static fish_config_t s_config = {
     .vad_drain_ms             = 250,        // discard the mic's buffered prompt tone first
     .capture_max_ms           = 10000,      // hard cap on one utterance
 
-    .photocell_wake_threshold = 50,         // bench-calibrated, see hal.c's prior comment
+    .photocell_wake_threshold = 50,         // bench-calibrated
 
     .mouth_env_ref            = 6000.0f,    // RMS that saturates the envelope at 1.0
     .mouth_env_attack         = 0.6f,

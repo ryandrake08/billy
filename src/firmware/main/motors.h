@@ -1,5 +1,4 @@
-// Motor drivers: 2x DRV8833, three unidirectional channels (mouth/head/tail). Device-level module
-// built on hal.h's generic hal_gpio_*/hal_pwm_* primitives.
+// Motor drivers: 2x DRV8833, three unidirectional channels (mouth/head/tail).
 #pragma once
 #include <stdbool.h>
 #include <stdint.h>
@@ -18,9 +17,8 @@ void motors_hold_for_sleep(void);
 // Enables both DRV8833s (nSLEEP high).
 void motors_enable(void);
 
-// Mouth lip-sync gate, 0-100% duty. audio.c's envelope follower computes the target gate level
-// (closed/mid/open) off the audio being played and calls this -- motors.c owns the PWM duty-max
-// arithmetic so callers only ever think in percent.
+// Mouth lip-sync gate, 0-100% duty -- duty-max arithmetic is handled internally, so callers only
+// ever need to think in percent.
 void motors_set_mouth_pct(uint8_t pct);
 
 // ACTIVATE: a single "I'm listening" gesture -- drive the tail out and let the spring return it.

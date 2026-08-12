@@ -9,9 +9,9 @@
 //      decision (WAKEWORD_SLIDING_WINDOW_SIZE).
 //
 // Unlike the ESPHome original (an async Component with its own state machine, ring buffer, and
-// microphone abstraction), this is a synchronous library: the caller (hal.c's wait_for_wakeword)
-// already owns the mic-read loop, so wakeword_feed() just processes whatever PCM it's given and
-// returns whether the wake word fired. This project only ever runs one wake-word model at a time,
+// microphone abstraction), this is a synchronous library: the mic-read loop is owned elsewhere,
+// so wakeword_feed() just processes whatever PCM it's given and returns whether the wake word
+// fired. This project only ever runs one wake-word model at a time,
 // so ESPHome's StreamingModel/WakeWordModel/VADModel class hierarchy collapses to flat state
 // below rather than being ported as-is.
 

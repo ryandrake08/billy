@@ -68,7 +68,10 @@ static void runloop_task(void *arg)
     {
         ESP_LOGI(TAG, "deep-sleep boot: button pushed");
 
-        // Fetch a fresh config in order to know the correct photocell threshold.
+        // Retry until WiFi is up and the fetch succeeds (bounded, not forever) -- this wake path
+        // skips straight into a turn with no idle/wait gate first, and WiFi's join is fully
+        // async, so the upcoming STT call could otherwise easily run before the join completes.
+        // Also needed to know the correct (not compiled-in-default) photocell threshold below.
         net_fetch_config(/* wait_for_backend = */ true);
 
         // Now test the photocell brightness to filter out false positives. If the room is bright
@@ -83,8 +86,9 @@ static void runloop_task(void *arg)
 
     for (;;)
     {
-        // Try to fetch a fresh config. If it fails because WiFi is not available or the server
-        // doesn't respond, no big deal. We'll retry next turn.
+        // A single best-effort, bounded attempt -- must never meaningfully delay sleep or a
+        // WAKEWORD-mode loop. If it fails because WiFi is not available or the server doesn't
+        // respond, no big deal. We'll retry next turn.
         net_fetch_config(/* wait_for_backend = */ false);
 
         if (!skip_idle)
@@ -165,6 +169,9 @@ static void runloop_task(void *arg)
 
         if (transcript[0] == '\0')
         {
+            // Covers both real silence and a capture abandoned partway through by a button press
+            // (audio_capture_utterance() returns a zeroed buffer for either) -- both are normal,
+            // not errors, and both just need a plain trip back to idle.
             ESP_LOGI(TAG, "heard nothing — back to idle");
             continue;
         }
@@ -193,7 +200,8 @@ static void runloop_task(void *arg)
             audio_error_tone();
         }
 
-        // Return head to relaxed state
+        // Relax now, once the whole reply is done -- not on any silence gap between streamed
+        // sentences, a known failure mode in similar builds where the head never settles.
         motors_head_relax();
 
         // Cumulative low-water mark since boot -- the worst-case PSRAM usage any turn has hit

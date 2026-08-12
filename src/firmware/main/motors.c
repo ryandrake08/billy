@@ -105,10 +105,7 @@ void motors_tail_flap(void)
     motor_warn_if_fault("tail flap");
 }
 
-// Non-blocking -- the spring-return motor stays driven for as long as motors_head_relax() is
-// withheld, which the runloop does until the whole reply is done, not just on audio silence -- a
-// known failure mode in similar builds otherwise, where relaxing on any silence gap between
-// streamed sentences makes the head never settle.
+// Non-blocking -- the spring-return motor stays driven until motors_head_relax() is called.
 void motors_head_out(void)
 {
     ESP_LOGI(TAG, "head out — 'I'm talking'");

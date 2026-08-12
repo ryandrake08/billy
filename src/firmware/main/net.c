@@ -40,12 +40,11 @@ static const char *TAG = "net";
 // anything fixed on the fish, so they're fetched from the shim alongside the other runtime
 // tunables instead of staying compile-time here.
 
-// GET /v1/config itself -- can't be config-driven. Kept short: this now runs synchronously on
-// every runloop cycle (main.c), so a hung shim shouldn't stall the fish's wake/sleep cycle for long.
+// GET /v1/config itself -- can't be config-driven. Kept short so a hung shim can't stall for long.
 #define CONFIG_FETCH_TIMEOUT_MS 3000
 
-// Bounds for net_fetch_config(wait_for_backend=true) -- see its doc comment (net.h). Worst case
-// (WiFi comes up but the shim never responds) is roughly
+// Bounds for net_fetch_config(wait_for_backend=true). Worst case (WiFi comes up but the shim
+// never responds) is roughly
 // FORCE_FETCH_MAX_ATTEMPTS * (CONFIG_FETCH_TIMEOUT_MS + FORCE_FETCH_RETRY_DELAY_MS).
 #define FORCE_FETCH_MAX_ATTEMPTS   6
 #define FORCE_FETCH_RETRY_DELAY_MS 500
@@ -629,11 +628,9 @@ esp_err_t net_tts(const char *sentence, const char *voice, audio_buf_t *out_audi
 
 // --- Runtime config -------------------------------------------------------------------------
 // Bench-measured tunables that are likely to need retuning once the fish is in its final
-// housing. The runloop calls this once at the top of every cycle (main.c) rather than once at
-// boot -- every consumer (hal.c, net.c's own timeouts above) reads fish_config_get() fresh on
-// each use rather than caching a value, so a value picked up here takes effect on the very next
-// read, and a shim-side edit reaches a WAKEWORD-mode fish (which never reboots) with no reboot
-// at all.
+// housing. Nothing caches a value from fish_config_get() -- every read is fresh -- so a value
+// applied here takes effect on the very next read, and a shim-side edit reaches a WAKEWORD-mode
+// fish (which never reboots) with no reboot at all.
 
 // Single best-effort attempt: on any failure (no WiFi, shim unreachable, bad response) the
 // compiled-in or previously-fetched values already in effect are left untouched -- there's
@@ -695,12 +692,9 @@ esp_err_t net_fetch_config(bool wait_for_backend)
 
     // wait_for_backend=true: retries both "WiFi not up yet" and "shim not reachable yet" alike --
     // net_fetch_config_once() already fails fast in the first case and within
-    // CONFIG_FETCH_TIMEOUT_MS in the second, so simply retrying it covers both. For a wake path
-    // that's about to use the network right after (a button-caused wake's first turn skips the
-    // idle/wait gate entirely -- main.c), a single best-effort attempt could easily lose the race
-    // against WiFi's normal join time. Still bounded, so a genuinely unreachable network degrades
-    // exactly as it always has (STT's own "no WiFi" skip + the runloop's error tone) instead of
-    // leaving the wake cycle stuck silent forever.
+    // CONFIG_FETCH_TIMEOUT_MS in the second, so simply retrying it covers both. Still bounded, so
+    // a genuinely unreachable network degrades exactly as it always has (STT's own "no WiFi" skip
+    // + the runloop's error tone) instead of leaving the wake cycle stuck silent forever.
     for (int attempt = 1; attempt <= FORCE_FETCH_MAX_ATTEMPTS; attempt++)
     {
         if (net_fetch_config_once() == ESP_OK) return ESP_OK;

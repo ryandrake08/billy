@@ -2,7 +2,6 @@
 // board/billy main board (Rev.1) populates the N4R2 (quad PSRAM) variant. Firmware targets both,
 // so GPIO33-37 stay unused here: they're internally wired to the octal PSRAM bus on N8R8 and
 // unavailable as GPIO there, even though N4R2 exposes them.
-// Single source of truth for wiring: the HAL includes this; nothing else hard-codes a GPIO.
 // Values are GPIO numbers. Pin-selection rules are already honored: ADC1 for the photocell
 // (ADC2 is unusable while WiFi is on), an RTC-capable GPIO for the deep-sleep-wake button, and
 // no strapping/flash/USB pins used anywhere.
@@ -47,8 +46,6 @@
 // --- Vmotor sense (J13): ADC1, resistor divider from Vdrive to GND -----------------------------
 // Rev.0 boards populate this test-point footprint as a bare scope-probe header instead (150R
 // series to the GPIO, 10k pulldown to GND, no divider) -- reads near 0 there, which is harmless.
-// BOARD_MISC_GPIO is the same pin under its Rev.0 scope-probe identity: sensors_set_misc_gpio_debug()
-// reclaims it from ADC mode to drive it as a digital output for that header. Rev.0 test rigs
-// only -- calling it on Rev.1 hardware fights the Vdrive divider wired to this pin there.
+// BOARD_MISC_GPIO is the same pin under its Rev.0 scope-probe identity.
 #define BOARD_VMOTOR_ADC       8  // ADC1_CH7 (ADC2 is unusable while WiFi is on)
 #define BOARD_MISC_GPIO        BOARD_VMOTOR_ADC
