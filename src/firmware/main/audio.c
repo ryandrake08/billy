@@ -326,8 +326,7 @@ esp_err_t audio_capture_utterance(audio_buf_t *out)
     // The button that triggered this turn (BUTTON-mode activation, or a wakeword-mode manual
     // override) may still be physically held down when capture starts -- wait for release first
     // so that same press doesn't immediately read as an abort below.
-    while (activation_button_pressed())
-        vTaskDelay(pdMS_TO_TICKS(VAD_BLOCK_MS));
+    activation_wait_for_button_release();
 
     const fish_config_t *cfg = fish_config_get();
     const size_t max_samples = (size_t) MIC_SAMPLE_RATE * cfg->capture_max_ms / 1000;

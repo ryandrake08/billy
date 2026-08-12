@@ -2,7 +2,6 @@
 #include "hal.h"
 #include "board.h"
 #include "wakeword.h"
-#include "sensors.h"
 #include "status_led.h"
 #include "motors.h"
 #include "audio.h"
@@ -17,7 +16,7 @@ static const char *TAG = "activation";
 
 void activation_init(void)
 {
-    // Both active-low with internal pull-ups — a floating jumper reads high, grounding it reads
+    // Both active-low with internal pull-ups — a floating GPIO reads high, grounding it reads
     // low. The button also has an EXTERNAL pull-up (board.h) for the deep-sleep wake path; the
     // internal pull here is redundant with it but harmless, and is what the mode switch relies on
     // alone.
@@ -26,17 +25,17 @@ void activation_init(void)
     ESP_LOGI(TAG, "init: activation inputs (button, mode switch) configured");
 }
 
-// Active-low: the jumper grounded to GND reads 0 = pressed.
-bool activation_button_pressed(void)
+// Active-low: the GPIO grounded to GND reads 0 = pressed.
+static bool button_is_pressed(void)
 {
     return !hal_gpio_get(BOARD_BUTTON);
 }
 
 bool activation_button_press_debounced(void)
 {
-    if (!activation_button_pressed()) return false;
+    if (!button_is_pressed()) return false;
     vTaskDelay(pdMS_TO_TICKS(BUTTON_DEBOUNCE_MS));
-    return activation_button_pressed();
+    return button_is_pressed();
 }
 
 typedef enum
@@ -45,29 +44,25 @@ typedef enum
     WAKE_MODE_WAKEWORD,
 } wake_mode_t;
 
-static const char *wake_mode_name(wake_mode_t m)
-{
-    return m == WAKE_MODE_BUTTON ? "BUTTON" : "WAKEWORD";
-}
-
+// BOARD_MODE_SW has an internal pull-up: floating (high) selects the low-power default,
+// BUTTON; grounding it selects hands-free WAKEWORD.
 static wake_mode_t current_wake_mode(void)
 {
-    // BOARD_MODE_SW has an internal pull-up: floating (high) selects the low-power default,
-    // BUTTON; grounding it selects hands-free WAKEWORD. Read fresh each turn so moving the jumper
-    // takes effect immediately.
     return hal_gpio_get(BOARD_MODE_SW) ? WAKE_MODE_BUTTON : WAKE_MODE_WAKEWORD;
 }
 
+// Function callbacks available to be used by wait_for_button_release()
 static bool button_mode_active(void)   { return current_wake_mode() == WAKE_MODE_BUTTON; }
 static bool wakeword_mode_active(void) { return current_wake_mode() == WAKE_MODE_WAKEWORD; }
+static bool always_keep_waiting(void)  { return true; }
 
 // Block until the button reads released, polling `keep_waiting` so a caller can bail out (e.g. on
-// a mode-switch flip) instead of blocking indefinitely. This is what stops a held/stuck jumper
+// a mode-switch flip) instead of blocking indefinitely. This is what stops a held/stuck button
 // from immediately counting as a fresh press when a wait function starts. Returns false if
 // keep_waiting() ever returns false; true once released (or if it was never pressed).
 static bool wait_for_button_release(bool (*keep_waiting)(void))
 {
-    while (activation_button_pressed())
+    while (button_is_pressed())
     {
         if (!keep_waiting()) return false;
         vTaskDelay(pdMS_TO_TICKS(WAKE_POLL_MS));
@@ -75,22 +70,28 @@ static bool wait_for_button_release(bool (*keep_waiting)(void))
     return true;
 }
 
-// BUTTON mode: block until a fresh, debounced press. If the jumper is already grounded from the
-// previous turn, wait for release first so a held wire can't auto-advance every turn — each turn
-// then needs a deliberate press edge. Returns true on a press; false if the mode switch moved off
-// BUTTON, so the runloop can re-dispatch to the other wake source without waiting a whole turn.
-static bool wait_for_button(void)
+void activation_wait_for_button_release(void)
 {
-    ESP_LOGI(TAG, "wake(button): waiting for a press on GPIO %d (ground the jumper to press)",
-             BOARD_BUTTON);
-    if (!wait_for_button_release(button_mode_active)) return false;
+    wait_for_button_release(always_keep_waiting);
+}
+
+// BUTTON mode: block until a fresh, debounced press. Waits for the button to be released first.
+// Returns ACTIVATION_BUTTON on a press; ACTIVATION_MODE_SW if the mode switch moved off BUTTON.
+static activation_event_t wait_for_button(void)
+{
+    ESP_LOGI(TAG, "wake(button): waiting for a press on GPIO %d", BOARD_BUTTON);
+
+    // First, wait until the button is released (so we return ACTIVATION_BUTTON on a real button press)
+    if (!wait_for_button_release(button_mode_active)) return ACTIVATION_MODE_SW;
     for (;;)
     {
-        if (!button_mode_active()) return false;
+        // If we ever switch out of button mode, tell caller that we saw a mode switch
+        if (!button_mode_active()) return ACTIVATION_MODE_SW;
+
         if (activation_button_press_debounced())
         {
             ESP_LOGI(TAG, "wake(button): press detected");
-            return true;
+            return ACTIVATION_BUTTON;
         }
         vTaskDelay(pdMS_TO_TICKS(WAKE_POLL_MS));
     }
@@ -98,15 +99,16 @@ static bool wait_for_button(void)
 
 // WAKEWORD mode: block until "hey billy" (see components/wakeword/models/ATTRIBUTION.md) is heard
 // on the continuously-running mic, OR the button is pressed as a manual override. Waits for the
-// button to be released first, same as wait_for_button, so a jumper already held when this mode
-// is entered doesn't immediately fire an override. Reads the mic WAKEWORD_STEP_SAMPLES (10 ms) at
-// a time via audio.c and feeds it to the detector; each step also checks the mode switch and
-// button, so a flip or press preempts within one step. Returns true on detection/press; false if
-// the mode switch moved off WAKEWORD.
-static bool wait_for_wakeword(void)
+// button to be released first. Reads the mic WAKEWORD_STEP_SAMPLES (10 ms) at a time via audio.c
+// and feeds it to the detector. Returns ACTIVATION_WAKEWORD on detection, ACTIVATION_BUTTON on
+// the manual override, or ACTIVATION_MODE_SW if the mode switch moved off WAKEWORD.
+static activation_event_t wait_for_wakeword(void)
 {
     ESP_LOGI(TAG, "wake(wakeword): listening for the wake word (or a button press)");
-    if (!wait_for_button_release(wakeword_mode_active)) return false;
+
+    // First, wait until the button is released (so we return ACTIVATION_BUTTON on a real button press)
+    if (!wait_for_button_release(wakeword_mode_active)) return ACTIVATION_MODE_SW;
+
     wakeword_reset();
 
     int32_t raw[WAKEWORD_STEP_SAMPLES];
@@ -114,12 +116,13 @@ static bool wait_for_wakeword(void)
 
     for (;;)
     {
-        if (!wakeword_mode_active()) return false;
+        // If we ever switch out of wakeword mode, tell caller that we saw a mode switch
+        if (!wakeword_mode_active()) return ACTIVATION_MODE_SW;
 
         if (activation_button_press_debounced())
         {
             ESP_LOGI(TAG, "wake(wakeword): button press detected (manual override)");
-            return true;
+            return ACTIVATION_BUTTON;
         }
 
         size_t bytes_read = 0;
@@ -135,67 +138,23 @@ static bool wait_for_wakeword(void)
         if (wakeword_feed(pcm, WAKEWORD_STEP_SAMPLES))
         {
             ESP_LOGI(TAG, "wake(wakeword): detected");
-            return true;
+            return ACTIVATION_WAKEWORD;
         }
     }
-}
-
-// BUTTON mode: real deep sleep, not a polling loop -- this is the whole point of the mode (months
-// of standby on 4xC NiMH). Deep sleep is a full chip reset: nothing after hal_deep_sleep_enter()
-// runs, and the next code to execute is app_main() from scratch on wake. The digital domain (and
-// its GPIO config/levels) is lost across that reset except for pins explicitly held -- SD_MODE,
-// nSLEEP, and the status LED's VDD gate all need to stay exactly where they are (muted / parked /
-// unpowered) for the whole sleep, or the amp, DRV8833s, and LED would come back up floating
-// instead (nSLEEP floating high would undo the DRV8833s' uA-standby state, the actual point of
-// this milestone). ESP32-S3 needs the *global* hal_deep_sleep_hold_enable() for a per-pin
-// hal_gpio_hold_enable() to actually survive deep sleep (not just light-sleep/reset) -- see
-// motors_init()'s hal_gpio_hold_disable() call, which releases these same holds on wake.
-static void enter_deep_sleep_for_button_wake(void)
-{
-    ESP_LOGI(TAG, "prepare sleep (button mode): entering deep sleep, wake on GPIO %d press or "
-                  "GPIO %d mode-switch flip", BOARD_BUTTON, BOARD_MODE_SW);
-
-    led_prepare_for_sleep();
-    audio_mute_for_sleep();
-    motors_hold_for_sleep();
-    hal_deep_sleep_hold_enable();
-
-    // Both BOARD_BUTTON and BOARD_MODE_SW have an external pull-up (board.h).
-    hal_deep_sleep_enable_ext1_wakeup((1ULL << BOARD_BUTTON) | (1ULL << BOARD_MODE_SW));
-    hal_deep_sleep_enter();   // does not return
 }
 
 wake_pin_t activation_deep_sleep_wake_pin(void)
 {
     // The only deep-sleep wakeup source we ever arm is ext1 on BOARD_BUTTON and BOARD_MODE_SW
-    // (see enter_deep_sleep_for_button_wake above), so no ext1 cause means a cold boot/flash/reset.
     if (!hal_deep_sleep_woke_on_ext1()) return WAKE_PIN_NONE;
 
     // hal_deep_sleep_ext1_wake_pins() reports which of the armed pins were actually low,
     // distinguishing which one caused this particular reboot. Both reads are of latched
-    // wake-status bits, not consumed on read, so calling this more than once (e.g. once here,
-    // again inside activation_boot_cause()) is safe and cheap.
+    // wake-status bits, not consumed on read, so calling this more than once is safe and cheap.
     uint64_t low_pins = hal_deep_sleep_ext1_wake_pins();
     if (low_pins & (1ULL << BOARD_BUTTON))  return WAKE_PIN_BUTTON;
     if (low_pins & (1ULL << BOARD_MODE_SW)) return WAKE_PIN_MODE_SW;
     return WAKE_PIN_NONE;
-}
-
-boot_cause_t activation_boot_cause(void)
-{
-    switch (activation_deep_sleep_wake_pin())
-    {
-        case WAKE_PIN_BUTTON:
-            // A dark room rules the reboot out as a likely false positive from the flaky button
-            // contact rather than a deliberate press.
-            return sensors_photocell_bright_enough("deep-sleep boot: button") ? BOOT_BUTTON : BOOT_NONE;
-        case WAKE_PIN_MODE_SW:
-            ESP_LOGI(TAG, "deep-sleep boot: mode switch flipped");
-            return BOOT_MODE_CHANGE;
-        case WAKE_PIN_NONE:
-        default:
-            return BOOT_NONE;
-    }
 }
 
 void activation_prepare_sleep(void)
@@ -204,25 +163,50 @@ void activation_prepare_sleep(void)
 
     if (current_wake_mode() == WAKE_MODE_BUTTON)
     {
-        enter_deep_sleep_for_button_wake();   // does not return
+        // BUTTON mode: enter deep sleep. Deep sleep is a full chip reset: nothing after hal_deep_sleep_enter()
+        // runs, and the next code to execute is app_main() on wake.
+        ESP_LOGI(TAG, "prepare sleep (button mode): entering deep sleep, wake on GPIO %d press or "
+                    "GPIO %d mode-switch flip", BOARD_BUTTON, BOARD_MODE_SW);
+
+        led_prepare_for_sleep();
+        audio_mute_for_sleep();
+        motors_hold_for_sleep();
+        hal_deep_sleep_hold_enable();
+
+        // Both BOARD_BUTTON and BOARD_MODE_SW have an external pull-up (board.h).
+        hal_deep_sleep_enable_ext1_wakeup((1ULL << BOARD_BUTTON) | (1ULL << BOARD_MODE_SW));
+        hal_deep_sleep_enter();   // does not return
     }
 
     // Hands-free: the mic must stay live for the wake-word detector, so we don't sleep.
     ESP_LOGI(TAG, "prepare sleep (wakeword mode): motors parked; mic stays live for detection — no sleep");
 }
 
-bool activation_wait_for_wake(void)
+activation_event_t activation_wait(void)
 {
     // Read the current wake mode and run the correct wake detection.
     wake_mode_t mode = current_wake_mode();
-    ESP_LOGI(TAG, "wait for wake — mode=%s", wake_mode_name(mode));
-    bool woke = (mode == WAKE_MODE_BUTTON) ? wait_for_button() : wait_for_wakeword();
-    if (!woke)
+    ESP_LOGI(TAG, "wait for wake — mode=%s", mode == WAKE_MODE_BUTTON ? "BUTTON" : "WAKEWORD");
+
+    // Call the correct wait function
+    activation_event_t event = (mode == WAKE_MODE_BUTTON) ? wait_for_button() : wait_for_wakeword();
+
+    switch (event)
     {
-        // The wait functions return false as soon as they see the mode switch flip (checked
-        // every poll tick / audio step).
-        ESP_LOGI(TAG, "wake: mode switch flipped — returning to idle");
-        return false;
+        case ACTIVATION_BUTTON:
+            ESP_LOGI(TAG, "activation_wait: button press");
+            break;
+        case ACTIVATION_WAKEWORD:
+            ESP_LOGI(TAG, "activation_wait: wake word detected");
+            break;
+        case ACTIVATION_MODE_SW:
+            // wait_for_button()/wait_for_wakeword() return this as soon as they see the mode
+            // switch flip (checked every poll tick / audio step).
+            ESP_LOGI(TAG, "activation_wait: mode switch flipped — returning to idle");
+            break;
+        case ACTIVATION_NONE:
+            ESP_LOGI(TAG, "activation_wait: no event");
+            break;
     }
-    return sensors_photocell_bright_enough(wake_mode_name(mode));
+    return event;
 }

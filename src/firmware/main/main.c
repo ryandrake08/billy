@@ -54,24 +54,29 @@ static void runloop_task(void *arg)
 {
     (void) arg;
 
-    // activation_boot_cause() validates a button-pin wake against the photocell (fish_config_get()),
-    // which by default is still whatever was compiled in -- nothing has fetched config yet at
-    // this point in boot. So a config fetch needs to be forced *before* that validation runs, for
-    // it to have a real shot at a fresh (or shim-overridden) threshold. That decision can't be
-    // based on activation_boot_cause()'s own result -- that's the very thing the fetch would
-    // affect -- so it's based on the raw wake pin instead (activation_deep_sleep_wake_pin()),
-    // which has no such dependency.
-    if (activation_deep_sleep_wake_pin() == WAKE_PIN_BUTTON)
+    // Read the raw wake pin first, before deciding whether to skip idle below: a button-pin wake
+    // needs a config fetch forced *before* the photocell check that decision depends on, since
+    // that check validates against fish_config_get(), which by default is still whatever was
+    // compiled in until something fetches fresh config.
+    wake_pin_t wake_pin = activation_deep_sleep_wake_pin();
+    if (wake_pin == WAKE_PIN_BUTTON)
     {
         net_fetch_config(/* wait_for_backend = */ true);
     }
 
+    if (wake_pin == WAKE_PIN_MODE_SW)
+    {
+        ESP_LOGI(TAG, "deep-sleep boot: mode switch flipped");
+    }
+
     // A button press in BUTTON mode wakes the chip from deep sleep via a full reboot -- landing
-    // in idle here would immediately re-sleep on that same press (see boot_cause_t's doc
-    // comment) without ever using it, so the first turn skips idle and treats the press that
-    // caused it as the activation event. A mode-switch reboot (or no such cause at all) goes
-    // through idle normally, like a cold boot.
-    bool skip_idle = (activation_boot_cause() == BOOT_BUTTON);
+    // in idle here would immediately re-sleep on that same press without ever using it, so the
+    // first turn skips idle and treats the press that caused it as the activation event, provided
+    // the photocell doesn't rule it out as a dark-room false positive from the flaky button
+    // contact. A mode-switch reboot (or no such cause at all) goes through idle normally, like a
+    // cold boot.
+    bool skip_idle = (wake_pin == WAKE_PIN_BUTTON) &&
+                      sensors_photocell_bright_enough("deep-sleep boot: button");
 
     for (;;)
     {
@@ -79,8 +84,8 @@ static void runloop_task(void *arg)
         // WAKEWORD-mode fish (which never reboots) can be retuned live with no reboot at all.
         // The one case that needs a forced, longer wait (a button-caused wake, about to skip
         // idle below and go straight into a turn that needs the network right after) already got
-        // it above, before activation_boot_cause() ran -- this call always stays light so it
-        // never meaningfully delays sleep or a WAKEWORD-mode loop.
+        // it above, before the skip_idle check ran -- this call always stays light so it never
+        // meaningfully delays sleep or a WAKEWORD-mode loop.
         net_fetch_config(/* wait_for_backend = */ false);
 
         if (!skip_idle)
@@ -91,11 +96,20 @@ static void runloop_task(void *arg)
             // In wakeword mode, activating the switch will interrupt the wait and return back to idle
             led_set_status(LED_STATUS_IDLE);
             activation_prepare_sleep();
-            if (!activation_wait_for_wake())
+            activation_event_t event = activation_wait();
+            if (event == ACTIVATION_MODE_SW)
             {
                 // The mode switch flipped -- loop back so the next pass calls
                 // activation_prepare_sleep() again with the fresh mode (real deep sleep if it's
                 // now BUTTON mode) instead of continuing to poll in the old mode's style.
+                continue;
+            }
+
+            // A dark room rules the candidate out as a likely false positive -- a flaky button
+            // contact, or background noise misfiring the wake-word detector -- rather than a
+            // deliberate activation.
+            if (!sensors_photocell_bright_enough(event == ACTIVATION_BUTTON ? "BUTTON" : "WAKEWORD"))
+            {
                 continue;
             }
         }

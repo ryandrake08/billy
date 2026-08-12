@@ -16,7 +16,7 @@ typedef struct
     int vad_drain_ms;
     int capture_max_ms;
 
-    // Photocell wake gate -- activation.c activation_wait_for_wake()
+    // Photocell wake gate -- main.c's runloop_task()
     int photocell_wake_threshold;
 
     // Mouth lip-sync envelope -- audio.c's playback envelope follower
