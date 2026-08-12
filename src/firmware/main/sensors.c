@@ -20,13 +20,10 @@ void sensors_init(void)
 }
 
 // Averaged over a handful of reads -- bench data showed ~1-1.6% scatter (rail ripple under motor
-// load and/or ADC sample jitter) on a single raw read; see .devdocs/WIRING.md §3h-2.
+// load and/or ADC sample jitter) on a single raw read.
 #define VMOTOR_SAMPLE_COUNT 8
 
-// Empirically calibrated (bench PSU + multimeter, .devdocs/WIRING.md §3h-2) against the board.h
-// R13/R15 (100k/75k) divider: raw = SLOPE * volts + OFFSET. Runs ~6.7% steeper than the
-// nominal-3.3V-ADC theoretical slope -- most likely ESP32 ADC1's real characteristic curve at
-// 12 dB attenuation, not resistor tolerance. Only validated 5.40-6.06V.
+// Empirically calibrated (bench PSU + multimeter). raw = SLOPE * volts + OFFSET.
 #define VMOTOR_CAL_SLOPE_COUNTS_PER_VOLT  567.6f
 #define VMOTOR_CAL_OFFSET_COUNTS        (-354.3f)
 
@@ -41,13 +38,12 @@ float sensors_read_vmotor_volts(void)
     return (raw_avg - VMOTOR_CAL_OFFSET_COUNTS) / VMOTOR_CAL_SLOPE_COUNTS_PER_VOLT;
 }
 
-bool sensors_photocell_bright_enough(const char *context)
+bool sensors_photocell_bright_enough(void)
 {
     int threshold = fish_config_get()->photocell_wake_threshold;
     int raw = hal_adc_read(BOARD_PHOTOCELL_ADC);
     bool ok = raw >= threshold;
-    ESP_LOGI(TAG, "photocell (%s): raw=%d threshold=%d -> %s",
-             context, raw, threshold, ok ? "ok" : "too dark, ignoring");
+    ESP_LOGI(TAG, "photocell: raw=%d threshold=%d -> %s", raw, threshold, ok ? "ok" : "too dark, ignoring");
     return ok;
 }
 

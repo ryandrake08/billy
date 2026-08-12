@@ -54,6 +54,11 @@ static void runloop_task(void *arg)
 {
     (void) arg;
 
+    // We need to skip the idle wait if the user pushed the button and the device booted out of
+    // deep sleep mode, and the photocell doesn't reject it as a dark-room false positive. Default
+    // is to not skip the idle wait.
+    bool skip_idle = false;
+
     // Read the raw wake pin first, before deciding whether to skip idle below: a button-pin wake
     // needs a config fetch forced *before* the photocell check that decision depends on, since
     // that check validates against fish_config_get(), which by default is still whatever was
@@ -61,7 +66,14 @@ static void runloop_task(void *arg)
     wake_pin_t wake_pin = activation_deep_sleep_wake_pin();
     if (wake_pin == WAKE_PIN_BUTTON)
     {
+        ESP_LOGI(TAG, "deep-sleep boot: button pushed");
+
+        // Fetch a fresh config in order to know the correct photocell threshold.
         net_fetch_config(/* wait_for_backend = */ true);
+
+        // Now test the photocell brightness to filter out false positives. If the room is bright
+        // enough, we have a true activation-from-boot and need to skip the idle wait.
+        skip_idle = sensors_photocell_bright_enough();
     }
 
     if (wake_pin == WAKE_PIN_MODE_SW)
@@ -69,23 +81,10 @@ static void runloop_task(void *arg)
         ESP_LOGI(TAG, "deep-sleep boot: mode switch flipped");
     }
 
-    // A button press in BUTTON mode wakes the chip from deep sleep via a full reboot -- landing
-    // in idle here would immediately re-sleep on that same press without ever using it, so the
-    // first turn skips idle and treats the press that caused it as the activation event, provided
-    // the photocell doesn't rule it out as a dark-room false positive from the flaky button
-    // contact. A mode-switch reboot (or no such cause at all) goes through idle normally, like a
-    // cold boot.
-    bool skip_idle = (wake_pin == WAKE_PIN_BUTTON) &&
-                      sensors_photocell_bright_enough("deep-sleep boot: button");
-
     for (;;)
     {
-        // Best-effort, bounded -- picks up any shim-side config change on every cycle, so a
-        // WAKEWORD-mode fish (which never reboots) can be retuned live with no reboot at all.
-        // The one case that needs a forced, longer wait (a button-caused wake, about to skip
-        // idle below and go straight into a turn that needs the network right after) already got
-        // it above, before the skip_idle check ran -- this call always stays light so it never
-        // meaningfully delays sleep or a WAKEWORD-mode loop.
+        // Try to fetch a fresh config. If it fails because WiFi is not available or the server
+        // doesn't respond, no big deal. We'll retry next turn.
         net_fetch_config(/* wait_for_backend = */ false);
 
         if (!skip_idle)
@@ -108,7 +107,7 @@ static void runloop_task(void *arg)
             // A dark room rules the candidate out as a likely false positive -- a flaky button
             // contact, or background noise misfiring the wake-word detector -- rather than a
             // deliberate activation.
-            if (!sensors_photocell_bright_enough(event == ACTIVATION_BUTTON ? "BUTTON" : "WAKEWORD"))
+            if (!sensors_photocell_bright_enough())
             {
                 continue;
             }
