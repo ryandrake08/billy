@@ -8,17 +8,14 @@
 // before any other motors_* function.
 void motors_init(void);
 
-// nSLEEP low -- park both DRV8833s (~uA standby). Safe to call repeatedly; called every idle
-// cycle regardless of wake mode (see activation.c's prepare-sleep).
+// nSLEEP low -- park both DRV8833s (~uA standby).
 void motors_park(void);
 
 // BUTTON-mode deep sleep only: holds nSLEEP low through the sleep (motors_park() sets the level;
-// this makes it survive the reset -- see activation.c's deep-sleep entry for why this is a
-// separate call from motors_park()).
+// this makes it survive the reset.
 void motors_hold_for_sleep(void);
 
-// Enables both DRV8833s (nSLEEP high). Called by motors_* choreography below and by audio.c
-// before driving the mouth motor off the playback envelope.
+// Enables both DRV8833s (nSLEEP high).
 void motors_enable(void);
 
 // Mouth lip-sync gate, 0-100% duty. audio.c's envelope follower computes the target gate level

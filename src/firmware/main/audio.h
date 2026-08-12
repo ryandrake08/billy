@@ -34,9 +34,7 @@ void audio_init(void);
 void audio_mute_for_sleep(void);
 
 // Raw mic RX read, one I2S read's worth of 32-bit slots (24-bit sample MSB-first, left channel
-// only) -- exposed for activation.c's wake-word listening loop, which needs live mic samples
-// outside of a capture. audio_capture_utterance() below uses the same underlying channel
-// internally for its own VAD capture.
+// only)
 esp_err_t audio_mic_read_raw(int32_t *buf, size_t buf_len_bytes, size_t *out_bytes_read);
 
 // A short "ready — start talking" beep on the amp.
