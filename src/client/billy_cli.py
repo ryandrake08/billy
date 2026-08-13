@@ -23,8 +23,9 @@ listening). Priority is --voice > the shim's per-sentence voice > a built-in def
 
 Turn pipeline: record -> STT -> shim (streams sentences) -> TTS per sentence -> play, with
 sentence 1 spoken while later sentences are still being generated/synthesized (a synth thread
-runs ahead of the playback loop). Prints per-turn latency (end-of-speech -> first audio) to
-validate the ~2 s target.
+runs ahead of the playback loop). Prints per-turn latency: STT (record-end -> transcript), LLM
+ttfs (prompt sent -> first sentence), per-sentence sent->audio (TTS request -> playback start),
+and the overall end-of-speech -> first-audio figure, to validate the ~2 s target.
 
 Usage:
   pip install -r requirements.txt
@@ -101,13 +102,16 @@ def transcribe(client, stt_url, wav_bytes):
     return r.json().get("text", "").strip()
 
 
-def stream_billy(client, shim_url, session, text):
+def stream_billy(client, shim_url, session, text, on_first_sentence=None):
     """POST the utterance to the shim and yield each (sentence, voice) as it streams back.
     The shim owns the persona, history, and text cleaning — sentences arrive ready to speak,
-    each tagged with the voice it should be spoken in (voice is None if the shim omits it)."""
+    each tagged with the voice it should be spoken in (voice is None if the shim omits it).
+    on_first_sentence, if given, is called once with the prompt-sent -> first-sentence latency."""
     body = {"session": session, "text": text}
+    t_sent = time.time()
     with client.stream("POST", f"{shim_url}/v1/respond", json=body, timeout=120) as r:
         r.raise_for_status()
+        first = True
         for line in r.iter_lines():
             if not line.startswith("data:"):
                 continue
@@ -119,6 +123,9 @@ def stream_billy(client, shim_url, session, text):
             except json.JSONDecodeError:
                 continue
             if "sentence" in obj:
+                if first and on_first_sentence:
+                    on_first_sentence(time.time() - t_sent)
+                    first = False
                 yield obj["sentence"], obj.get("voice")
             elif "error" in obj:
                 print(f"  [shim error: {obj['error']}]", file=sys.stderr)
@@ -153,9 +160,10 @@ def speak_turn(client, tts_url, voice_override, sentence_iter, on_first_audio):
     def synth_worker():
         for sent, voice in sentence_iter:
             try:
+                t_sent = time.time()
                 chosen_voice = voice_override or voice or DEFAULT_VOICE
                 audio, sr = tts_synth(client, tts_url, chosen_voice, sent)
-                audio_q.put((sent, audio, sr))
+                audio_q.put((sent, audio, sr, t_sent))
             except Exception as e:  # noqa: BLE001 — reference client, keep going
                 print(f"  [tts error: {e}]", file=sys.stderr)
         audio_q.put(DONE)
@@ -168,11 +176,12 @@ def speak_turn(client, tts_url, voice_override, sentence_iter, on_first_audio):
         item = audio_q.get()
         if item is DONE:
             break
-        sent, audio, sr = item
+        sent, audio, sr, t_sent = item
         if first:
             on_first_audio()
             first = False
-        print(f"  🐟 {sent}")
+        t_play = time.time()
+        print(f"  🐟 {sent}  (sent→audio {t_play - t_sent:.2f}s)")
         play_audio(audio, sr)
     worker.join()
 
@@ -218,12 +227,15 @@ def main():
             print(f"  🗣  {text}")
 
             first_audio = {}
-            sentences = stream_billy(client, shim_url, args.session, text)
+            ttfs = {}
+            sentences = stream_billy(client, shim_url, args.session, text,
+                                      on_first_sentence=lambda dt: ttfs.setdefault("dt", dt))
             speak_turn(client, tts_url, args.voice, sentences,
                        lambda: first_audio.setdefault("t", time.time()))
 
             t_first = first_audio.get("t", time.time())
-            print(f"  ⏱  STT {t_stt - t_end:.2f}s · end→first-audio {t_first - t_end:.2f}s")
+            print(f"  ⏱  STT {t_stt - t_end:.2f}s · LLM ttfs {ttfs.get('dt', float('nan')):.2f}s"
+                  f" · end→first-audio {t_first - t_end:.2f}s")
     except KeyboardInterrupt:
         print("\nbye 🐟")
     finally:

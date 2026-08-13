@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Billy backend shim — the application-logic layer in front of llama.cpp.
 
-Owns the persona, conversation history, model quirks (the /no_think soft switch, <think>
+Owns the persona, conversation history, model quirks (the enable_thinking request flag, <think>
 stripping), and markdown/emoji scrubbing, then streams clean spoken sentences to the client.
 
 It is a TEXT service: it never touches the audio streams. The client (CLI today, ESP32 fish
@@ -15,7 +15,7 @@ hop through here. Contract:
   GET  /health                           -> shim + upstream llama.cpp status
 
 Run:  uvicorn billy_shim:app --host 0.0.0.0 --port 8000
-Config (env):  BILLY_LLM_URL (default http://localhost:8080), BILLY_LLM_MODEL (default Qwen3-8B).
+Config (env):  BILLY_LLM_URL (default http://localhost:8080), BILLY_LLM_MODEL (default Qwen3.5-9B).
 """
 import json
 import os
@@ -26,11 +26,11 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from text import PERSONA, NO_THINK, VOICE, strip_think, sentences_from, strip_markup
+from text import PERSONA, VOICE, strip_think, sentences_from, strip_markup
 from fish_config import OVERRIDES
 
 LLM_URL = os.environ.get("BILLY_LLM_URL", "http://localhost:8080").rstrip("/")
-LLM_MODEL = os.environ.get("BILLY_LLM_MODEL", "Qwen3-8B")
+LLM_MODEL = os.environ.get("BILLY_LLM_MODEL", "Qwen3.5-9B")
 
 app = FastAPI(title="Billy shim", version="1.0")
 
@@ -56,15 +56,26 @@ def _session(sid: str) -> list[dict]:
 
     msgs = _SESSIONS.get(sid)
     if msgs is None:
-        msgs = [{"role": "system", "content": PERSONA + NO_THINK}]
+        msgs = [{"role": "system", "content": PERSONA}]
         _SESSIONS[sid] = msgs
     return msgs
 
 
 def _llm_deltas(client: httpx.Client, messages: list[dict]):
     """Yield assistant text deltas from llama.cpp's streamed OpenAI chat completion."""
+    # temperature/top_p kept high on purpose — Billy got repetitive and flat at lower settings.
+    #
+    # Qwen3.5 dropped Qwen3's "/no_think" text-suffix switch — non-thinking mode is now a
+    # request-level flag the model's chat template reads (needs llama-server run with --jinja).
+    # enable_thinking is the documented top-level field; chat_template_kwargs is sent too as a
+    # fallback in case this llama.cpp build only honors the kwargs-passthrough form. strip_think()
+    # below still strips any <think> block that gets through regardless, but that's a correctness
+    # net, not a latency one — a leaked thinking pass burns real generation time before it. Verify
+    # this actually lands (watch for a <think> block, and that "LLM ttfs" stays in the same range
+    # as before) rather than trusting it blind.
     body = {"model": LLM_MODEL, "messages": messages, "stream": True,
-            "temperature": 0.9, "top_p": 0.9}
+            "temperature": 0.9, "top_p": 0.9,
+            "enable_thinking": False, "chat_template_kwargs": {"enable_thinking": False}}
     with client.stream("POST", f"{LLM_URL}/v1/chat/completions", json=body, timeout=120) as r:
         r.raise_for_status()
         for line in r.iter_lines():
@@ -103,7 +114,7 @@ def respond(req: RespondReq):
     the voice it should be spoken in. The client pipelines these into TTS — speech can start on
     sentence 1 while the LLM is still generating."""
     msgs = _session(req.session)
-    msgs.append({"role": "user", "content": req.text + NO_THINK})
+    msgs.append({"role": "user", "content": req.text})
 
     def gen():
         spoken = []
