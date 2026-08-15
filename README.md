@@ -40,9 +40,12 @@ the shim, which is a text-only service that never touches audio. The shim stream
 the LLM generates them, so the caller can synthesize and play sentence 1 while sentence 2 is
 still being generated — this pipelining is what keeps first-audio latency low.
 
-This exact contract is implemented twice, deliberately kept in sync: once in
-`src/client/billy_cli.py` (the reference implementation) and once in the ESP32 firmware
-(`src/firmware/main/net.c`). The CLI exists to document the protocol the firmware has to match.
+This exact contract is implemented three times, deliberately kept in sync: the reference clients
+`src/client/billy_cli.py` (Python) and `src/cli/` (C), and the ESP32 firmware
+(`src/firmware/main/net.c`). The CLIs exist to document the protocol the firmware has to match —
+the C one doubles as a check on how much of the firmware's own protocol code (WAV header,
+hand-rolled JSON parsing, SSE reassembly) is genuinely ESP-IDF-independent and portable to a
+host build; it turned out to be all of it.
 
 ## Repository layout
 
@@ -52,6 +55,7 @@ This exact contract is implemented twice, deliberately kept in sync: once in
 | `src/firmware/` | ESP32-S3 firmware (C, ESP-IDF). |
 | `src/shim/` | Backend application-logic layer (Python/FastAPI). |
 | `src/client/` | CLI reference client (Python) — a mic+speaker stand-in for the fish. |
+| `src/cli/` | CLI reference client (C) — the same stand-in, built against libcurl/PortAudio/soxr. |
 
 ---
 
@@ -183,7 +187,7 @@ ssh your-host-or-ip systemctl restart billy-shim
 
 ---
 
-## `src/client/` — CLI reference client
+## `src/client/` — CLI reference client (Python)
 
 A command-line stand-in for the fish: drives the full backend pipeline (record → STT → shim →
 TTS → play) from any host with a mic and speaker.
@@ -203,6 +207,42 @@ choice. `--session <id>` sets the shim conversation id; `--shim-url`/`--stt-url`
 override individual endpoints. Uses the system default audio devices.
 
 Each turn prints various latency measurements.
+
+---
+
+## `src/cli/` — CLI reference client (C)
+
+A second, independent reference client for the same contract — same record → STT → shim → TTS →
+play pipeline as the Python client, same flags, same latency breakdown, but built as a plain C
+binary via CMake instead of a Python venv. It exists less because the Python client needed
+replacing and more to size up what a from-scratch C port actually costs: which external
+libraries a host build needs versus what's already solved for free on-device, and how much of
+the firmware's own protocol code turns out to be portable as-is. That last part went further
+than expected — `net.c`'s hand-rolled WAV header and JSON string extraction have zero ESP-IDF
+dependency, so `src/cli` reuses the same techniques verbatim rather than pulling in a JSON
+library.
+
+External dependencies (none of this is vendored): `libcurl` (HTTP, mirrors `httpx`), `portaudio`
+(mic/speaker I/O, mirrors `sounddevice`), `soxr` (output resampling, same library the Python
+`soxr` package binds to). On macOS via MacPorts: `port install curl portaudio soxr`. `numpy` and
+`soundfile` have no C-side equivalent needed — buffer handling is plain arrays, and the WAV
+format in play (canonical PCM16) is simple enough to read/write by hand instead of linking
+libsndfile.
+
+### Build & run
+
+```bash
+cd src/cli
+cmake -S . -B build && cmake --build build
+./build/billy_cli --host <backend-host>     # ports 8000/8081/8880 derived from host
+```
+Press **Enter** to start talking, speak, press **Enter** to stop. `Ctrl-C` is a hard exit here —
+unlike the Python client it doesn't catch the interrupt for a graceful shutdown message.
+
+Same `--voice`/`--session`/`--shim-url`/`--stt-url`/`--tts-url` flags as the Python client, same
+system-default audio devices. TTS audio is resampled to the output device's native rate in
+software (soxr, `SOXR_HQ` quality) rather than by requesting a mismatched rate from PortAudio and
+letting the OS mixer convert it — the latter produced audible static in testing.
 
 ---
 
