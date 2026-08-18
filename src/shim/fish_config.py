@@ -1,11 +1,9 @@
 """Runtime-tunable firmware constants, served over GET /v1/config so they can be retuned after
 final assembly without a firmware rebuild+reflash.
 
-OVERRIDES holds only the values currently being trialed -- the firmware already carries its own
-compiled-in default for every field (fish_config.c) and only overwrites a field when it's present
-in the response, so there's nothing to gain by duplicating those defaults here. Empty in steady
-state; add a key here to change it on the fish's next config fetch, remove it to fall back to the
-firmware's own default.
+OVERRIDES contains values intentionally supplied by the backend. The firmware has a compiled-in
+default for every field (fish_config.c) and only overwrites fields present in the response. Empty
+it to use all firmware defaults; add a key to change it on the fish's next config fetch.
 """
 
 OVERRIDES = {

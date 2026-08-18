@@ -75,12 +75,14 @@ designed to fit inside the original toy's chassis (~70×50mm).
 | 3× TI LM74700-Q1 + AOSS32334C FETs | Ideal-diode power-input protection — battery reverse-polarity, USB/motor-rail isolation |
 | 2× 5A slow-blow fuses | Battery and DC-jack input protection |
 
-`board.h` in the firmware is the single source of truth for the pin map.
+The KiCad schematic and PCB are authoritative for hardware connectivity and layout. Firmware
+`board.h` mirrors the schematic's GPIO assignments and must stay synchronized with it.
 
 **Workflow:**
 ```bash
 open board/billy/billy.kicad_pro
 /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli sch erc --format json --severity-all -o erc.json board/billy/billy.kicad_sch
+/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli pcb drc --format json --severity-all --schematic-parity -o drc.json board/billy/billy.kicad_pcb
 ```
 
 ---
@@ -100,7 +102,7 @@ conversation state lives on-device.
 | device | `audio.c/.h`, `motors.c/.h`, `activation.c/.h`, `sensors.c/.h`, `status_led.c/.h` | Fish-specific setup and algorithms built on the HAL: I²S mic/amp + mouth lip-sync envelope; 2× DRV8833 motor choreography; button/mode-switch/wake-word activation + deep sleep; photocell + Vmotor-sense reads; WS2812 status LED. |
 | HAL | `hal.c/.h` | Generic, pin-parameterized primitives (GPIO, ADC1, LED strip, PWM, I²S, deep sleep) with no fish-specific naming and no `board.h` dependency of its own. |
 
-`board.h` is the single source of truth for the pin map. `components/wakeword` is the on-device
+`board.h` is the firmware representation of the schematic pin map. `components/wakeword` is the on-device
 wake-word detector (TensorFlow Lite Micro, ported from ESPHome's `micro_wake_word` component) —
 see its own `models/ATTRIBUTION.md` for training provenance.
 
@@ -174,7 +176,13 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/uvicorn billy_shim:app --host 0.0.0.0 --port 8000
 ```
 Config via env: `BILLY_LLM_URL` (default `http://localhost:8080`), `BILLY_LLM_MODEL` (default
-`Qwen3.5-9B`). Tests (no pytest): `.venv/bin/python test_text.py`.
+`Qwen3.5-9B`). Tests use plain asserts rather than pytest:
+
+```bash
+.venv/bin/python test_text.py
+.venv/bin/python test_config.py
+.venv/bin/python test_session.py
+```
 
 ### Deploy
 

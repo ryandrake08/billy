@@ -102,9 +102,8 @@ static void runloop_task(void *arg)
             activation_event_t event = activation_wait();
             if (event == ACTIVATION_MODE_SW)
             {
-                // The mode switch flipped -- loop back so the next pass calls
-                // activation_prepare_sleep() again with the fresh mode (real deep sleep if it's
-                // now BUTTON mode) instead of continuing to poll in the old mode's style.
+                // The mode switch flipped -- loop back so the next pass prepares and waits using
+                // the newly selected mode.
                 continue;
             }
 

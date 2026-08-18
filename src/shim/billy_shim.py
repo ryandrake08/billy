@@ -65,8 +65,8 @@ def _llm_deltas(client: httpx.Client, messages: list[dict]):
     """Yield assistant text deltas from llama.cpp's streamed OpenAI chat completion."""
     # temperature/top_p kept high on purpose — Billy got repetitive and flat at lower settings.
     #
-    # Qwen3.5 dropped Qwen3's "/no_think" text-suffix switch — non-thinking mode is now a
-    # request-level flag the model's chat template reads (needs llama-server run with --jinja).
+    # Qwen3.5 non-thinking mode is a request-level flag read by the model's chat template (which
+    # requires llama-server to run with --jinja).
     # enable_thinking is the documented top-level field; chat_template_kwargs is sent too as a
     # fallback in case this llama.cpp build only honors the kwargs-passthrough form. strip_think()
     # below still strips any <think> block that gets through regardless, but that's a correctness

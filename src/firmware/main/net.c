@@ -165,10 +165,9 @@ static esp_err_t wifi_start(void)
     wifi_init_config_t init_cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&init_cfg));
 
-    // The driver's own internal connection-state tracing (tag "wifi") is chatty at INFO and,
-    // since the join now runs concurrently with the rest of app startup instead of blocking it,
-    // interleaves mid-line with our own logging on the shared UART. Quiet it to warnings-and-up;
-    // doesn't touch any other tag's level.
+    // The driver's own internal connection-state tracing (tag "wifi") is chatty at INFO. The
+    // asynchronous join can interleave it mid-line with our own logging on the shared UART.
+    // Quiet it to warnings-and-up; this doesn't touch any other tag's level.
     esp_log_level_set("wifi", ESP_LOG_WARN);
 
     ESP_ERROR_CHECK(esp_event_handler_instance_register(
