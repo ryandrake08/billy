@@ -297,6 +297,14 @@
   "erc": {
     "erc_exclusions": [
       [
+        "lib_symbol_mismatch|1587500|2171700|33e69c53-46dc-4bfc-8772-8b26f62f3d88|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_mismatch|952500|2171700|8fe470d2-c87c-4190-bf7a-f17d160fcaf8|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
         "pin_to_pin|3517900|1447800|01b182f6-167d-4b5d-b721-57912406d9be|80dee3e7-7ce0-42bd-becb-1bb20fcd62ab|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8",
         "Wired per datasheet"
       ]
@@ -804,7 +812,7 @@
         "uuid": "bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
       }
     ],
-    "used_designators": "#FLG1-5,#FLG7-8,F1-2,D1-2,#PWR1-33,#PWR35-50,#PWR52,#PWR54-57,Q1-2,Q4,U1-7,C1-14,C16-19,C22,C24-26,SW1,L1-3,R1-10,R12-13,R15,R17-19,H1-4,TP1-6,J1-12",
+    "used_designators": "#FLG1-5,#FLG7-8,F1-2,D1,#PWR1-46,#PWR48-54,#PWR56-57,Q1-4,U1-9,C1-27,SW1,L1-3,R1-18,H1-4,TP1-6,1,IC1,J1-13",
     "variants": []
   },
   "sheets": [

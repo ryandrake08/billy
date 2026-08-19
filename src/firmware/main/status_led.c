@@ -18,15 +18,16 @@ static const uint8_t STATUS_COLORS[][3] = {
 
 void led_init(void)
 {
-    // The LED's supply is switched (low-side FET) rather than tied straight to 3V3, so power has
-    // to actually be up before the first RMT frame goes out, or the boot-status color would be
-    // clocked into a dark LED and never seen.
-    hal_gpio_init_output(BOARD_STATUS_LED_EN, true);
+    // The LED's supply is switched (low-side FET, BOARD_AWAKE_EN) rather than tied straight to
+    // 3V3, so power has to actually be up before the first RMT frame goes out, or the boot-status
+    // color would be clocked into a dark LED and never seen. This pin also gates the photocell
+    // divider's return (board.h) -- driving it here covers both
+    hal_gpio_init_output(BOARD_AWAKE_EN, true);
 
     // Release any hold left over from a deep sleep the chip just woke from (led_prepare_for_sleep
-    // holds this pin low through sleep) -- level is already the desired 1 (powered), so this
+    // holds this pin low through sleep) -- level is already the desired 1 (awake), so this
     // can't glitch it.
-    hal_gpio_hold_disable(BOARD_STATUS_LED_EN);
+    hal_gpio_hold_disable(BOARD_AWAKE_EN);
 
     hal_led_init(BOARD_STATUS_LED);
     hal_led_clear();
@@ -42,10 +43,10 @@ void led_set_status(led_status_t status)
 
 void led_prepare_for_sleep(void)
 {
-    // Clear to black *before* cutting BOARD_STATUS_LED_EN below, so DIN is already idling low
-    // (not mid-toggle) at the moment VDD goes away -- a WS2812 otherwise latches whatever color
-    // it last received and keeps displaying it with no further refresh needed.
+    // Clear to black *before* cutting BOARD_AWAKE_EN below, so DIN is already idling low (not
+    // mid-toggle) at the moment VDD goes away -- a WS2812 otherwise latches whatever color it
+    // last received and keeps displaying it with no further refresh needed.
     hal_led_clear();
-    hal_gpio_set(BOARD_STATUS_LED_EN, false);   // cut the LED's VDD -- 0 current for the whole sleep
-    hal_gpio_hold_enable(BOARD_STATUS_LED_EN);
+    hal_gpio_set(BOARD_AWAKE_EN, false);   // cuts the LED's VDD *and* the photocell divider
+    hal_gpio_hold_enable(BOARD_AWAKE_EN);
 }

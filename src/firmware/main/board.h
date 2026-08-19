@@ -38,10 +38,13 @@
 #define BOARD_PHOTOCELL_ADC    9  // ADC1 (ADC2 is unusable while WiFi is on)
 
 // --- Status LED: WS2812-family single RGB pixel. Bench: DevKitC-1's onboard WS2812 (DIN only,
-// VDD unswitched). Final board: a discrete WS2812B (5050 or 2020 package) with VDD gated by a
-// low-side FET so it draws zero current in deep sleep.
+// VDD unswitched). Final board: a discrete WS2812B (5050 or 2020 package) with VDD gated by
+// BOARD_AWAKE_EN so it draws zero current in deep sleep.
 #define BOARD_STATUS_LED      38  // data (DIN), through a series resistor
-#define BOARD_STATUS_LED_EN   18  // VDD gate (low-side FET): high = LED powered, low = off
+
+// --- Awake indicator: shared low-side gate, high whenever the chip is running in either wake
+// mode, low only during BUTTON-mode deep sleep
+#define BOARD_AWAKE_EN         18
 
 // --- Vmotor sense (J13): ADC1, resistor divider from Vdrive to GND -----------------------------
 // Rev.0 boards populate this test-point footprint as a bare scope-probe header instead (150R
