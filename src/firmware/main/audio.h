@@ -20,6 +20,9 @@ typedef struct
 // outside the range of any ESP-IDF or driver error code in use here.
 #define FISH_ERR_AUDIO_HW ((esp_err_t) 0x8001)
 
+// A motor nFAULT interrupted mouth animation during playback.
+#define FISH_ERR_MOTOR_FAULT ((esp_err_t) 0x8002)
+
 // Amp SD_MODE high (unmuted) + both I²S controllers running continuously (mic RX, amp TX). Call
 // once, before any other audio_* function.
 void audio_init(void);
@@ -58,6 +61,6 @@ esp_err_t audio_capture_utterance(audio_buf_t *out);
 // and never hits this. `move_mouth` drives the lip-sync motor (motors.h) off the audio envelope
 // when true; pass false for playback that shouldn't move the mechanism (e.g. repeating a captured
 // utterance back for debugging). Returns FISH_ERR_AUDIO_HW if the amp TX write fails,
-// ESP_ERR_NO_MEM if a needed resample allocation fails; ESP_OK otherwise (including for
-// empty/null audio, which is a no-op, not a failure).
+// FISH_ERR_MOTOR_FAULT if nFAULT interrupts mouth animation, ESP_ERR_NO_MEM if a needed resample
+// allocation fails; ESP_OK otherwise (including for empty/null audio, which is a no-op).
 esp_err_t audio_play(const audio_buf_t *audio, bool move_mouth);

@@ -2,13 +2,13 @@
 // shim, TTS direct to Kokoro. This is the orchestrator seam: only this layer changes if the fish
 // ever moves from direct-HTTP to ESPHome/Home Assistant.
 #pragma once
-#include "audio.h"    // audio_buf_t, FISH_ERR_AUDIO_HW
+#include "audio.h"    // audio_buf_t and local audio/motor playback errors
 #include "esp_err.h"
 
 // Per-sentence callback for the streamed reply, so TTS/playback pipelines with generation. voice
 // is the Kokoro voice the shim chose for this sentence (it may vary sentence-to-sentence within
-// one reply). A non-ESP_OK return (e.g. FISH_ERR_AUDIO_HW -- see audio.h) is treated as fatal:
-// net_respond stops reading the stream and passes that same error back up as its own return value.
+// one reply). A non-ESP_OK return (e.g. FISH_ERR_AUDIO_HW or FISH_ERR_MOTOR_FAULT -- see audio.h)
+// is treated as fatal: net_respond stops reading and passes that same error back to its caller.
 typedef esp_err_t (*sentence_cb_t)(const char *sentence, const char *voice, void *ctx);
 
 // Bring up networking: start the WiFi driver and kick off the first join attempt, then return

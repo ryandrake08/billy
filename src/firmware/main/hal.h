@@ -18,6 +18,9 @@ void hal_gpio_set(int pin, bool level);
 void hal_gpio_hold_enable(int pin);    // survives deep sleep only with hal_deep_sleep_hold_enable() also set
 void hal_gpio_hold_disable(int pin);
 
+typedef void (*hal_gpio_interrupt_handler_t)(void *arg);  // GPIO interrupt handling callback
+void hal_gpio_add_falling_interrupt(int pin, hal_gpio_interrupt_handler_t handler, void *arg);
+
 // --- ADC1, shared by any single-shot analog read --------------------------------------------------
 // Reconfigures the channel on every hal_adc_read() call rather than caching a pin->channel
 // mapping -- these are infrequent, non-hot-path reads, so the bookkeeping to avoid that isn't

@@ -99,7 +99,7 @@ conversation state lives on-device.
 |---|---|---|
 | app | `main.c` | `app_main()` wires everything together; `runloop_task` runs the `IDLE→ACTIVATE→LISTEN→THINK→SPEAK→IDLE` state machine. |
 | transport | `net.c/.h` | The fish↔backend contract described above — STT direct, brain hop through the shim, TTS direct. The one layer that would change if the fish ever moved from direct HTTP to ESPHome/Home Assistant. |
-| device | `audio.c/.h`, `motors.c/.h`, `activation.c/.h`, `sensors.c/.h`, `status_led.c/.h` | Fish-specific setup and algorithms built on the HAL: I²S mic/amp + mouth lip-sync envelope; 2× DRV8833 motor choreography; button/mode-switch/wake-word activation + deep sleep; photocell + Vmotor-sense reads; WS2812 status LED. |
+| device | `audio.c/.h`, `motors.c/.h`, `activation.c/.h`, `sensors.c/.h`, `status_led.c/.h` | Fish-specific setup and algorithms built on the HAL: I²S mic/amp + mouth lip-sync envelope; 2× DRV8833 motor choreography with first-edge-latched fault shutdown and deferred Vmotor capture; button/mode-switch/wake-word activation + deep sleep; photocell + Vmotor-sense reads; WS2812 status LED. |
 | HAL | `hal.c/.h` | Generic, pin-parameterized primitives (GPIO, ADC1, LED strip, PWM, I²S, deep sleep) with no fish-specific naming and no `board.h` dependency of its own. |
 
 `board.h` is the firmware representation of the schematic pin map. `components/wakeword` is the on-device
@@ -138,7 +138,9 @@ on WiFi or the backend being reachable. Activation depends on the mode switch: *
 "hey billy"; a button press also works as a manual override). Flipping the switch mid-wait
 preempts immediately. Runtime-tunable constants (VAD thresholds, photocell gate, motor timing,
 HTTP timeouts) are fetched from the shim's `/v1/config` every loop cycle rather than compiled
-in, with compiled-in fallbacks if the shim is unreachable.
+in, with compiled-in fallbacks if the shim is unreachable. During speech, a motor fault stops
+audio at the next I²S chunk boundary, aborts the remaining streamed reply, and returns to the
+run loop's local fault handling.
 
 ---
 

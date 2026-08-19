@@ -473,8 +473,8 @@ esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
                         }
                         ESP_LOGI(TAG, "shim -> \"%s\" (voice=%s)", sentence, voice);
                         cb_err = on_sentence(sentence, voice, ctx);
-                        // A fatal local failure (audio hardware, not the stream itself) -- stop
-                        // reading rather than fetching/discarding the rest of the reply for nothing.
+                        // A fatal local failure (audio hardware or motor shutdown, not the stream
+                        // itself) -- stop rather than fetching/discarding the rest of the reply.
                         if (cb_err != ESP_OK) done = true;
                     }
                     else if (json_get_string(pl, "error", sentence, sizeof sentence))

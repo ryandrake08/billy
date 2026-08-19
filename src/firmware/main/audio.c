@@ -76,8 +76,8 @@ esp_err_t audio_mic_read_raw(int32_t *buf, size_t buf_len_bytes, size_t *out_byt
 
 // Write mono samples to the stereo TX by duplicating each into L and R. `chunk_cb`, if non-NULL,
 // is invoked with each chunk right before it's written -- used to drive mouth-sync PWM off the
-// audio actually being played (see audio_play below).
-typedef void (*amp_chunk_cb_t)(const int16_t *chunk, int n);
+// audio actually being played (see audio_play below). False aborts playback as a motor fault.
+typedef bool (*amp_chunk_cb_t)(const int16_t *chunk, int n);
 
 static esp_err_t amp_write_mono(const int16_t *mono, size_t count, amp_chunk_cb_t chunk_cb)
 {
@@ -86,7 +86,10 @@ static esp_err_t amp_write_mono(const int16_t *mono, size_t count, amp_chunk_cb_
     while (i < count)
     {
         int n = (count - i) > AMP_CHUNK_FRAMES ? AMP_CHUNK_FRAMES : (int) (count - i);
-        if (chunk_cb) chunk_cb(&mono[i], n);
+        if (chunk_cb && !chunk_cb(&mono[i], n))
+        {
+            return FISH_ERR_MOTOR_FAULT;
+        }
         for (int k = 0; k < n; k++)
         {
             stereo[2 * k]     = mono[i + k];
@@ -199,8 +202,13 @@ static mouth_gate_t s_mouth_gate = MOUTH_CLOSED;   // last-commanded gate, so st
                                       // chunks (~93/s during playback) don't re-write the PWM
                                       // duty every chunk for no change in output.
 
-static void mouth_track_chunk(const int16_t *chunk, int n)
+static bool mouth_track_chunk(const int16_t *chunk, int n)
 {
+    if (motors_faulted())
+    {
+        return false;
+    }
+
     const fish_config_t *cfg = fish_config_get();
 
     int64_t sumsq = 0;
@@ -222,18 +230,26 @@ static void mouth_track_chunk(const int16_t *chunk, int n)
         uint8_t pct = 0;
         if (want == MOUTH_OPEN)     pct = 100;
         else if (want == MOUTH_MID) pct = cfg->mouth_mid_duty_pct;
-        motors_set_mouth_pct(pct);
+        if (!motors_set_mouth_pct(pct))
+        {
+            return false;
+        }
         s_mouth_gate = want;
     }
+    return true;
 }
 
 // Ramp isn't needed on close -- silence between sentences would otherwise leave the mouth ajar
 // until the next chunk arrives, so snap it shut and reset the follower for the next utterance.
-static void mouth_close(void)
+static bool mouth_close(void)
 {
     s_mouth_envelope = 0.0f;
     s_mouth_gate = MOUTH_CLOSED;
-    motors_set_mouth_pct(0);
+    if (motors_faulted())
+    {
+        return false;
+    }
+    return motors_set_mouth_pct(0);
 }
 
 // Linear-interpolation resample of `in` (in_count samples @ in_rate) into a freshly
@@ -294,9 +310,18 @@ esp_err_t audio_play(const audio_buf_t *audio, bool move_mouth)
     esp_err_t err;
     if (move_mouth)
     {
-        motors_enable();
-        err = amp_write_mono(samples, count, mouth_track_chunk);
-        mouth_close();
+        if (!motors_enable())
+        {
+            err = FISH_ERR_MOTOR_FAULT;
+        }
+        else
+        {
+            err = amp_write_mono(samples, count, mouth_track_chunk);
+        }
+        if (!mouth_close() && err == ESP_OK)
+        {
+            err = FISH_ERR_MOTOR_FAULT;
+        }
     }
     else
     {

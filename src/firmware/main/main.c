@@ -17,13 +17,18 @@
 
 static const char *TAG = "billy";
 
+static void signal_motor_fault(void)
+{
+    led_set_status(LED_STATUS_ERROR);
+    audio_error_tone();
+}
+
 // SPEAK worker: synthesize one streamed sentence and play it with mouth sync. Invoked by
 // net_respond for each sentence, so playback pipelines with generation. Propagates (net_respond
 // stops the stream and passes it up) for conditions the runloop needs to reboot over -- playback
-// hardware failure, or PSRAM exhaustion, which will just recur on the next sentence's allocation
-// the same way audio_capture_utterance's PSRAM failure recurs on retry. Any other TTS failure
-// is handled locally (tone + keep going) since it's a per-sentence network hiccup, not a reason to
-// abort the whole reply.
+// hardware failure or PSRAM exhaustion, which require a reboot, and a motor fault, which aborts
+// the rest of the reply so the run loop can present the local safety error. Any ordinary TTS
+// failure is handled locally (tone + keep going) since it's a per-sentence network hiccup.
 static esp_err_t speak_sentence(const char *sentence, const char *voice, void *ctx)
 {
     (void) ctx;
@@ -117,10 +122,26 @@ static void runloop_task(void *arg)
         }
         skip_idle = false;
 
+        // A fault remains latched for the rest of its turn. Only a fresh user activation may
+        // attempt recovery, with every PWM command cleared and nFAULT checked around driver wake.
+        if (motors_faulted())
+        {
+            if (!motors_recover())
+            {
+                signal_motor_fault();
+                continue;
+            }
+            ESP_LOGI(TAG, "motor fault recovered at activation; drivers parked until commanded");
+        }
+
         // Prepare to listen -- fish plays a prompt tone and flaps its tail
         led_set_status(LED_STATUS_LISTEN);
         audio_prompt_tone();
-        motors_tail_flap();
+        if (!motors_tail_flap())
+        {
+            signal_motor_fault();
+            continue;
+        }
 
         // Capture an utterance from the microphone
         audio_buf_t utterance = {0};
@@ -177,7 +198,11 @@ static void runloop_task(void *arg)
 
         // Pass utterance transcript to LLM backend shim app
         led_set_status(LED_STATUS_SPEAK);
-        motors_head_out();
+        if (!motors_head_out())
+        {
+            signal_motor_fault();
+            continue;
+        }
 
         // The shim streams sentences; speak_sentence TTS+plays each as it arrives.
         esp_err_t respond_err = net_respond(transcript, speak_sentence, NULL);
@@ -193,6 +218,11 @@ static void runloop_task(void *arg)
                      esp_err_to_name(respond_err));
             esp_restart();
         }
+        else if (respond_err == FISH_ERR_MOTOR_FAULT)
+        {
+            signal_motor_fault();
+            continue;
+        }
         else if (respond_err != ESP_OK)
         {
             ESP_LOGW(TAG, "brain hop failed");
@@ -201,7 +231,11 @@ static void runloop_task(void *arg)
 
         // Relax now, once the whole reply is done -- not on any silence gap between streamed
         // sentences, a known failure mode in similar builds where the head never settles.
-        motors_head_relax();
+        if (!motors_head_relax())
+        {
+            signal_motor_fault();
+            continue;
+        }
 
         // Cumulative low-water mark since boot -- the worst-case PSRAM usage any turn has hit
         // so far, not just this one. Bench this against a 2 MB budget (N4R2 candidate) before
@@ -223,14 +257,14 @@ void app_main(void)
     // the chip powered on at all.
     led_init();
 
-    // initialize the rest of the hardware -- order doesn't matter between these three, each owns
-    // an independent set of pins/peripherals
+    // Initialize Vmotor sensing before the motor fault task, so even an nFAULT line already low
+    // at boot can be sampled safely in deferred task context.
+    sensors_init();
+
+    // Initialize the remaining hardware -- each owns an independent set of pins/peripherals.
     motors_init();
     audio_init();
     activation_init();
-
-    // photocell/Vmotor boot smoke-test reads (brings up the shared ADC1 unit itself)
-    sensors_init();
 
     // initialize wakeword subsystem
     if (!wakeword_init())

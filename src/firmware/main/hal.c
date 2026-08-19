@@ -56,6 +56,18 @@ void hal_gpio_hold_disable(int pin)
     gpio_hold_dis(pin);
 }
 
+void hal_gpio_add_falling_interrupt(int pin, hal_gpio_interrupt_handler_t handler, void *arg)
+{
+    static bool isr_service_installed;
+    if (!isr_service_installed)
+    {
+        ESP_ERROR_CHECK(gpio_install_isr_service(0));
+        isr_service_installed = true;
+    }
+    ESP_ERROR_CHECK(gpio_set_intr_type(pin, GPIO_INTR_NEGEDGE));
+    ESP_ERROR_CHECK(gpio_isr_handler_add(pin, handler, arg));
+}
+
 // --- ADC1 ------------------------------------------------------------------------------------------
 
 static adc_oneshot_unit_handle_t s_adc1;
