@@ -5889,6 +5889,321 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Transistor_FET:AO3401A"
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "Q"
+				(at 5.08 1.905 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "AO3401A"
+				(at 5.08 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+				(at 5.08 -1.905 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(justify left)
+				)
+			)
+			(property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3401A.pdf"
+				(at 5.08 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Description" "-4.0A Id, -30V Vds, P-Channel MOSFET, SOT-23"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "P-Channel MOSFET"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "SOT?23*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "AO3401A_0_1"
+				(polyline
+					(pts
+						(xy 0.254 1.905) (xy 0.254 -1.905)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.254 0) (xy -2.54 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 2.286) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 1.778) (xy 3.302 1.778) (xy 3.302 -1.778) (xy 0.762 -1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 0.508) (xy 0.762 -0.508)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 -1.27) (xy 0.762 -2.286)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.651 0)
+					(radius 2.794)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.286 0) (xy 1.27 0.381) (xy 1.27 -0.381) (xy 2.286 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 2.54) (xy 2.54 1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.54 1.778)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(circle
+					(center 2.54 -1.778)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 -2.54) (xy 2.54 0) (xy 0.762 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.794 -0.508) (xy 2.921 -0.381) (xy 3.683 -0.381) (xy 3.81 -0.254)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.302 -0.381) (xy 2.921 0.254) (xy 3.683 0.254) (xy 3.302 -0.381)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "AO3401A_1_1"
+				(pin input line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "G"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 -5.08 90)
+					(length 2.54)
+					(name "S"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 5.08 270)
+					(length 2.54)
+					(name "D"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "power:+3.3V"
 			(power global)
 			(pin_numbers
@@ -6765,12 +7080,6 @@
 		(uuid "91fbc50f-0698-4ac0-83af-6ed52f380eed")
 	)
 	(junction
-		(at 166.37 129.54)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "92adac99-72ee-4a66-acdc-c910949ce7a0")
-	)
-	(junction
 		(at 166.37 228.6)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6787,12 +7096,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "99b1d4d6-7317-4901-9cb7-7a15eba39650")
-	)
-	(junction
-		(at 151.13 129.54)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "9a9f3bcc-95e1-463b-a588-1dba6c89d573")
 	)
 	(junction
 		(at 238.76 90.17)
@@ -6817,12 +7120,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ad0d913c-99b8-446e-a5ac-4ef443c76550")
-	)
-	(junction
-		(at 151.13 140.97)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "b0d8d9d7-27b1-4300-814a-20c8eecececf")
 	)
 	(junction
 		(at 370.84 213.36)
@@ -7014,7 +7311,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 129.54) (xy 166.37 129.54)
+			(xy 163.83 129.54) (xy 170.18 129.54)
 		)
 		(stroke
 			(width 0)
@@ -7304,16 +7601,6 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 153.67) (xy 144.78 151.13)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2147f4af-7c0c-4b95-956d-808cbe0c16ba")
-	)
-	(wire
-		(pts
 			(xy 144.78 190.5) (xy 151.13 190.5)
 		)
 		(stroke
@@ -7514,16 +7801,6 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 129.54) (xy 166.37 140.97)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2f5e081a-930d-4e79-ae95-cd74209a5ab7")
-	)
-	(wire
-		(pts
 			(xy 317.5 185.42) (xy 317.5 189.23)
 		)
 		(stroke
@@ -7631,46 +7908,6 @@
 			(type default)
 		)
 		(uuid "38d5c614-fe53-4e80-bfcf-4e5d6a4ffd00")
-	)
-	(wire
-		(pts
-			(xy 144.78 140.97) (xy 151.13 140.97)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "38f4d589-d2f6-47a2-a635-c8aa2e6bafe4")
-	)
-	(wire
-		(pts
-			(xy 137.16 156.21) (xy 137.16 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3903de5e-62ba-4870-a97c-c604bc039148")
-	)
-	(wire
-		(pts
-			(xy 146.05 156.21) (xy 137.16 156.21)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "39f3d3e3-a2da-4685-957f-e7ed244b8ae1")
-	)
-	(wire
-		(pts
-			(xy 146.05 153.67) (xy 144.78 153.67)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3d029e12-6a3f-4789-b2c8-ccbc63af16ca")
 	)
 	(wire
 		(pts
@@ -7884,16 +8121,6 @@
 	)
 	(wire
 		(pts
-			(xy 151.13 129.54) (xy 153.67 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "546ed00f-7057-4fcb-b360-938500380234")
-	)
-	(wire
-		(pts
 			(xy 312.42 49.53) (xy 317.5 49.53)
 		)
 		(stroke
@@ -7941,16 +8168,6 @@
 			(type default)
 		)
 		(uuid "5713a749-bbf5-4658-a5c3-f17f03c1162e")
-	)
-	(wire
-		(pts
-			(xy 144.78 143.51) (xy 144.78 140.97)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5993f05e-c691-42e5-a3ba-6ebcfb7f9cf3")
 	)
 	(wire
 		(pts
@@ -8081,16 +8298,6 @@
 			(type default)
 		)
 		(uuid "6abd7f7d-436a-4c31-9286-7cb94df67746")
-	)
-	(wire
-		(pts
-			(xy 166.37 129.54) (xy 170.18 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6dc20bd0-981a-4231-975b-1400df96e4ef")
 	)
 	(wire
 		(pts
@@ -8251,6 +8458,16 @@
 			(type default)
 		)
 		(uuid "818f49b2-909b-40af-aff8-5f4869d0486c")
+	)
+	(wire
+		(pts
+			(xy 158.75 148.59) (xy 158.75 161.29)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "819a9024-6049-4555-a9b7-19f809aacf53")
 	)
 	(wire
 		(pts
@@ -9074,16 +9291,6 @@
 	)
 	(wire
 		(pts
-			(xy 151.13 129.54) (xy 151.13 140.97)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d4638442-f1d3-4e57-af9d-94cae341c9eb")
-	)
-	(wire
-		(pts
 			(xy 144.78 193.04) (xy 144.78 190.5)
 		)
 		(stroke
@@ -9304,7 +9511,7 @@
 	)
 	(wire
 		(pts
-			(xy 137.16 129.54) (xy 151.13 129.54)
+			(xy 137.16 129.54) (xy 153.67 129.54)
 		)
 		(stroke
 			(width 0)
@@ -13688,6 +13895,176 @@
 	)
 	(symbol
 		(lib_id "Device:R")
+		(at 158.75 144.78 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "21b91230-03c0-4444-8b2a-3156fcbc33b2")
+		(property "Reference" "R19"
+			(at 162.56 143.51 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100k"
+			(at 162.56 146.05 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 157.4852 144.78 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 158.75 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Gate pulldown for Q1 (AOSS21311C) self-biased P-FET battery reverse-polarity protection"
+			(at 158.75 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C25803"
+			(at 158.75 144.78 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Stackpole Electronics"
+			(at 158.75 144.78 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "RMCF0603FT100K"
+			(at 158.75 144.78 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Mouser MF" ""
+			(at 158.75 144.78 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Mouser MP" ""
+			(at 158.75 144.78 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Mouser Part" "708-RMCF0603FT100K"
+			(at 158.75 144.78 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Attributes" "1% 0.1W 100ppm"
+			(at 158.75 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" "RMCF0603FT100KCT-ND"
+			(at 158.75 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "308ec020-4283-4bcb-ba6f-bf64b1edaa30")
+		)
+		(pin "2"
+			(uuid "324b5fe2-483b-4405-a647-c27cd7812867")
+		)
+		(instances
+			(project "billy"
+				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
+					(reference "R19")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
 		(at 198.12 111.76 0)
 		(mirror y)
 		(unit 1)
@@ -15919,186 +16296,6 @@
 			(project "billy"
 				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
 					(reference "C8")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 144.78 147.32 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "31fd8090-4071-4c5b-ace2-5567a928bde9")
-		(property "Reference" "C15"
-			(at 137.668 146.05 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "100n"
-			(at 137.668 148.59 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-			(at 145.7452 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 144.78 147.32 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Unpolarized capacitor, 25V, X5R"
-			(at 144.78 147.32 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
-			(at 144.78 147.32 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC Part" "C1525"
-			(at 144.78 147.32 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MF" "Samsung Electro-Mechanics"
-			(at 144.78 147.32 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MP" "CL10B104JB8NNNC"
-			(at 144.78 147.32 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" "1276-1033-1-ND"
-			(at 144.78 147.32 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MF" ""
-			(at 144.78 147.32 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MP" ""
-			(at 144.78 147.32 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser Part" "187-CL10B104JB8NNNC"
-			(at 144.78 147.32 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Attributes" "5% 50V X7R"
-			(at 144.78 147.32 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "15eb30a2-d07a-4f4d-9027-c170cbf10db0")
-		)
-		(pin "2"
-			(uuid "7d30faee-f1e2-485f-95e4-57db9afa8896")
-		)
-		(instances
-			(project "billy"
-				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
-					(reference "C15")
 					(unit 1)
 				)
 			)
@@ -21694,7 +21891,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Transistor_FET:AO3400A")
+		(lib_id "Transistor_FET:AO3401A")
 		(at 158.75 132.08 270)
 		(mirror x)
 		(unit 1)
@@ -21716,7 +21913,7 @@
 				)
 			)
 		)
-		(property "Value" "AOSS32334C"
+		(property "Value" "AOSS21311C"
 			(at 158.75 125.73 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21739,7 +21936,7 @@
 				(justify left)
 			)
 		)
-		(property "Datasheet" "https://www.aosmd.com/res/datasheets/AOSS32334C.pdf"
+		(property "Datasheet" "https://www.aosmd.com/sites/default/files/res/datasheets/AOSS21311C.pdf"
 			(at 154.94 127 0)
 			(hide yes)
 			(show_name no)
@@ -21751,7 +21948,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "30V Vds, 6.2A Id, N-Channel MOSFET, SOT-23"
+		(property "Description" "Passive reverse-battery protection (self-biased, S=Vbatt/D=Vdrive/G=R19 pulldown); 30V Vds, 4.3A Id, P-Channel MOSFET, SOT-23"
 			(at 158.75 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -21773,7 +21970,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C3280157"
+		(property "LCSC Part" "C3280149"
 			(at 158.75 132.08 90)
 			(hide yes)
 			(show_name no)
@@ -21795,7 +21992,7 @@
 				)
 			)
 		)
-		(property "MP" "AOSS32334C"
+		(property "MP" "AOSS21311C"
 			(at 158.75 132.08 90)
 			(hide yes)
 			(show_name no)
@@ -21806,7 +22003,7 @@
 				)
 			)
 		)
-		(property "DigiKey Part" "785-AOSS32334CCT-ND"
+		(property "DigiKey Part" "785-AOSS21311CCT-ND"
 			(at 158.75 132.08 90)
 			(hide yes)
 			(show_name no)
@@ -25922,188 +26119,6 @@
 			(project "billy"
 				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
 					(reference "C18")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Power_Management:LM74700")
-		(at 158.75 151.13 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c6dc8aa6-de02-4d8f-b332-7799e584a28d")
-		(property "Reference" "U5"
-			(at 170.18 149.8599 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "LM74700-Q1"
-			(at 170.18 152.3999 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
-			(at 149.225 160.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/gpn/LM74700-Q1"
-			(at 149.225 160.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Low Iq reverse battery protection ideal diode controller, SOT-23-6"
-			(at 158.75 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" "296-53420-1-ND"
-			(at 158.75 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC Part" "C2653623"
-			(at 158.75 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MF" "TI"
-			(at 158.75 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MP" "LM74700QDBVTQ1"
-			(at 158.75 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MF" "TI"
-			(at 158.75 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MP" "LM74700QDBVTQ1"
-			(at 158.75 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser Part" "595-LM74700QDBVTQ1"
-			(at 158.75 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Attributes" ""
-			(at 158.75 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "d3cc5959-de2a-4959-85b1-5517ff016c28")
-		)
-		(pin "4"
-			(uuid "15f0270d-8ebb-48df-9272-c0c5e90624fe")
-		)
-		(pin "5"
-			(uuid "4839b20b-d320-4e9b-94e1-60dcbf80f610")
-		)
-		(pin "3"
-			(uuid "fb5c3549-6afb-4c44-bb54-247a3aa22912")
-		)
-		(pin "1"
-			(uuid "10618858-6c4d-441d-9f53-6a690c38e786")
-		)
-		(pin "6"
-			(uuid "9d19cc7e-6056-4c04-838d-1a2fcd742862")
-		)
-		(instances
-			(project "billy"
-				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
-					(reference "U5")
 					(unit 1)
 				)
 			)
