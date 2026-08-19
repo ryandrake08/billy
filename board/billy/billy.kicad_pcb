@@ -6144,7 +6144,7 @@
 				)
 			)
 		)
-		(property "Value" "AOSS21311C"
+		(property "Value" "AO3401A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "ced22790-df32-4c69-bb66-4920130703a4")
@@ -6155,7 +6155,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.aosmd.com/sites/default/files/res/datasheets/AOSS21311C.pdf"
+		(property "Datasheet" "https://www.aosmd.com/res/datasheets/AO3401A.pdf"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -6166,7 +6166,7 @@
 				)
 			)
 		)
-		(property "Description" "Passive reverse-battery protection (self-biased, S=Vbatt/D=Vdrive/G=R19 pulldown); 30V Vds, 4.3A Id, P-Channel MOSFET, SOT-23"
+		(property "Description" "Passive reverse-battery protection (self-biased, S=Vbatt/D=Vdrive/G=R19 pulldown); 30V Vds, 4.0A Id, P-Channel MOSFET, SOT-23"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -6189,7 +6189,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C3280149"
+		(property "LCSC Part" "C15127"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -6215,7 +6215,7 @@
 				)
 			)
 		)
-		(property "MP" "AOSS21311C"
+		(property "MP" "AO3401A"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -6228,7 +6228,7 @@
 				)
 			)
 		)
-		(property "DigiKey Part" "785-AOSS21311CCT-ND"
+		(property "DigiKey Part" "785-1001-1-ND"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")

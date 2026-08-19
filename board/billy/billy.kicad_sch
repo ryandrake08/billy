@@ -21479,7 +21479,7 @@
 				)
 			)
 		)
-		(property "Value" "AOSS21311C"
+		(property "Value" "AO3401A"
 			(at 95.25 210.82 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21502,7 +21502,7 @@
 				(justify left)
 			)
 		)
-		(property "Datasheet" "https://www.aosmd.com/sites/default/files/res/datasheets/AOSS21311C.pdf"
+		(property "Datasheet" "https://www.aosmd.com/res/datasheets/AO3401A.pdf"
 			(at 91.44 212.09 0)
 			(hide yes)
 			(show_name no)
@@ -21514,7 +21514,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "Passive reverse-battery protection (self-biased, S=Vbatt/D=Vdrive/G=R19 pulldown); 30V Vds, 4.3A Id, P-Channel MOSFET, SOT-23"
+		(property "Description" "Passive reverse-battery protection (self-biased, S=Vbatt/D=Vdrive/G=R19 pulldown); 30V Vds, 4.0A Id, P-Channel MOSFET, SOT-23"
 			(at 95.25 217.17 0)
 			(hide yes)
 			(show_name no)
@@ -21536,7 +21536,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C3280149"
+		(property "LCSC Part" "C15127"
 			(at 95.25 217.17 90)
 			(hide yes)
 			(show_name no)
@@ -21558,7 +21558,7 @@
 				)
 			)
 		)
-		(property "MP" "AOSS21311C"
+		(property "MP" "AO3401A"
 			(at 95.25 217.17 90)
 			(hide yes)
 			(show_name no)
@@ -21569,7 +21569,7 @@
 				)
 			)
 		)
-		(property "DigiKey Part" "785-AOSS21311CCT-ND"
+		(property "DigiKey Part" "785-1001-1-ND"
 			(at 95.25 217.17 90)
 			(hide yes)
 			(show_name no)
