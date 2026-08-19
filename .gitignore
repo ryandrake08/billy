@@ -10,6 +10,9 @@ venv/
 # Planning artifacts/docs
 .devdocs/
 
+# Ignore the blog draft for now
+blog/
+
 # Build artifacts (cmake, ESP-IDF, etc.) -- no trailing slash: these may be plain
 # directories or symlinks onto local storage (see src/firmware/clean.sh), and a trailing
 # slash only matches the former.

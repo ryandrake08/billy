@@ -4929,6 +4929,212 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Power_Management:LTC4412xS6"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "U"
+				(at -6.35 8.89 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "LTC4412xS6"
+				(at 6.35 8.89 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:TSOT-23-6"
+				(at 16.51 -8.89 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" "https://www.analog.com/media/en/technical-documentation/data-sheets/4412fb.pdf"
+				(at 53.34 -5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Low Loss PowerPath Controller, TSOT-23-6"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "ideal-diode or-ing"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "TSOT?23*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "LTC4412xS6_0_1"
+				(rectangle
+					(start -7.62 7.62)
+					(end 7.62 -7.62)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "LTC4412xS6_1_1"
+				(pin power_in line
+					(at -10.16 2.54 0)
+					(length 2.54)
+					(name "VIN"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -10.16 90)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -10.16 -2.54 0)
+					(length 2.54)
+					(name "CTL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin open_collector line
+					(at 10.16 -2.54 180)
+					(length 2.54)
+					(name "STAT"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 0 10.16 270)
+					(length 2.54)
+					(name "GATE"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at 10.16 2.54 180)
+					(length 2.54)
+					(name "SENSE"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Power_Protection:USBLC6-2SC6"
 			(pin_names
 				(hide yes)
@@ -7118,16 +7324,16 @@
 		(uuid "1bacd07c-4158-498b-869a-644c1e76b6de")
 	)
 	(junction
-		(at 151.13 214.63)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "21fe02a6-3cb6-4178-9516-ffe157717935")
-	)
-	(junction
 		(at 370.84 196.85)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "29a4bf15-fcc8-40ae-aa3f-b0c18c3ac7a7")
+	)
+	(junction
+		(at 147.32 214.63)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "316cb4c7-5e12-4a99-8939-b3712b960677")
 	)
 	(junction
 		(at 154.94 167.64)
@@ -7146,12 +7352,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3a7edc67-1980-44d1-a474-7c4f075d28af")
-	)
-	(junction
-		(at 166.37 214.63)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "40d15404-4bff-49d7-ba3d-23572285ef5a")
 	)
 	(junction
 		(at 154.94 135.89)
@@ -7212,12 +7412,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "76cc9e7d-54a5-4ec8-b1d3-2df71651be19")
-	)
-	(junction
-		(at 151.13 224.79)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "789ac7cf-e9eb-4565-bd7b-0e9848efa560")
 	)
 	(junction
 		(at 215.9 228.6)
@@ -7352,6 +7546,12 @@
 		(uuid "dfa3b64c-71e0-459a-8f73-d44d15900579")
 	)
 	(junction
+		(at 170.18 214.63)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e12790a8-1baf-4b89-b3c8-7a745acc6fef")
+	)
+	(junction
 		(at 326.39 189.23)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7450,12 +7650,20 @@
 		(uuid "85b81978-dfe4-40bf-a9ec-4b000bc5ee5e")
 	)
 	(no_connect
+		(at 148.59 237.49)
+		(uuid "8e679655-3b4f-438e-a037-4f791924a493")
+	)
+	(no_connect
 		(at 119.38 96.52)
 		(uuid "9888bf95-082b-4e1c-b792-d6ff1d88038a")
 	)
 	(no_connect
 		(at 27.94 50.8)
 		(uuid "d9d4b692-1be9-4067-a8d1-d9876be69ebd")
+	)
+	(no_connect
+		(at 168.91 237.49)
+		(uuid "e2cb4575-cc74-4452-ac3d-0edc1e8e9096")
 	)
 	(no_connect
 		(at 27.94 53.34)
@@ -7693,7 +7901,7 @@
 	)
 	(wire
 		(pts
-			(xy 137.16 214.63) (xy 151.13 214.63)
+			(xy 137.16 214.63) (xy 147.32 214.63)
 		)
 		(stroke
 			(width 0)
@@ -7710,16 +7918,6 @@
 			(type default)
 		)
 		(uuid "16a3676b-3ec1-4a24-9842-7960e3d77e08")
-	)
-	(wire
-		(pts
-			(xy 144.78 237.49) (xy 146.05 237.49)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "16b93727-ff92-431a-8c2a-d59ed68f54dd")
 	)
 	(wire
 		(pts
@@ -7810,16 +8008,6 @@
 			(type default)
 		)
 		(uuid "207abbba-a5db-46c3-a0b0-1b691eb1c0f4")
-	)
-	(wire
-		(pts
-			(xy 144.78 224.79) (xy 151.13 224.79)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "21c66b4d-4ff7-4ba2-bf5c-33f7018954a5")
 	)
 	(wire
 		(pts
@@ -7943,6 +8131,16 @@
 	)
 	(wire
 		(pts
+			(xy 147.32 232.41) (xy 147.32 214.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2ae59cad-9de5-476d-9c7f-d8628efe3e50")
+	)
+	(wire
+		(pts
 			(xy 227.33 60.96) (xy 227.33 64.77)
 		)
 		(stroke
@@ -8013,7 +8211,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 214.63) (xy 166.37 214.63)
+			(xy 163.83 214.63) (xy 170.18 214.63)
 		)
 		(stroke
 			(width 0)
@@ -8083,23 +8281,13 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 214.63) (xy 170.18 214.63)
+			(xy 147.32 214.63) (xy 153.67 214.63)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "40253b37-29bf-4d88-8be1-cf0c616a13b1")
-	)
-	(wire
-		(pts
-			(xy 151.13 214.63) (xy 151.13 224.79)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "416b0ca4-25c1-42be-b3fc-4b52b4830a8a")
+		(uuid "40a5810b-335d-4599-97e2-416651acc8dc")
 	)
 	(wire
 		(pts
@@ -8273,16 +8461,6 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 234.95) (xy 144.78 237.49)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "55a22b67-7dae-4100-b211-25a08767d791")
-	)
-	(wire
-		(pts
 			(xy 201.93 87.63) (xy 201.93 90.17)
 		)
 		(stroke
@@ -8320,16 +8498,6 @@
 			(type default)
 		)
 		(uuid "59ee68c6-fa1f-40f1-9581-e02085afb563")
-	)
-	(wire
-		(pts
-			(xy 151.13 214.63) (xy 153.67 214.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5a6b6016-0e86-4abd-be28-50032c369461")
 	)
 	(wire
 		(pts
@@ -8763,16 +8931,6 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 214.63) (xy 166.37 224.79)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9228671c-3485-4dee-9e55-f7ef6e9ec29c")
-	)
-	(wire
-		(pts
 			(xy 382.27 208.28) (xy 382.27 213.36)
 		)
 		(stroke
@@ -8870,6 +9028,16 @@
 			(type default)
 		)
 		(uuid "9d760ec5-cdbf-4c26-a8c7-b433d182594d")
+	)
+	(wire
+		(pts
+			(xy 170.18 232.41) (xy 168.91 232.41)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a0a82577-25dd-4552-a724-b9f8706cb7f1")
 	)
 	(wire
 		(pts
@@ -9013,6 +9181,16 @@
 	)
 	(wire
 		(pts
+			(xy 170.18 232.41) (xy 170.18 214.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b05ce84b-8c75-4a55-bb6f-8793dbd96f3a")
+	)
+	(wire
+		(pts
 			(xy 166.37 153.67) (xy 157.48 153.67)
 		)
 		(stroke
@@ -9020,16 +9198,6 @@
 			(type default)
 		)
 		(uuid "b0aa838f-5bdc-442b-ad69-142165ca7bb2")
-	)
-	(wire
-		(pts
-			(xy 146.05 240.03) (xy 137.16 240.03)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b434eef8-33c5-40cd-9e35-5f5d7c36b0b6")
 	)
 	(wire
 		(pts
@@ -9323,16 +9491,6 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 227.33) (xy 144.78 224.79)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d4caaa05-ab79-4c6b-b52b-e20a50d153ca")
-	)
-	(wire
-		(pts
 			(xy 382.27 189.23) (xy 382.27 200.66)
 		)
 		(stroke
@@ -9433,6 +9591,16 @@
 	)
 	(wire
 		(pts
+			(xy 147.32 232.41) (xy 148.59 232.41)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e919e343-bab6-4e30-b36f-76eb94dd8b08")
+	)
+	(wire
+		(pts
 			(xy 340.36 104.14) (xy 340.36 106.68)
 		)
 		(stroke
@@ -9480,16 +9648,6 @@
 			(type default)
 		)
 		(uuid "f1026bba-a880-462f-81b4-60a4862be53e")
-	)
-	(wire
-		(pts
-			(xy 137.16 240.03) (xy 137.16 214.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f195f9b1-37c4-4726-adcd-d2a1efd271f4")
 	)
 	(wire
 		(pts
@@ -14250,192 +14408,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Transistor_FET:AO3400A")
-		(at 158.75 217.17 270)
-		(mirror x)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "26136274-c7fe-4da9-9bc8-7f542518938a")
-		(property "Reference" "Q2"
-			(at 158.75 208.28 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "AOSS32334C"
-			(at 158.75 210.82 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
-			(at 156.845 212.09 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(justify left)
-			)
-		)
-		(property "Datasheet" "https://www.aosmd.com/res/datasheets/AOSS32334C.pdf"
-			(at 154.94 212.09 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Description" "30V Vds, 6.2A Id, N-Channel MOSFET, SOT-23"
-			(at 158.75 217.17 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "KiLib_Generator" "package/gullwing"
-			(at 158.75 217.17 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC Part" "C3280157"
-			(at 158.75 217.17 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MF" "AOS"
-			(at 158.75 217.17 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MP" "AOSS32334C"
-			(at 158.75 217.17 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" "785-AOSS32334CCT-ND"
-			(at 158.75 217.17 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MF" ""
-			(at 158.75 217.17 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MP" ""
-			(at 158.75 217.17 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser Part" ""
-			(at 158.75 217.17 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Attributes" ""
-			(at 158.75 217.17 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "163afe44-ba9f-45de-bf88-1cb2cd4b4858")
-		)
-		(pin "3"
-			(uuid "b695451e-711f-4b39-895a-f4204dc93c08")
-		)
-		(pin "2"
-			(uuid "cf09779a-660d-44cb-b83b-c54f4852315e")
-		)
-		(instances
-			(project "billy"
-				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
-					(reference "Q2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 266.7 101.6 0)
 		(unit 1)
@@ -16172,6 +16144,134 @@
 		)
 	)
 	(symbol
+		(lib_id "Transistor_FET:AO3401A")
+		(at 158.75 217.17 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "33e69c53-46dc-4bfc-8772-8b26f62f3d88")
+		(property "Reference" "Q2"
+			(at 158.75 208.28 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "AO3401A"
+			(at 158.75 210.82 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+			(at 158.75 217.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://www.aosmd.com/res/datasheets/AO3401A.pdf"
+			(at 158.75 217.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Ideal-diode pass FET for U10 (LTC4412): Vdrive->MOTOR_RAIL side=Drain, BUCK_IN side=Source; 30V Vds, 4.0A Id, P-Channel MOSFET, SOT-23"
+			(at 158.75 217.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C15127"
+			(at 158.75 217.17 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "AOS"
+			(at 158.75 217.17 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "AO3401A"
+			(at 158.75 217.17 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" "785-1001-1-ND"
+			(at 158.75 217.17 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "42709c6c-7cb7-4197-9818-1c8d28ba9253")
+		)
+		(pin "2"
+			(uuid "173ee4c7-d665-4838-a954-4d64c4210444")
+		)
+		(pin "3"
+			(uuid "8684aab8-fbeb-41a6-8769-51034f19426c")
+		)
+		(instances
+			(project "billy"
+				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
+					(reference "Q2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 198.12 115.57 0)
 		(unit 1)
@@ -16843,7 +16943,7 @@
 				)
 			)
 		)
-		(property "Value" "Vdrive"
+		(property "Value" "Vmot"
 			(at 154.94 71.12 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17155,7 +17255,7 @@
 				)
 			)
 		)
-		(property "Value" "Vdrive"
+		(property "Value" "Vmot"
 			(at 201.93 82.55 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18877,6 +18977,155 @@
 		)
 	)
 	(symbol
+		(lib_id "Power_Management:LTC4412xS6")
+		(at 158.75 234.95 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "5f3005a2-1d80-4489-abb3-0b3a2c5d22b0")
+		(property "Reference" "U5"
+			(at 160.8933 222.25 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "LTC4412"
+			(at 160.8933 224.79 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:TSOT-23-6"
+			(at 149.225 244.475 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "https://www.analog.com/media/en/technical-documentation/data-sheets/ltc4412.pdf"
+			(at 149.225 244.475 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Low-IQ P-channel PowerPath ideal-diode controller: VIN=Vdrive (MOTOR_RAIL), SENSE=BUCK_IN, drives Q5; CTL and STAT left open per datasheet (unused)"
+			(at 158.75 234.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MF" "Analog Devices"
+			(at 158.75 234.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MP" "LTC4412ES6#TRMPBF"
+			(at 158.75 234.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" ""
+			(at 158.75 234.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "DigiKey Part" "505-LTC4412ES6#TRMPBFCT-ND"
+			(at 158.75 234.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Mouser Part" "584-LTC4412ES6TRMPBF"
+			(at 158.75 234.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "a4e71450-511a-403c-9d4c-ba894fcba3e1")
+		)
+		(pin "2"
+			(uuid "3ec971d5-e3fe-4894-a440-9a6cef0f3310")
+		)
+		(pin "3"
+			(uuid "e37f8ce7-0fa4-4036-a96e-40282873ae3e")
+		)
+		(pin "4"
+			(uuid "0f06b09e-bd04-4e60-8cbc-6012927f1531")
+		)
+		(pin "5"
+			(uuid "72b17e4c-e162-4415-8cac-651701c1df11")
+		)
+		(pin "6"
+			(uuid "45be9c66-730a-45b1-bf31-abb9fe716cdc")
+		)
+		(instances
+			(project "billy"
+				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
+					(reference "U5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Driver_Motor:DRV8833PWP")
 		(at 231.14 110.49 0)
 		(unit 1)
@@ -19613,186 +19862,6 @@
 			(project "billy"
 				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
 					(reference "J10")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 144.78 231.14 180)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "737fc376-32f4-4584-85bc-bcd2e934c610")
-		(property "Reference" "C20"
-			(at 137.922 230.124 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "100n"
-			(at 137.922 232.664 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-			(at 143.8148 227.33 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 144.78 231.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Unpolarized capacitor, 25V, X5R"
-			(at 144.78 231.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
-			(at 144.78 231.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC Part" "C1525"
-			(at 144.78 231.14 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MF" "Samsung Electro-Mechanics"
-			(at 144.78 231.14 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MP" "CL10B104JB8NNNC"
-			(at 144.78 231.14 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" "1276-1033-1-ND"
-			(at 144.78 231.14 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MF" ""
-			(at 144.78 231.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MP" ""
-			(at 144.78 231.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser Part" "187-CL10B104JB8NNNC"
-			(at 144.78 231.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Attributes" "5% 50V X7R"
-			(at 144.78 231.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "34862d4f-fb0b-4362-868d-52802cb7bdba")
-		)
-		(pin "2"
-			(uuid "0f03328b-6e8f-4383-bd86-3b7ea3ccb369")
-		)
-		(instances
-			(project "billy"
-				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
-					(reference "C20")
 					(unit 1)
 				)
 			)
@@ -20625,7 +20694,7 @@
 				)
 			)
 		)
-		(property "Value" "Vdrive"
+		(property "Value" "Vmot"
 			(at 201.93 129.54 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21828,6 +21897,17 @@
 				)
 			)
 		)
+		(property "Mouser Part" "833-B5817W-TP"
+			(at 266.7 213.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "f34046be-cde0-4bbd-a5d7-e6cab92eb1b8")
 		)
@@ -22585,7 +22665,7 @@
 				)
 			)
 		)
-		(property "Value" "Vdrive"
+		(property "Value" "Vmot"
 			(at 128.27 205.74 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24826,188 +24906,6 @@
 			(project "billy"
 				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
 					(reference "C26")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Power_Management:LM74700")
-		(at 158.75 234.95 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "baf5df21-6bdb-46f0-9f2a-83b46e61f14c")
-		(property "Reference" "U8"
-			(at 170.18 233.6799 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "LM74700-Q1"
-			(at 170.18 236.2199 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
-			(at 149.225 243.84 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/gpn/LM74700-Q1"
-			(at 149.225 243.84 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Low Iq reverse battery protection ideal diode controller, SOT-23-6"
-			(at 158.75 234.95 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" "296-53420-1-ND"
-			(at 158.75 234.95 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC Part" "C2653623"
-			(at 158.75 234.95 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MF" "TI"
-			(at 158.75 234.95 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MP" "LM74700QDBVTQ1"
-			(at 158.75 234.95 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MF" "TI"
-			(at 158.75 234.95 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MP" "LM74700QDBVTQ1"
-			(at 158.75 234.95 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser Part" "595-LM74700QDBVTQ1"
-			(at 158.75 234.95 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Attributes" ""
-			(at 158.75 234.95 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "2de6e854-bc78-47a7-84a2-f861ed2083dc")
-		)
-		(pin "4"
-			(uuid "0a5abbaa-791b-44ee-9c26-0b0db4741d94")
-		)
-		(pin "5"
-			(uuid "e6ac265f-6e3d-4f8b-b0b1-d38f21e18315")
-		)
-		(pin "3"
-			(uuid "cce02f9c-fa10-40c7-a0e7-2988cf66018b")
-		)
-		(pin "1"
-			(uuid "756724b2-943c-480d-8218-3e563f306969")
-		)
-		(pin "6"
-			(uuid "fa0b1b8c-251e-4743-bf98-ae65846271a2")
-		)
-		(instances
-			(project "billy"
-				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
-					(reference "U8")
 					(unit 1)
 				)
 			)
@@ -28584,7 +28482,7 @@
 				)
 			)
 		)
-		(property "Value" "Vdrive"
+		(property "Value" "Vmot"
 			(at 58.928 127 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29023,7 +28921,7 @@
 				)
 			)
 		)
-		(property "Value" "Vdrive"
+		(property "Value" "Vmot"
 			(at 185.42 82.55 0)
 			(show_name no)
 			(do_not_autoplace no)
