@@ -21946,7 +21946,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "AOSS32334C"
+		(property "Value" "AO3400A"
 			(at 158.75 161.2899 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21970,7 +21970,7 @@
 				(justify left)
 			)
 		)
-		(property "Datasheet" "https://www.aosmd.com/res/datasheets/AOSS32334C.pdf"
+		(property "Datasheet" "https://www.aosmd.com/res/datasheets/AO3400A.pdf"
 			(at 157.48 163.83 0)
 			(hide yes)
 			(show_name no)
@@ -21982,7 +21982,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "30V Vds, 6.2A Id, N-Channel MOSFET, SOT-23"
+		(property "Description" "WS2812 VDD-gate low-side switch (D1 VSS return, gated by GPIO18/BOARD_STATUS_LED_EN); 30V Vds, 5.7A Id, N-Channel MOSFET, SOT-23"
 			(at 152.4 160.02 0)
 			(hide yes)
 			(show_name no)
@@ -22004,7 +22004,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C3280157"
+		(property "LCSC Part" "C20917"
 			(at 152.4 160.02 0)
 			(hide yes)
 			(show_name no)
@@ -22026,7 +22026,7 @@
 				)
 			)
 		)
-		(property "MP" "AOSS32334C"
+		(property "MP" "AO3400A"
 			(at 152.4 160.02 0)
 			(hide yes)
 			(show_name no)
@@ -22037,7 +22037,7 @@
 				)
 			)
 		)
-		(property "DigiKey Part" "785-AOSS32334CCT-ND"
+		(property "DigiKey Part" "785-1000-1-ND"
 			(at 152.4 160.02 0)
 			(hide yes)
 			(show_name no)
