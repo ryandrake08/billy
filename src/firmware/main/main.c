@@ -64,22 +64,13 @@ static void runloop_task(void *arg)
     // is to not skip the idle wait.
     bool skip_idle = false;
 
-    // Read the raw wake pin first, before deciding whether to skip idle below: a button-pin wake
-    // needs a config fetch forced *before* the photocell check that decision depends on, since
-    // that check validates against fish_config_get(), which by default is still whatever was
-    // compiled in until something fetches fresh config.
+    // Read the raw wake pin first, before deciding whether to skip idle below.
     wake_pin_t wake_pin = activation_deep_sleep_wake_pin();
     if (wake_pin == WAKE_PIN_BUTTON)
     {
         ESP_LOGI(TAG, "deep-sleep boot: button pushed");
 
-        // Retry until WiFi is up and the fetch succeeds (bounded, not forever) -- this wake path
-        // skips straight into a turn with no idle/wait gate first, and WiFi's join is fully
-        // async, so the upcoming STT call could otherwise easily run before the join completes.
-        // Also needed to know the correct (not compiled-in-default) photocell threshold below.
-        net_fetch_config(/* wait_for_backend = */ true);
-
-        // Now test the photocell brightness to filter out false positives. If the room is bright
+        // Test the photocell brightness to filter out false positives. If the room is bright
         // enough, we have a true activation-from-boot and need to skip the idle wait.
         skip_idle = sensors_photocell_bright_enough();
     }

@@ -1,7 +1,6 @@
 #include "sensors.h"
 #include "hal.h"
 #include "board.h"
-#include "fish_config.h"
 #include "esp_log.h"
 
 static const char *TAG = "sensors";
@@ -38,12 +37,13 @@ float sensors_read_vmotor_volts(void)
     return (raw_avg - VMOTOR_CAL_OFFSET_COUNTS) / VMOTOR_CAL_SLOPE_COUNTS_PER_VOLT;
 }
 
+#define PHOTOCELL_WAKE_THRESHOLD 20
+
 bool sensors_photocell_bright_enough(void)
 {
-    int threshold = fish_config_get()->photocell_wake_threshold;
     int raw = hal_adc_read(BOARD_PHOTOCELL_ADC);
-    bool ok = raw >= threshold;
-    ESP_LOGI(TAG, "photocell: raw=%d threshold=%d -> %s", raw, threshold, ok ? "ok" : "too dark, ignoring");
+    bool ok = raw >= PHOTOCELL_WAKE_THRESHOLD;
+    ESP_LOGI(TAG, "photocell: raw=%d threshold=%d -> %s", raw, PHOTOCELL_WAKE_THRESHOLD, ok ? "ok" : "too dark, ignoring");
     return ok;
 }
 

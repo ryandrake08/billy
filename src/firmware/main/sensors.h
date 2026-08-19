@@ -13,9 +13,9 @@ float sensors_read_vmotor_volts(void);
 
 // True if the room is bright enough that a wake candidate should be treated as real rather than
 // a false positive from a dark room. Logs the raw reading and the outcome each call. Threshold is
-// runtime-tunable (fish_config.h) -- bench-calibrated raw readings ran ~400-1200 across
-// dim-to-bright room light, dropped to 120-150 with only monitor glow (room lights off), and
-// 40-85 with only ambient window light; the default of 50 sits within the window-only band.
+// a compile-time constant. Bench-calibrated raw readings ran ~400-1200 across dim-to-bright room
+// light, dropped to 120-150 with only monitor glow (room lights off), and 40-85 with only ambient
+// window light; the threshold (20) sits below that window-only band with margin.
 bool sensors_photocell_bright_enough(void);
 
 // Rev.0 debug only: reclaims BOARD_MISC_GPIO from ADC mode and drives it high or low, for the

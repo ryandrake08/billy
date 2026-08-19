@@ -13,8 +13,6 @@ static fish_config_t s_config = {
     .vad_drain_ms             = 250,        // discard the mic's buffered prompt tone first
     .capture_max_ms           = 10000,      // hard cap on one utterance
 
-    .photocell_wake_threshold = 50,         // bench-calibrated
-
     .mouth_env_ref            = 6000.0f,    // RMS that saturates the envelope at 1.0
     .mouth_env_attack         = 0.6f,
     .mouth_env_release        = 0.15f,
@@ -78,8 +76,6 @@ void fish_config_apply_json(const char *json)
     if (json_get_number(json, "vad_min_voiced_ms", &v))          s_config.vad_min_voiced_ms = (int) v;
     if (json_get_number(json, "vad_drain_ms", &v))               s_config.vad_drain_ms = (int) v;
     if (json_get_number(json, "capture_max_ms", &v))             s_config.capture_max_ms = (int) v;
-
-    if (json_get_number(json, "photocell_wake_threshold", &v))   s_config.photocell_wake_threshold = (int) v;
 
     if (json_get_number(json, "mouth_env_ref", &v))              s_config.mouth_env_ref = (float) v;
     if (json_get_number(json, "mouth_env_attack", &v))           s_config.mouth_env_attack = (float) v;

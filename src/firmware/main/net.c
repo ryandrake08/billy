@@ -677,8 +677,7 @@ static esp_err_t net_fetch_config_once(void)
     }
 
     fish_config_apply_json(resp);
-    ESP_LOGI(TAG, "config: applied from shim (photocell_wake_threshold=%d)",
-             fish_config_get()->photocell_wake_threshold);
+    ESP_LOGI(TAG, "config: applied from shim");
     return ESP_OK;
 }
 

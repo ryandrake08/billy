@@ -15,9 +15,6 @@ typedef struct
     int vad_drain_ms;
     int capture_max_ms;
 
-    // Photocell wake gate
-    int photocell_wake_threshold;
-
     // Mouth lip-sync envelope
     float mouth_env_ref;
     float mouth_env_attack;

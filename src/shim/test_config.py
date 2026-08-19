@@ -10,7 +10,6 @@ from fish_config import OVERRIDES
 # dict here to structurally catch a typo, so this is what catches it instead.
 VALID_KEYS = {
     "vad_onset_rms", "vad_silence_ms", "vad_min_voiced_ms", "vad_drain_ms", "capture_max_ms",
-    "photocell_wake_threshold",
     "mouth_env_ref", "mouth_env_attack", "mouth_env_release",
     "mouth_mid_threshold", "mouth_open_threshold", "mouth_mid_duty_pct",
     "tail_flap_ms", "tail_settle_ms",
