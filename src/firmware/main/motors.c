@@ -2,7 +2,7 @@
 #include "hal.h"
 #include "board.h"
 #include "fish_config.h"
-#include "sensors.h"
+#include "peripherals.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
@@ -98,7 +98,7 @@ static void motor_fault_task(void *arg)
     {
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         motor_clear_all_duties();
-        float vmotor = sensors_read_vmotor_volts();
+        float vmotor = peripherals_read_vmotor_volts();
         uint32_t mask = __atomic_load_n(&s_fault_commanded_mask, __ATOMIC_RELAXED);
         uint32_t count = __atomic_load_n(&s_fault_count, __ATOMIC_RELAXED);
         ESP_LOGE(TAG,

@@ -2,8 +2,7 @@
 #include "audio.h"
 #include "motors.h"
 #include "activation.h"
-#include "sensors.h"
-#include "status_led.h"
+#include "peripherals.h"
 #include "net.h"
 #include "wakeword.h"
 #include "fish_config.h"
@@ -19,7 +18,7 @@ static const char *TAG = "billy";
 
 static void signal_motor_fault(void)
 {
-    led_set_status(LED_STATUS_ERROR);
+    peripherals_set_led_status(LED_STATUS_ERROR);
     audio_error_tone();
 }
 
@@ -72,7 +71,7 @@ static void runloop_task(void *arg)
 
         // Test the photocell brightness to filter out false positives. If the room is bright
         // enough, we have a true activation-from-boot and need to skip the idle wait.
-        skip_idle = sensors_photocell_bright_enough();
+        skip_idle = peripherals_photocell_bright_enough();
     }
 
     if (wake_pin == WAKE_PIN_MODE_SW)
@@ -93,7 +92,7 @@ static void runloop_task(void *arg)
             // In button mode, this is a deep sleep. Activating the button or switch will boot the device
             // In wakeword mode, activating the button or wakeword will continue to the next state
             // In wakeword mode, activating the switch will interrupt the wait and return back to idle
-            led_set_status(LED_STATUS_IDLE);
+            peripherals_set_led_status(LED_STATUS_IDLE);
             activation_prepare_sleep();
             activation_event_t event = activation_wait();
             if (event == ACTIVATION_MODE_SW)
@@ -106,7 +105,7 @@ static void runloop_task(void *arg)
             // A dark room rules the candidate out as a likely false positive -- a flaky button
             // contact, or background noise misfiring the wake-word detector -- rather than a
             // deliberate activation.
-            if (!sensors_photocell_bright_enough())
+            if (!peripherals_photocell_bright_enough())
             {
                 continue;
             }
@@ -126,7 +125,7 @@ static void runloop_task(void *arg)
         }
 
         // Prepare to listen -- fish plays a prompt tone and flaps its tail
-        led_set_status(LED_STATUS_LISTEN);
+        peripherals_set_led_status(LED_STATUS_LISTEN);
         audio_prompt_tone();
         if (!motors_tail_flap())
         {
@@ -142,7 +141,7 @@ static void runloop_task(void *arg)
             // exhausted heap. A fresh boot clears that heap state entirely, so recover by
             // rebooting rather than halting; flash the error status first so it's visible
             // even though the reboot (and BUTTON mode's own deep-sleep reboots) will clear it.
-            led_set_status(LED_STATUS_ERROR);
+            peripherals_set_led_status(LED_STATUS_ERROR);
             ESP_LOGE(TAG, "capture failed (PSRAM allocation) — rebooting");
             esp_restart();
         }
@@ -156,7 +155,7 @@ static void runloop_task(void *arg)
         }
 
         // Transcribe the utterance using speech-to-text backend
-        led_set_status(LED_STATUS_THINK);
+        peripherals_set_led_status(LED_STATUS_THINK);
         char transcript[256];
         esp_err_t stt_err = net_stt(&utterance, transcript, sizeof transcript);
         heap_caps_free(utterance.samples);   // PCM no longer needed after STT
@@ -165,7 +164,7 @@ static void runloop_task(void *arg)
         {
             // Same device-wide, will-just-recur condition as the capture failure above -- reboot
             // rather than tone-and-retry into the same exhausted heap.
-            led_set_status(LED_STATUS_ERROR);
+            peripherals_set_led_status(LED_STATUS_ERROR);
             ESP_LOGE(TAG, "STT failed (heap/PSRAM exhausted) — rebooting");
             esp_restart();
         }
@@ -188,7 +187,7 @@ static void runloop_task(void *arg)
         }
 
         // Pass utterance transcript to LLM backend shim app
-        led_set_status(LED_STATUS_SPEAK);
+        peripherals_set_led_status(LED_STATUS_SPEAK);
         if (!motors_head_out())
         {
             signal_motor_fault();
@@ -204,7 +203,7 @@ static void runloop_task(void *arg)
             // itself may need PSRAM/the speaker) and continuing is pointless. A fresh boot clears
             // heap state and re-inits the amp/I2S from scratch, same rationale as the
             // capture-failure reboot above.
-            led_set_status(LED_STATUS_ERROR);
+            peripherals_set_led_status(LED_STATUS_ERROR);
             ESP_LOGE(TAG, "unrecoverable TTS/playback failure (%s) — rebooting",
                      esp_err_to_name(respond_err));
             esp_restart();
@@ -243,14 +242,12 @@ static void runloop_task(void *arg)
 
 void app_main(void)
 {
-    // LED first -- so a panic anywhere below (the various *_init()'s ESP_ERROR_CHECKs, etc.)
-    // still leaves the status LED showing boot-white instead of unlit, giving some visible sign
-    // the chip powered on at all.
-    led_init();
-
-    // Initialize Vmotor sensing before the motor fault task, so even an nFAULT line already low
-    // at boot can be sampled safely in deferred task context.
-    sensors_init();
+    // Peripherals first (status LED + Vmotor/photocell sensing)
+    // -- so a panic anywhere below (the various *_init()'s ESP_ERROR_CHECKs, etc.) still leaves
+    // the status LED showing boot-white instead of unlit, giving some visible sign the chip
+    // powered on at all; and so Vmotor sensing is ready before the motor fault task, letting even
+    // an nFAULT line already low at boot be sampled safely in deferred task context.
+    peripherals_init();
 
     // Initialize the remaining hardware -- each owns an independent set of pins/peripherals.
     motors_init();
@@ -267,7 +264,7 @@ void app_main(void)
     // initialize network
     if (net_init() != ESP_OK)   // only fails on a config error (missing creds) -- not fixable by retrying
     {
-        led_set_status(LED_STATUS_ERROR);
+        peripherals_set_led_status(LED_STATUS_ERROR);
         ESP_LOGE(TAG, "WiFi config invalid — cannot bring up networking. Halting.");
         return;
     }

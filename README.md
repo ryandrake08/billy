@@ -71,8 +71,10 @@ designed to fit inside the original toy's chassis (~70×50mm).
 | TDK ICS-43434 (I²S MEMS mic) | Microphone — mounted as a separate satellite board, off the main PCB, for acoustic placement |
 | MAX98357A (I²S class-D amp) | Speaker drive |
 | 2× TI DRV8833 (dual H-bridge) | 3 motor channels — mouth, head, tail (all spring-return, unidirectional) |
-| DIODES AP63203 buck (AP63201 populated as a fallback — see Known issues) | 6V → 3.3V logic/audio rail |
-| 3× TI LM74700-Q1 + AOSS32334C FETs | Ideal-diode power-input protection — battery reverse-polarity, USB/motor-rail isolation |
+| DIODES AP63203 buck | 6V → 3.3V logic/audio rail |
+| AOS AO3401A / AO3400A FETs (battery reverse-polarity protection, USB/motor-rail isolation pass FET, status LED + photocell/Vmotor-sense divider gating) | Power-input protection and deep-sleep peripheral gating |
+| Analog Devices LTC4412 | Ideal-diode controller — motor rail vs. USB arbitration into the buck |
+| MCC B5817W Schottky | Passive ideal diode — USB VBUS into the buck |
 | 2× 5A slow-blow fuses | Battery and DC-jack input protection |
 
 The KiCad schematic and PCB are authoritative for hardware connectivity and layout. Firmware
@@ -99,7 +101,7 @@ conversation state lives on-device.
 |---|---|---|
 | app | `main.c` | `app_main()` wires everything together; `runloop_task` runs the `IDLE→ACTIVATE→LISTEN→THINK→SPEAK→IDLE` state machine. |
 | transport | `net.c/.h` | The fish↔backend contract described above — STT direct, brain hop through the shim, TTS direct. The one layer that would change if the fish ever moved from direct HTTP to ESPHome/Home Assistant. |
-| device | `audio.c/.h`, `motors.c/.h`, `activation.c/.h`, `sensors.c/.h`, `status_led.c/.h` | Fish-specific setup and algorithms built on the HAL: I²S mic/amp + mouth lip-sync envelope; 2× DRV8833 motor choreography with first-edge-latched fault shutdown and deferred Vmotor capture; button/mode-switch/wake-word activation + deep sleep; photocell + Vmotor-sense reads; WS2812 status LED. |
+| device | `audio.c/.h`, `motors.c/.h`, `activation.c/.h`, `peripherals.c/.h` | Fish-specific setup and algorithms built on the HAL: I²S mic/amp + mouth lip-sync envelope; 2× DRV8833 motor choreography with first-edge-latched fault shutdown and deferred Vmotor capture; button/mode-switch/wake-word activation + deep sleep; WS2812 status LED + photocell/Vmotor-sense reads, all gated by one shared enable line. |
 | HAL | `hal.c/.h` | Generic, pin-parameterized primitives (GPIO, ADC1, LED strip, PWM, I²S, deep sleep) with no fish-specific naming and no `board.h` dependency of its own. |
 
 `board.h` is the firmware representation of the schematic pin map. `components/wakeword` is the on-device
@@ -271,13 +273,10 @@ All three plus the shim are expected to fit resident in ~14GB of VRAM.
 
 ---
 
-## Known issues
+## Power
 
-- **Buck regulator EN is never gated.** Both AP63201 (currently populated) and AP63203
-  (preferred once sourceable) have EN tied straight to VIN, so the buck runs continuously
-  through deep sleep. AP63201's quiescent current (~291µA) alone exceeds the board's ≤100µA
-  standby target by ~3x; AP63203 would bring it down to ~22µA. No fix designed yet.
-- **Power-input ideal-diode legs can't be gated in deep sleep either.** Each LM74700-Q1 draws
-  80µA typical and is part of the power path itself, so it can't be switched off by the very
-  chip it feeds. That's roughly 160µA typical continuous across the two active legs (battery +
-  USB), stacked on top of the buck issue above. No fix designed yet.
+Deep sleep (BUTTON mode) is designed for roughly 40-45µA typical total draw — dominated by the
+buck regulator's own ~22µA quiescent current, with the ESP32-S3 and amp's deep-sleep/shutdown
+current making up most of the rest. Everything else (status LED, photocell and Vmotor-sense
+dividers, the two other power-input legs) is switched off entirely in deep sleep. These are
+datasheet/design figures, not yet bench-measured on real hardware.

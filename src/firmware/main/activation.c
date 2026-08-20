@@ -2,7 +2,7 @@
 #include "hal.h"
 #include "board.h"
 #include "wakeword.h"
-#include "status_led.h"
+#include "peripherals.h"
 #include "motors.h"
 #include "audio.h"
 #include "freertos/FreeRTOS.h"
@@ -168,7 +168,7 @@ void activation_prepare_sleep(void)
         ESP_LOGI(TAG, "prepare sleep (button mode): entering deep sleep, wake on GPIO %d press or "
                     "GPIO %d mode-switch flip", BOARD_BUTTON, BOARD_MODE_SW);
 
-        led_prepare_for_sleep();
+        peripherals_prepare_for_sleep();
         audio_mute_for_sleep();
         motors_hold_for_sleep();
         hal_deep_sleep_hold_enable();
