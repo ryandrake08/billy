@@ -13849,7 +13849,7 @@
 				)
 			)
 		)
-		(property "Description" "Gate pulldown for Q1 (AOSS21311C) self-biased P-FET battery reverse-polarity protection"
+		(property "Description" "Resistor"
 			(at 95.25 227.33 0)
 			(hide yes)
 			(show_name no)
@@ -14718,7 +14718,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Fuse:Fuseholder_Littelfuse_Nano2_154x"
+		(property "Footprint" "Fuse:Fuse_Littelfuse-NANO2-451_453"
 			(at 62.23 216.408 90)
 			(hide yes)
 			(show_name no)
@@ -14773,7 +14773,7 @@
 				)
 			)
 		)
-		(property "MP" "0154005.DRT"
+		(property "MP" "0454005.MR"
 			(at 62.23 214.63 90)
 			(hide yes)
 			(show_name no)
@@ -14784,7 +14784,7 @@
 				)
 			)
 		)
-		(property "DigiKey Part" "F1310CT-ND"
+		(property "DigiKey Part" "F3147CT-ND"
 			(at 62.23 214.63 90)
 			(hide yes)
 			(show_name no)
@@ -14817,7 +14817,7 @@
 				)
 			)
 		)
-		(property "Mouser Part" "576-0154005.DRT"
+		(property "Mouser Part" "576-0454005.MR"
 			(at 62.23 214.63 90)
 			(hide yes)
 			(show_name no)
@@ -16503,7 +16503,7 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor, 16V, X7R"
+		(property "Description" "Unpolarized capacitor"
 			(at 201.93 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -16547,7 +16547,7 @@
 				)
 			)
 		)
-		(property "MP" "CL05B103KB5NNNC"
+		(property "MP" "CL10B103KB8NNNC"
 			(at 201.93 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -16558,7 +16558,7 @@
 				)
 			)
 		)
-		(property "DigiKey Part" "1276-1028-1-ND"
+		(property "DigiKey Part" "1276-1009-1-ND"
 			(at 201.93 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -20947,7 +20947,7 @@
 				)
 			)
 		)
-		(property "MP" "CL05B103KB5NNNC"
+		(property "MP" "CL10B103KB8NNNC"
 			(at 201.93 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -20958,7 +20958,7 @@
 				)
 			)
 		)
-		(property "DigiKey Part" "1276-1028-1-ND"
+		(property "DigiKey Part" "1276-1009-1-ND"
 			(at 201.93 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -23835,7 +23835,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Fuse:Fuseholder_Littelfuse_Nano2_154x"
+		(property "Footprint" "Fuse:Fuse_Littelfuse-NANO2-451_453"
 			(at 62.23 246.888 90)
 			(hide yes)
 			(show_name no)
@@ -23890,7 +23890,7 @@
 				)
 			)
 		)
-		(property "MP" "0154005.DRT"
+		(property "MP" "0454005.MR"
 			(at 62.23 245.11 90)
 			(hide yes)
 			(show_name no)
@@ -23901,7 +23901,7 @@
 				)
 			)
 		)
-		(property "DigiKey Part" "F1310CT-ND"
+		(property "DigiKey Part" "F3147CT-ND"
 			(at 62.23 245.11 90)
 			(hide yes)
 			(show_name no)
@@ -23934,7 +23934,7 @@
 				)
 			)
 		)
-		(property "Mouser Part" "576-0154005.DRT"
+		(property "Mouser Part" "576-0454005.MR"
 			(at 62.23 245.11 90)
 			(hide yes)
 			(show_name no)
@@ -28704,7 +28704,7 @@
 				)
 			)
 		)
-		(property "Description" "Resistor -- Vmotor-sense divider top leg (see R15, bottom leg); Vdrive to R13 to GPIO8/ADC node"
+		(property "Description" "Resistor"
 			(at 154.94 82.55 0)
 			(hide yes)
 			(show_name no)
@@ -29132,7 +29132,7 @@
 				)
 			)
 		)
-		(property "Description" "Resistor -- Vmotor-sense divider bottom leg (see R13, top leg)"
+		(property "Description" "Resistor"
 			(at 154.94 92.71 0)
 			(hide yes)
 			(show_name no)
