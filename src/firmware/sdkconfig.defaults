@@ -14,10 +14,9 @@ CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
 # Needed to buffer captured utterances and TTS audio, which are too large for the ~290 KB of
 # internal DRAM left after WiFi. heap_caps_malloc(MALLOC_CAP_SPIRAM).
 #
-# MODE_OCT matches the bench N8R8's actual (octal) PSRAM chip -- unlike flash size, this is NOT
-# a safe stand-in for the N4R2 candidate's quad PSRAM: octal and quad are different chips/SPI
-# protocols, not a size setting, so flipping this to MODE_QUAD against the N8R8's physically
-# octal-wired PSRAM would fail PSRAM init here rather than emulate a smaller quad part. Leave as
-# OCT until the N4R2 is actually in hand, then switch to MODE_QUAD.
+# MODE_QUAD matches the production board/billy PCB's N4R2 module (quad PSRAM) -- octal and quad
+# are different chips/SPI protocols, not a size setting, so this build will fail PSRAM init on
+# the bench N8R8's octal-wired PSRAM. Switch back to MODE_OCT when building for the N8R8 dev
+# board.
 CONFIG_SPIRAM=y
-CONFIG_SPIRAM_MODE_OCT=y
+CONFIG_SPIRAM_MODE_QUAD=y
