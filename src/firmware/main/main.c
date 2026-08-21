@@ -114,14 +114,10 @@ static void runloop_task(void *arg)
 
         // A fault remains latched for the rest of its turn. Only a fresh user activation may
         // attempt recovery, with every PWM command cleared and nFAULT checked around driver wake.
-        if (motors_faulted())
+        if (!motors_recover_if_faulted())
         {
-            if (!motors_recover())
-            {
-                signal_motor_fault();
-                continue;
-            }
-            ESP_LOGI(TAG, "motor fault recovered at activation; drivers parked until commanded");
+            signal_motor_fault();
+            continue;
         }
 
         // Prepare to listen -- fish plays a prompt tone and flaps its tail

@@ -204,11 +204,6 @@ static mouth_gate_t s_mouth_gate = MOUTH_CLOSED;   // last-commanded gate, so st
 
 static bool mouth_track_chunk(const int16_t *chunk, int n)
 {
-    if (motors_faulted())
-    {
-        return false;
-    }
-
     const fish_config_t *cfg = fish_config_get();
 
     int64_t sumsq = 0;
@@ -245,10 +240,6 @@ static bool mouth_close(void)
 {
     s_mouth_envelope = 0.0f;
     s_mouth_gate = MOUTH_CLOSED;
-    if (motors_faulted())
-    {
-        return false;
-    }
     return motors_set_mouth_pct(0);
 }
 

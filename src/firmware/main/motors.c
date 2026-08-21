@@ -64,6 +64,15 @@ static bool motor_fault_active(void)
     return !hal_gpio_get(BOARD_DRV_NFAULT);
 }
 
+static bool motors_faulted(void)
+{
+#if MOTORS_DEBUG_IGNORE_NFAULT
+    return false;
+#else
+    return __atomic_load_n(&s_fault_latched, __ATOMIC_ACQUIRE);
+#endif
+}
+
 static bool motor_set_duty(motor_channel_t ch, uint32_t duty)
 {
     if (duty > MOTOR_DUTY_MAX) duty = MOTOR_DUTY_MAX;
@@ -188,16 +197,8 @@ bool motors_enable(void)
     return true;
 }
 
-bool motors_faulted(void)
-{
-#if MOTORS_DEBUG_IGNORE_NFAULT
-    return false;
-#else
-    return __atomic_load_n(&s_fault_latched, __ATOMIC_ACQUIRE);
-#endif
-}
-
-bool motors_recover(void)
+// No-op (returns true) unless a fault is currently latched.
+bool motors_recover_if_faulted(void)
 {
     if (!motors_faulted())
     {
@@ -222,18 +223,22 @@ bool motors_recover(void)
         __atomic_store_n(&s_fault_latched, true, __ATOMIC_RELEASE);
         ESP_LOGW(TAG, "recovery failed: nFAULT asserted while waking the drivers");
     }
+    else
+    {
+        ESP_LOGI(TAG, "motor fault recovered at activation; drivers parked until commanded");
+    }
     return recovered;
 }
 
 bool motors_set_mouth_pct(uint8_t pct)
 {
-    if (pct > 100) pct = 100;
-    if (!motor_set_duty(MOTOR_MOUTH, (MOTOR_DUTY_MAX * pct) / 100) || motors_faulted())
+    if (motors_faulted())
     {
         ESP_LOGW(TAG, "mouth command prevented by nFAULT");
         return false;
     }
-    return true;
+    if (pct > 100) pct = 100;
+    return motor_set_duty(MOTOR_MOUTH, (MOTOR_DUTY_MAX * pct) / 100);
 }
 
 // Timing is runtime-tunable (fish_config.h) -- tail_flap_ms drives out then lets the spring
