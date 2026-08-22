@@ -301,7 +301,7 @@ esp_err_t audio_play(const audio_buf_t *audio, bool move_mouth)
     esp_err_t err;
     if (move_mouth)
     {
-        if (!motors_enable())
+        if (!motors_enable(MOTORS_GROUP_MOUTH_HEAD))
         {
             err = FISH_ERR_MOTOR_FAULT;
         }

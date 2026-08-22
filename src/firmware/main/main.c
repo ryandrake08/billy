@@ -112,17 +112,22 @@ static void runloop_task(void *arg)
         }
         skip_idle = false;
 
-        // A fault remains latched for the rest of its turn. Only a fresh user activation may
-        // attempt recovery, with every PWM command cleared and nFAULT checked around driver wake.
-        if (!motors_recover_if_faulted())
+        // A fault remains latched for the rest of its turn, but only for the group it hit.
+        // Only a fresh user activation may attempt recovery, with every PWM command cleared
+        // and nFAULT checked around driver wake.
+        if (!motors_recover_if_faulted(MOTORS_GROUP_TAIL))
         {
             signal_motor_fault();
             continue;
         }
 
-        // Prepare to listen -- fish plays a prompt tone and flaps its tail
+        // Prepare to listen
         peripherals_set_led_status(LED_STATUS_LISTEN);
+
+        // Prompt the user audibly
         audio_prompt_tone();
+
+        // Try to flap the tail to indicate it's listening
         if (!motors_tail_flap())
         {
             signal_motor_fault();
@@ -182,8 +187,17 @@ static void runloop_task(void *arg)
             continue;
         }
 
-        // Pass utterance transcript to LLM backend shim app
+        // Prepare to speak
         peripherals_set_led_status(LED_STATUS_SPEAK);
+
+        // Pass utterance transcript to LLM backend shim app
+        if (!motors_recover_if_faulted(MOTORS_GROUP_MOUTH_HEAD))
+        {
+            signal_motor_fault();
+            continue;
+        }
+
+        // Try to extend the head for it to speak
         if (!motors_head_out())
         {
             signal_motor_fault();
@@ -215,8 +229,7 @@ static void runloop_task(void *arg)
             audio_error_tone();
         }
 
-        // Relax now, once the whole reply is done -- not on any silence gap between streamed
-        // sentences, a known failure mode in similar builds where the head never settles.
+        // Try to relax the head now, once the whole reply is done.
         if (!motors_head_relax())
         {
             signal_motor_fault();
