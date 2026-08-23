@@ -508,7 +508,9 @@ void motors_stresstest(void)
     if (motor_any_group_faulted())
     {
         ESP_LOGE(TAG, "motor stress test: nFAULT already low before nSLEEP — check the fault line/pull-up before proceeding");
+#if !MOTORS_DEBUG_IGNORE_NFAULT
         return;
+#endif
     }
 
     for (int g = 0; g < MOTORS_GROUP_COUNT; g++)
@@ -516,15 +518,19 @@ void motors_stresstest(void)
         if (!motors_enable(g))
         {
             ESP_LOGE(TAG, "motor stress test: refusing to start with nFAULT latched (%s)", group_name(g));
+#if !MOTORS_DEBUG_IGNORE_NFAULT
             motors_park();
             return;
+#endif
         }
     }
     if (motor_any_group_faulted() || motor_any_pin_fault_active())
     {
         ESP_LOGE(TAG, "motor stress test: nFAULT low right after nSLEEP high, at 0%% duty — check the motor rail before proceeding");
+#if !MOTORS_DEBUG_IGNORE_NFAULT
         motors_park();
         return;
+#endif
     }
 
     const struct { motor_channel_t ch; const char *cumulative; } stages[] = {
@@ -537,12 +543,14 @@ void motors_stresstest(void)
     {
         motor_set_duty(stages[i].ch, MOTOR_DUTY_MAX);
         ESP_LOGI(TAG, "motor stress test: stage %u — %s now at 100%%, holding 2 s", (unsigned) (i + 1), stages[i].cumulative);
-        vTaskDelay(pdMS_TO_TICKS(2000));
+        vTaskDelay(pdMS_TO_TICKS(5000));
         if (motor_any_group_faulted())
         {
             ESP_LOGE(TAG, "motor stress test: nFAULT tripped during stage %u (%s) — stopping here", (unsigned) (i + 1), stages[i].cumulative);
+#if !MOTORS_DEBUG_IGNORE_NFAULT
             motors_park();
             return;
+#endif
         }
     }
 
