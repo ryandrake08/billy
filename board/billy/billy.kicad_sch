@@ -13857,7 +13857,7 @@
 				(justify left)
 			)
 		)
-		(property "Datasheet" "https://www.st.com/resource/en/datasheet/usblc6-2.pdf"
+		(property "Datasheet" "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/7833/USBLC6-2SC6%20SOT-23-6L.PDF"
 			(at 181.61 231.775 0)
 			(hide yes)
 			(show_name no)
@@ -13902,7 +13902,7 @@
 				)
 			)
 		)
-		(property "MF" "ST"
+		(property "MF" "Slkor"
 			(at 182.88 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -13924,7 +13924,7 @@
 				)
 			)
 		)
-		(property "DigiKey Part" "497-5235-1-ND"
+		(property "DigiKey Part" "5399-USBLC6-2SC6CT-ND"
 			(at 182.88 223.52 0)
 			(hide yes)
 			(show_name no)
@@ -13977,6 +13977,14 @@
 				(font
 					(size 1.27 1.27)
 				)
+			)
+		)
+		(property "BOM Comments" "ST USBLC6-2SC6 out of stock at DigiKey; Slkor USBLC6-2SC6 is a verified pin-for-pin/footprint drop-in (SOT23-6L, same 2-line steering topology, 13V clamp vs STs 17V) per its DigiKey-listed datasheet." (at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
 		)
 		(pin "6"
