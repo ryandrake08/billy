@@ -754,6 +754,12 @@
           "label": "Mouser MP",
           "name": "Mouser MP",
           "show": true
+        },
+        {
+          "group_by": false,
+          "label": "BOM Comments",
+          "name": "BOM Comments",
+          "show": false
         }
       ],
       "filter_string": "",
