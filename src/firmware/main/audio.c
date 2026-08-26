@@ -333,9 +333,25 @@ esp_err_t audio_play(const audio_buf_t *audio, bool move_mouth)
 // Block size is a mic-read granularity choice, not a tunable -- stays compile-time. The onset/
 // silence/voiced/drain/cap thresholds are runtime-tunable (fish_config.h): bench floor
 // ~2000, speech >7000 on the 24-bit scale, but housing acoustics/mic placement will likely shift
-// this once the fish is in its final housing.
+// this once the fish is in its final housing. The onset/silence threshold itself is further
+// adapted per capture from the room's measured ambient level.
 #define VAD_BLOCK_SAMPLES 320          // 20 ms @ 16 kHz
 #define VAD_BLOCK_MS      (VAD_BLOCK_SAMPLES * 1000 / MIC_SAMPLE_RATE)
+
+// Block RMS on the 24-bit sample (>>8), matching the self-test's scale/thresholds.
+static int32_t block_rms(const int32_t *raw, int n)
+{
+    int64_t sum = 0;
+    for (int i = 0; i < n; i++) sum += (raw[i] >> 8);
+    int32_t mean = (int32_t) (sum / n);
+    double sumsq = 0.0;
+    for (int i = 0; i < n; i++)
+    {
+        int32_t s = (raw[i] >> 8) - mean;
+        sumsq += (double) s * (double) s;
+    }
+    return (int32_t) sqrt(sumsq / n);
+}
 
 esp_err_t audio_capture_utterance(audio_buf_t *out)
 {
@@ -359,7 +375,10 @@ esp_err_t audio_capture_utterance(audio_buf_t *out)
     int32_t raw[VAD_BLOCK_SAMPLES];
 
     // The mic (RX runs continuously) just recorded the prompt tone into its DMA buffer; reading it
-    // would false-trigger the VAD. Discard ~vad_drain_ms so the beep is gone and the room settles.
+    // would false-trigger the VAD. Discard ~vad_drain_ms so the beep is gone and the room settles --
+    // while at it, measure the settled room's ambient RMS so the VAD threshold below can adapt to it.
+    int64_t noise_floor_sum = 0;
+    int noise_floor_blocks = 0;
     for (int drained = 0; drained < cfg->vad_drain_ms; drained += VAD_BLOCK_MS)
     {
         size_t br = 0;
@@ -374,7 +393,21 @@ esp_err_t audio_capture_utterance(audio_buf_t *out)
             out->sample_rate = MIC_SAMPLE_RATE;
             return ESP_OK;
         }
+        int n = (int) (br / sizeof(int32_t));
+        if (n > 0)
+        {
+            noise_floor_sum += block_rms(raw, n);
+            noise_floor_blocks++;
+        }
     }
+
+    // Effective VAD threshold for this capture: the measured ambient floor plus a margin, but
+    // never below vad_onset_rms -- a quiet room (floor + margin under that) behaves exactly as
+    // before this adapted, while a noisy room raises the bar instead of never reading as silence.
+    int32_t noise_floor = noise_floor_blocks > 0 ? (int32_t) (noise_floor_sum / noise_floor_blocks) : 0;
+    int32_t vad_threshold = noise_floor + cfg->vad_noise_margin;
+    if (vad_threshold < cfg->vad_onset_rms) vad_threshold = cfg->vad_onset_rms;
+    ESP_LOGI(TAG, "listen: ambient rms=%ld, vad threshold=%ld", (long) noise_floor, (long) vad_threshold);
 
     bool capturing = false;
     int silence_ms = 0;
@@ -400,21 +433,11 @@ esp_err_t audio_capture_utterance(audio_buf_t *out)
         int n = (int) (bytes_read / sizeof(int32_t));
         if (n == 0) continue;
 
-        // Block RMS on the 24-bit sample (>>8), matching the self-test's scale/thresholds.
-        int64_t sum = 0;
-        for (int i = 0; i < n; i++) sum += (raw[i] >> 8);
-        int32_t mean = (int32_t) (sum / n);
-        double sumsq = 0.0;
-        for (int i = 0; i < n; i++)
-        {
-            int32_t s = (raw[i] >> 8) - mean;
-            sumsq += (double) s * (double) s;
-        }
-        int32_t rms = (int32_t) sqrt(sumsq / n);
+        int32_t rms = block_rms(raw, n);
 
         if (!capturing)
         {
-            if (rms > cfg->vad_onset_rms)
+            if (rms > vad_threshold)
             {
                 capturing = true;
                 ESP_LOGI(TAG, "listen: onset (rms=%ld), capturing...", (long) rms);
@@ -431,7 +454,7 @@ esp_err_t audio_capture_utterance(audio_buf_t *out)
             pcm[count++] = (int16_t) (raw[i] >> 16);
         }
 
-        if (rms < cfg->vad_onset_rms)
+        if (rms < vad_threshold)
         {
             silence_ms += VAD_BLOCK_MS;
             if (silence_ms >= cfg->vad_silence_ms) break;

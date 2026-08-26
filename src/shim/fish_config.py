@@ -12,8 +12,9 @@ OVERRIDES = {
     # (or delete) to fall back to that default again. Keep the values shown here in sync with
     # fish_config.c by hand if that file's own defaults ever change.
 
-    # VAD (voice-activity detection) -- hal.c fish_hal_capture_utterance()
-    # "vad_onset_rms": 6000,        # 24-bit scale: idle floor ~2000, speech >7000
+    # VAD (voice-activity detection) -- audio.c audio_capture_utterance()
+    # "vad_onset_rms": 6000,        # 24-bit scale: idle ~2000, speech >7000; also the min VAD threshold
+    # "vad_noise_margin": 3000,     # added to measured ambient RMS for the effective VAD threshold
     # "vad_silence_ms": 600,        # end the turn after this much sub-threshold audio
     # "vad_min_voiced_ms": 250,     # reject a capture with less real speech than this (clicks)
     # "vad_drain_ms": 250,          # discard the mic's buffered prompt tone before listening

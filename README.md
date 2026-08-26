@@ -140,7 +140,9 @@ on WiFi or the backend being reachable. Activation depends on the mode switch: *
 "hey billy"; a button press also works as a manual override). Flipping the switch mid-wait
 preempts immediately. Runtime-tunable constants (VAD thresholds, photocell gate, motor timing,
 HTTP timeouts) are fetched from the shim's `/v1/config` every loop cycle rather than compiled
-in, with compiled-in fallbacks if the shim is unreachable. During speech, a motor fault stops
+in, with compiled-in fallbacks if the shim is unreachable. Each capture's VAD threshold adapts
+to the room's ambient noise level, measured during the pre-capture drain window, so a noisy
+room still reads as silence once the user stops talking. During speech, a motor fault stops
 audio at the next I²S chunk boundary, aborts the remaining streamed reply, and returns to the
 run loop's local fault handling.
 

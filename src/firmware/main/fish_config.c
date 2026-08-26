@@ -7,7 +7,8 @@
 // Compiled-in defaults -- also this build's fallback for any field the shim's response doesn't
 // include (the shim only ever sends deltas from these, src/shim/fish_config.py's OVERRIDES).
 static fish_config_t s_config = {
-    .vad_onset_rms            = 6000,       // 24-bit scale: idle floor ~2000, speech >7000
+    .vad_onset_rms            = 6000,       // 24-bit scale: idle ~2000, speech >7000; also the min VAD threshold
+    .vad_noise_margin         = 3000,       // added to measured ambient RMS for the effective VAD threshold
     .vad_silence_ms           = 600,        // end the turn after this much sub-threshold audio
     .vad_min_voiced_ms        = 250,        // reject a capture with less real speech than this
     .vad_drain_ms             = 250,        // discard the mic's buffered prompt tone first
@@ -72,6 +73,7 @@ void fish_config_apply_json(const char *json)
     double v;
     bool b;
     if (json_get_number(json, "vad_onset_rms", &v))              s_config.vad_onset_rms = (int) v;
+    if (json_get_number(json, "vad_noise_margin", &v))           s_config.vad_noise_margin = (int) v;
     if (json_get_number(json, "vad_silence_ms", &v))             s_config.vad_silence_ms = (int) v;
     if (json_get_number(json, "vad_min_voiced_ms", &v))          s_config.vad_min_voiced_ms = (int) v;
     if (json_get_number(json, "vad_drain_ms", &v))               s_config.vad_drain_ms = (int) v;

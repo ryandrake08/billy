@@ -10,6 +10,7 @@ typedef struct
 {
     // VAD (voice-activity detection)
     int vad_onset_rms;
+    int vad_noise_margin;
     int vad_silence_ms;
     int vad_min_voiced_ms;
     int vad_drain_ms;
