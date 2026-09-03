@@ -10,6 +10,10 @@
 // 1 = board/billy production PCB: each DRV8833 gets its own nSLEEP/nFAULT.
 #define BOARD_REV 0
 
+// Unwired board: For testing, define this to make the software testable even without
+// things like the photocell and mic connected
+#define BOARD_UNWIRED 0
+
 // --- Amplifier: MAX98357A, I2S0 TX (playback) ---
 #define BOARD_AMP_I2S_LRCLK    7
 #define BOARD_AMP_I2S_BCLK    15

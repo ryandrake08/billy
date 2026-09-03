@@ -68,7 +68,11 @@ float peripherals_read_vmotor_volts(void)
     return (raw_avg - VMOTOR_CAL_OFFSET_COUNTS) / VMOTOR_CAL_SLOPE_COUNTS_PER_VOLT;
 }
 
+#if BOARD_UNWIRED == 1
+#define PHOTOCELL_WAKE_THRESHOLD -1
+#else
 #define PHOTOCELL_WAKE_THRESHOLD 20
+#endif
 
 bool peripherals_photocell_bright_enough(void)
 {

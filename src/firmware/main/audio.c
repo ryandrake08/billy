@@ -401,6 +401,18 @@ esp_err_t audio_capture_utterance(audio_buf_t *out)
         }
     }
 
+    // A block reads exactly rms==0 only when every sample in it is bit-identical. This means no
+    // mic is connected. Bail out early.
+    if (noise_floor_blocks > 0 && noise_floor_sum == 0)
+    {
+        ESP_LOGW(TAG, "listen: mic signal is flat zero -- no mic connected? aborting capture");
+        heap_caps_free(pcm);
+        out->samples = NULL;
+        out->count = 0;
+        out->sample_rate = MIC_SAMPLE_RATE;
+        return ESP_OK;
+    }
+
     // Effective VAD threshold for this capture: the measured ambient floor plus a margin, but
     // never below vad_onset_rms -- a quiet room (floor + margin under that) behaves exactly as
     // before this adapted, while a noisy room raises the bar instead of never reading as silence.

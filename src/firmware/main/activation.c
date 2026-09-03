@@ -48,7 +48,12 @@ typedef enum
 // BUTTON; grounding it selects hands-free WAKEWORD.
 static wake_mode_t current_wake_mode(void)
 {
+#if BOARD_UNWIRED == 1
+    // Force wakeword mode when unwired, to keep device awake when bench testing
+    return WAKE_MODE_WAKEWORD;
+#else
     return hal_gpio_get(BOARD_MODE_SW) ? WAKE_MODE_BUTTON : WAKE_MODE_WAKEWORD;
+#endif
 }
 
 // Function callbacks available to be used by wait_for_button_release()
