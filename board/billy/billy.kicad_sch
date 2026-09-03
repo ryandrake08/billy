@@ -6,8 +6,8 @@
 	(paper "USLedger")
 	(title_block
 		(title "Smart Mouth Billy Bass")
-		(date "2026-08-07")
-		(rev "1")
+		(date "2026-09-03")
+		(rev "2")
 	)
 	(lib_symbols
 		(symbol "AO3401A_1"
@@ -8793,6 +8793,12 @@
 		(uuid "9c188ff3-c67d-476a-ae0c-b32f01e96cad")
 	)
 	(junction
+		(at 189.23 173.99)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9c35b50d-8edd-4ec8-92a3-1a18a8de0583")
+	)
+	(junction
 		(at 224.79 90.17)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -9055,10 +9061,6 @@
 	(no_connect
 		(at 119.38 53.34)
 		(uuid "65fcb6d4-786a-46b1-a42a-5a116b7d3f50")
-	)
-	(no_connect
-		(at 204.47 154.94)
-		(uuid "729ddbb7-55d6-4cca-9580-774ff7143805")
 	)
 	(no_connect
 		(at 167.64 228.6)
@@ -10090,6 +10092,16 @@
 	)
 	(wire
 		(pts
+			(xy 189.23 173.99) (xy 217.17 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5a6dc70a-f98f-402c-b423-77d4ff55371e")
+	)
+	(wire
+		(pts
 			(xy 222.25 140.97) (xy 222.25 142.24)
 		)
 		(stroke
@@ -10097,6 +10109,16 @@
 			(type default)
 		)
 		(uuid "5a80d6a9-b41e-4200-9cde-a7ccc8379533")
+	)
+	(wire
+		(pts
+			(xy 204.47 154.94) (xy 189.23 154.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5accb8c3-2a63-40c7-b5a6-a3a90b3629c0")
 	)
 	(wire
 		(pts
@@ -10560,6 +10582,16 @@
 	)
 	(wire
 		(pts
+			(xy 189.23 154.94) (xy 189.23 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "90dd399e-e2d8-4f6e-a7f1-1d09e49fdc61")
+	)
+	(wire
+		(pts
 			(xy 317.5 50.8) (xy 317.5 49.53)
 		)
 		(stroke
@@ -10960,7 +10992,7 @@
 	)
 	(wire
 		(pts
-			(xy 185.42 173.99) (xy 217.17 173.99)
+			(xy 185.42 173.99) (xy 189.23 173.99)
 		)
 		(stroke
 			(width 0)

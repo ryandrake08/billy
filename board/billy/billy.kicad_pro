@@ -275,7 +275,7 @@
       "internal_id": "",
       "mfg": "",
       "mpn": "",
-      "sch_revision": "1"
+      "sch_revision": "2"
     },
     "layer_pairs": [],
     "layer_presets": [],
@@ -297,8 +297,12 @@
   "erc": {
     "erc_exclusions": [
       [
+        "pin_to_pin|2044700|1549400|18346fb5-f399-4a68-b309-79ff9bdff7b6|b1a2a586-d39a-4cdf-ac1a-dcd6ca7a72b3|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8",
+        "Wired in accordance with datasheet"
+      ],
+      [
         "pin_to_pin|800100|1676400|01b182f6-167d-4b5d-b721-57912406d9be|80dee3e7-7ce0-42bd-becb-1bb20fcd62ab|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8|/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8",
-        ""
+        "Wired in accordance with datasheet"
       ]
     ],
     "meta": {
