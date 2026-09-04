@@ -26,8 +26,7 @@ typedef enum
 #define MOTOR_MASK(ch)  (1u << (ch))
 #define GROUP_MASK(grp) (1u << (grp))
 
-// nFAULT is asserted for as long as either DRV8833 is awake on rev.0, without ever blocking real
-// motor output -- characterized but not root-caused.
+// nFAULT is unreliable--asserting when unexpected. We'll ignore it for now.
 #define MOTORS_DEBUG_IGNORE_NFAULT 1
 
 static const struct
