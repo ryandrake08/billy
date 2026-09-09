@@ -42,9 +42,6 @@ void audio_prompt_tone(void);
 // prompt/self-test tones -- for a backend/network failure (STT or the shim brain-hop).
 void audio_error_tone(void);
 
-// Bench audio self-test (not in the E2E boot path): 440 Hz tone, then a live mic-level log.
-void audio_selftest(void);
-
 // LISTEN: energy-VAD capture — wait for speech onset, capture until ~0.8 s of silence (or a hard
 // cap). Also interruptible: a button press (activation.h) at any point aborts and returns the
 // same "no audio" result as below. Allocates out->samples in PSRAM; the caller frees it with
@@ -56,11 +53,7 @@ void audio_selftest(void);
 // contract).
 esp_err_t audio_capture_utterance(audio_buf_t *out);
 
-// SPEAK: play one mono PCM buffer through the amp. Resamples internally to the amp's fixed output
-// rate if `audio` isn't already at that rate -- the normal TTS path is already at the amp's rate
-// and never hits this. `move_mouth` drives the lip-sync motor (motors.h) off the audio envelope
-// when true; pass false for playback that shouldn't move the mechanism (e.g. repeating a captured
-// utterance back for debugging). Returns FISH_ERR_AUDIO_HW if the amp TX write fails,
-// FISH_ERR_MOTOR_FAULT if nFAULT interrupts mouth animation, ESP_ERR_NO_MEM if a needed resample
-// allocation fails; ESP_OK otherwise (including for empty/null audio, which is a no-op).
-esp_err_t audio_play(const audio_buf_t *audio, bool move_mouth);
+// SPEAK: play one mono PCM buffer at the amp's fixed output rate while driving the lip-sync motor
+// (motors.h) from its audio envelope. Returns FISH_ERR_AUDIO_HW if the amp TX write fails,
+// FISH_ERR_MOTOR_FAULT if nFAULT interrupts mouth animation, or ESP_OK for empty/null audio.
+esp_err_t audio_play(const audio_buf_t *audio);

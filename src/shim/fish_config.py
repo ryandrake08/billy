@@ -37,6 +37,4 @@ OVERRIDES = {
     # "respond_timeout_ms": 120000,   # shim SSE stream: LLM generation across the whole reply
     # "tts_timeout_ms": 120000,       # Kokoro synthesizing one sentence
 
-    # Debug -- main.c runloop_task() / hal.c fish_hal_play()
-    # "repeat_mode": False,   # play the captured utterance back over the amp before STT (no mouth motor) -- check mic/acoustic quality by ear, no network hop
 }

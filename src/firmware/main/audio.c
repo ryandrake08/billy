@@ -243,87 +243,36 @@ static bool mouth_close(void)
     return motors_set_mouth_pct(0);
 }
 
-// Linear-interpolation resample of `in` (in_count samples @ in_rate) into a freshly
-// PSRAM-allocated buffer @ out_rate, written through *out_count. Cheap and good enough for the
-// one thing that needs it -- playing a mic capture back on a TX clock fixed at AMP_SAMPLE_RATE --
-// not a general-purpose/high-quality resampler. Returns NULL on allocation failure.
-static int16_t *resample_linear(const int16_t *in, size_t in_count, int in_rate, int out_rate,
-                                 size_t *out_count)
-{
-    size_t n_out = (size_t) ((uint64_t) in_count * out_rate / in_rate);
-    int16_t *out = heap_caps_malloc(n_out * sizeof(int16_t), MALLOC_CAP_SPIRAM);
-    if (!out)
-    {
-        return NULL;
-    }
-
-    float step = (float) in_rate / (float) out_rate;
-    for (size_t i = 0; i < n_out; i++)
-    {
-        float  src_pos = (float) i * step;
-        size_t idx     = (size_t) src_pos;
-        float  frac    = src_pos - (float) idx;
-        int16_t s0 = in[idx];
-        int16_t s1 = (idx + 1 < in_count) ? in[idx + 1] : s0;
-        out[i] = (int16_t) ((float) s0 + ((float) s1 - (float) s0) * frac);
-    }
-    *out_count = n_out;
-    return out;
-}
-
-esp_err_t audio_play(const audio_buf_t *audio, bool move_mouth)
+esp_err_t audio_play(const audio_buf_t *audio)
 {
     if (!audio || !audio->samples || audio->count == 0)
     {
         return ESP_OK;
     }
 
-    const int16_t *samples = audio->samples;
-    size_t count = audio->count;
-    int16_t *resampled = NULL;
-
     if (audio->sample_rate != AMP_SAMPLE_RATE)
     {
-        // The TX clock is fixed at init time (see audio_init()) -- resample to it rather than
-        // playing at the wrong pitch/speed. The normal TTS path is already at AMP_SAMPLE_RATE
-        // (Kokoro's native rate) and never reaches here; this is for callers like repeat-mode
-        // playback of a 16 kHz mic capture.
-        resampled = resample_linear(samples, count, audio->sample_rate, AMP_SAMPLE_RATE, &count);
-        if (!resampled)
-        {
-            ESP_LOGE(TAG, "play: resample allocation failed (%u samples)",
-                     (unsigned) audio->count);
-            return ESP_ERR_NO_MEM;
-        }
-        samples = resampled;
+        ESP_LOGE(TAG, "play: unsupported sample rate %d Hz", audio->sample_rate);
+        return ESP_ERR_NOT_SUPPORTED;
     }
 
     esp_err_t err;
-    if (move_mouth)
+    if (!motors_enable(MOTORS_GROUP_MOUTH_HEAD))
     {
-        if (!motors_enable(MOTORS_GROUP_MOUTH_HEAD))
-        {
-            err = FISH_ERR_MOTOR_FAULT;
-        }
-        else
-        {
-            err = amp_write_mono(samples, count, mouth_track_chunk);
-        }
-        if (!mouth_close() && err == ESP_OK)
-        {
-            err = FISH_ERR_MOTOR_FAULT;
-        }
+        err = FISH_ERR_MOTOR_FAULT;
     }
     else
     {
-        err = amp_write_mono(samples, count, NULL);
+        err = amp_write_mono(audio->samples, audio->count, mouth_track_chunk);
     }
-    heap_caps_free(resampled);
+    if (!mouth_close() && err == ESP_OK)
+    {
+        err = FISH_ERR_MOTOR_FAULT;
+    }
 
     if (err == ESP_OK)
     {
-        ESP_LOGI(TAG, "play: %u samples @ %d Hz%s", (unsigned) audio->count, audio->sample_rate,
-                 resampled ? " (resampled)" : "");
+        ESP_LOGI(TAG, "play: %u samples @ %d Hz", (unsigned) audio->count, audio->sample_rate);
     }
     return err;
 }
@@ -338,7 +287,7 @@ esp_err_t audio_play(const audio_buf_t *audio, bool move_mouth)
 #define VAD_BLOCK_SAMPLES 320          // 20 ms @ 16 kHz
 #define VAD_BLOCK_MS      (VAD_BLOCK_SAMPLES * 1000 / MIC_SAMPLE_RATE)
 
-// Block RMS on the 24-bit sample (>>8), matching the self-test's scale/thresholds.
+// Block RMS on the 24-bit sample (>>8).
 static int32_t block_rms(const int32_t *raw, int n)
 {
     int64_t sum = 0;
@@ -496,44 +445,4 @@ esp_err_t audio_capture_utterance(audio_buf_t *out)
     ESP_LOGI(TAG, "listen: captured %u samples (%u ms, %d voiced)",
              (unsigned) count, (unsigned) (count * 1000 / MIC_SAMPLE_RATE), voiced_ms);
     return ESP_OK;
-}
-
-// --- Self-test (bench tool) ------------------------------------------------------------------
-
-static void mic_level_monitor(void)
-{
-    int32_t buf[512];
-    ESP_LOGI(TAG, "mic: level monitor — tap or talk near the mic to see rms/peak move");
-    for (;;)
-    {
-        size_t bytes_read = 0;
-        if (audio_mic_read_raw(buf, sizeof buf, &bytes_read) != ESP_OK)
-            continue;
-        int n = (int) (bytes_read / sizeof(int32_t));
-        if (n == 0) continue;
-
-        int64_t sum = 0;
-        for (int i = 0; i < n; i++) sum += (buf[i] >> 8);
-        int32_t mean = (int32_t) (sum / n);
-        double sumsq = 0.0;
-        int32_t peak = 0;
-        for (int i = 0; i < n; i++)
-        {
-            int32_t s = (buf[i] >> 8) - mean;
-            int32_t mag = s < 0 ? -s : s;
-            if (mag > peak) peak = mag;
-            sumsq += (double) s * (double) s;
-        }
-        double rms = sqrt(sumsq / n);
-        int dbfs = rms > 1.0 ? (int) (20.0 * log10(rms / 8388608.0)) : -120;
-        ESP_LOGI(TAG, "mic: rms=%ld peak=%ld (~%d dBFS)", (long) rms, (long) peak, dbfs);
-    }
-}
-
-void audio_selftest(void)
-{
-    ESP_LOGI(TAG, "audio self-test — amp tone, then live mic level (reset to replay the tone)");
-    amp_tone(440, 2000, "self-test");
-    ESP_LOGI(TAG, "amp: tone done — DMA auto-clears to silence");
-    mic_level_monitor();   // does not return
 }

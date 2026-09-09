@@ -5,24 +5,24 @@ assistant. An ESP32-S3 inside the fish captures speech, drives the motors, and p
 audio; a separate GPU box does speech-to-text, LLM inference, and text-to-speech. There is no
 internet dependency anywhere in the pipeline.
 
-The fish is a **thin client**: it holds no persona, no conversation history, and does no text
-cleaning. All of that lives on the backend, behind a small application-logic "shim" in front of
-the LLM. The fish just captures audio, makes three HTTP calls per turn, plays the reply, and
-animates the mouth/head/tail in sync with it.
+The fish's' persona, conversation history, text cleanup, and configuraion all live on the
+backend, in an business-logic "shim" application in front of the LLM. The fish just captures
+audio, makes three HTTP calls per turn, plays the reply, and animates the mouth/head/tail in
+sync with it.
 
 ## Architecture
 
 ```
         FISH (ESP32-S3)                                BACKEND (LAN)
   ┌──────────────────────────┐                  ┌───────────────────────────┐
-  │ mic → capture utterance  │───-─ STT ───────▶│ whisper.cpp        :8081  │
-  │                          │◀─── text ────────│                           │
+  │ mic → capture utterance  │─── utterance ───▶│ whisper.cpp        :8081  │
+  │                          │◀───── text ──────│                           │
   |                          |                  |                           |    ┌─────────────────┐
-  │ text → shim              │──── brain ──────▶│ shim (persona,     :8000  │──▶ | llama.cpp :8080 |
-  │                          │◀── sentences ────│  history, text cleaning)  │    └─────────────────┘
+  │ text → shim              │────── text ─────▶│ shim (persona,     :8000  │──▶ | llama.cpp :8080 |
+  │                          │◀─── response ────│  history, text cleaning)  │    └─────────────────┘
   │                          │                  │                           │
-  │ sentence → TTS           │──── TTS ────────▶│ Kokoro             :8880  │
-  │                          │◀─── audio ───────│                           │
+  │ sentence → TTS           │──── sentence ───▶│ Kokoro             :8880  │
+  │                          │◀──── audio ──────│                           │
   │ amp + motors             │                  └───────────────────────────┘
   └──────────────────────────┘
 ```
@@ -38,9 +38,9 @@ Three calls per conversational turn:
 STT and TTS are dumb audio↔text transforms called **directly**; only the brain hop goes through
 the shim, which is a text-only service that never touches audio. The shim streams sentences as
 the LLM generates them, so the caller can synthesize and play sentence 1 while sentence 2 is
-still being generated — this pipelining is what keeps first-audio latency low.
+still being generated — this pipelining is what keeps time-to-first-audio low.
 
-This exact contract is implemented three times, deliberately kept in sync: the reference clients
+There are three implementations of this protocol, and they should be indentical: the reference clients
 `src/client/billy_cli.py` (Python) and `src/cli/` (C), and the ESP32 firmware
 (`src/firmware/main/net.c`). The CLIs exist to document the protocol the firmware has to match —
 the C one doubles as a check on how much of the firmware's own protocol code (WAV header,
@@ -55,7 +55,7 @@ host build; it turned out to be all of it.
 | `src/firmware/` | ESP32-S3 firmware (C, ESP-IDF). |
 | `src/shim/` | Backend application-logic layer (Python/FastAPI). |
 | `src/client/` | CLI reference client (Python) — a mic+speaker stand-in for the fish. |
-| `src/cli/` | CLI reference client (C) — the same stand-in, built against libcurl/PortAudio/soxr. |
+| `src/cli/` | CLI reference client (C) — built against libcurl/PortAudio/soxr. |
 
 ---
 
@@ -67,7 +67,7 @@ designed to fit inside the original toy's chassis (~70×50mm).
 
 | Part | Role |
 |---|---|
-| ESP32-S3-WROOM-1 (N8R8 on the bench; N4R2 targeted for production) | Controller — WiFi, dual I²S, deep sleep |
+| ESP32-S3-WROOM-1-N4R2 | Controller — WiFi, dual I²S, deep sleep |
 | TDK ICS-43434 (I²S MEMS mic) | Microphone — mounted as a separate satellite board, off the main PCB, for acoustic placement |
 | MAX98357A (I²S class-D amp) | Speaker drive |
 | 2× TI DRV8833 (dual H-bridge) | 3 motor channels — mouth, head, tail (all spring-return, unidirectional) |
@@ -83,8 +83,8 @@ The KiCad schematic and PCB are authoritative for hardware connectivity and layo
 **Workflow:**
 ```bash
 open board/billy/billy.kicad_pro
-/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli sch erc --format json --severity-all -o erc.json board/billy/billy.kicad_sch
-/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli pcb drc --format json --severity-all --schematic-parity -o drc.json board/billy/billy.kicad_pcb
+kicad-cli sch erc --format json --severity-all -o erc.json board/billy/billy.kicad_sch
+kicad-cli pcb drc --format json --severity-all --schematic-parity -o drc.json board/billy/billy.kicad_pcb
 ```
 
 ---
@@ -92,45 +92,50 @@ open board/billy/billy.kicad_pro
 ## `src/firmware/` — ESP32-S3 firmware
 
 Captures speech, calls the backend for STT → LLM → TTS, plays the reply, and drives the
-mouth/head/tail motors in sync with it. Targets `esp32s3` (ESP-IDF v6.0.2); no persona or
-conversation state lives on-device.
+mouth/head/tail motors in sync with it. Targets `esp32s3` (tested with ESP-IDF v6.0.2).
 
 ### Layering
 
 | Layer | Files | Responsibility |
 |---|---|---|
 | app | `main.c` | `app_main()` wires everything together; `runloop_task` runs the `IDLE→ACTIVATE→LISTEN→THINK→SPEAK→IDLE` state machine. |
-| transport | `net.c/.h` | The fish↔backend contract described above — STT direct, brain hop through the shim, TTS direct. The one layer that would change if the fish ever moved from direct HTTP to ESPHome/Home Assistant. |
-| device | `audio.c/.h`, `motors.c/.h`, `activation.c/.h`, `peripherals.c/.h` | Fish-specific setup and algorithms built on the HAL: I²S mic/amp + mouth lip-sync envelope; 2× DRV8833 motor choreography with first-edge-latched fault shutdown and deferred Vmotor capture; button/mode-switch/wake-word activation + deep sleep; WS2812 status LED + photocell/Vmotor-sense reads, all gated by one shared enable line. |
+| transport | `net.c/.h` | The fish↔backend contract described above — STT direct, brain hop through the shim, TTS direct. |
+| device | `audio.c/.h`, `motors.c/.h`, `activation.c/.h`, `peripherals.c/.h` | Fish-specific setup and algorithms built on the HAL: I²S mic/amp + mouth lip-sync envelope; 2× DRV8833 motor choreography with `nFAULT` telemetry and deferred Vmotor capture; button/mode-switch/wake-word activation + deep sleep; WS2812 status LED + photocell/Vmotor-sense reads, all gated by one shared enable line. |
 | HAL | `hal.c/.h` | Generic, pin-parameterized primitives (GPIO, ADC1, LED strip, PWM, I²S, deep sleep) with no fish-specific naming and no `board.h` dependency of its own. |
 
 `board.h` is the firmware representation of the schematic pin map. `components/wakeword` is the on-device
-wake-word detector (TensorFlow Lite Micro, ported from ESPHome's `micro_wake_word` component) —
-see its own `models/ATTRIBUTION.md` for training provenance.
+wake-word detector (TensorFlow Lite Micro, ported from ESPHome's `micro_wake_word` component). See its own
+`models/ATTRIBUTION.md` for training provenance.
 
 ### Build
 
 ```bash
 source ~/.espressif/tools/activate_idf_v6.0.2.sh
 cd src/firmware
-export WIFI_SSID="your-2.4GHz-ssid" WIFI_PASSWORD="your-password" BACKEND_HOST="your-host-or-ip"
+export WIFI_SSID="your-2.4GHz-ssid" WIFI_PASSWORD="your-password" BACKEND_HOST="your-backend-hostname-or-ip"
 idf.py set-target esp32s3      # once
 idf.py build
 idf.py -p <port> flash monitor
 ```
 WiFi credentials and the backend host are build-environment variables injected as compile
-definitions (`main/CMakeLists.txt`), never committed to source. Changing one needs
-`idf.py reconfigure`. `./clean.sh` removes all generated build state.
+definitions (`main/CMakeLists.txt`). Changing one needs `idf.py reconfigure`. `./clean.sh`
+removes all generated build state.
 
 ### Debug
 
-Step-debug with real breakpoints over the S3's native USB-Serial-JTAG, no extra hardware:
+Step-debug with breakpoints over the S3's native USB-Serial-JTAG:
 ```bash
 openocd -f board/esp32s3-builtin.cfg    # terminal 1
 idf.py -p <port> gdb                    # terminal 2
 ```
-The DevKitC-1 has two USB-C ports — flashing uses the UART/CP2102 port; OpenOCD needs the
-separate native-USB port instead.
+The DevKitC-1 has two USB ports — flashing uses the UART/CP2102 port; OpenOCD needs the
+separate native-USB port instead. The production board has a USB port and a three pin
+header (TTL level) to one of the ESP32's built-in UARTs. Only use a USB-to-UART cable that
+uses 3.3V with this header! In addition to the direct-to-UART header, the production board
+has a two pin header for firmware flashing. Jumping the header during a reset causes the chip
+to enter UART download (flashing) mode instead of booting normally from flash memory.
+The UART/FLASH headers are intended to be a backup in case flashing over USB fails, and the
+header can be left unpopulated if unused.
 
 ### Runtime behavior
 
@@ -138,13 +143,13 @@ separate native-USB port instead.
 on WiFi or the backend being reachable. Activation depends on the mode switch: **button mode**
 (press-to-talk, deep-sleeps between turns) or **wake-word mode** (mic stays live, listens for
 "hey billy"; a button press also works as a manual override). Flipping the switch mid-wait
-preempts immediately. Runtime-tunable constants (VAD thresholds, photocell gate, motor timing,
-HTTP timeouts) are fetched from the shim's `/v1/config` every loop cycle rather than compiled
+preempts immediately. Runtime-tunable constants (VAD thresholds, mouth/tail timing, and HTTP
+timeouts) are fetched from the shim's `/v1/config` every loop cycle rather than compiled
 in, with compiled-in fallbacks if the shim is unreachable. Each capture's VAD threshold adapts
 to the room's ambient noise level, measured during the pre-capture drain window, so a noisy
-room still reads as silence once the user stops talking. During speech, a motor fault stops
-audio at the next I²S chunk boundary, aborts the remaining streamed reply, and returns to the
-run loop's local fault handling.
+room still reads as silence once the user stops talking. The DRV8833 `nFAULT` line is logged but
+does not gate motor commands because it asserts unreliably on the board; the drivers' independent
+silicon overcurrent, thermal, and undervoltage protection remains active.
 
 ---
 
@@ -153,7 +158,7 @@ run loop's local fault handling.
 The brain layer in front of `llama.cpp`. Holds the application logic that has to live off the
 fish for it to stay a thin client:
 
-- **persona** / system prompt — edit `text.py`, reload, no reflash;
+- **persona** / system prompt — edit `text.py`, reload;
 - **conversation history / session state** — kept server-side, keyed by session id;
 - **model quirks** — the `enable_thinking` request flag and `<think>`-block stripping;
 - **markdown/emoji scrubbing** — the LLM still emits stray formatting that TTS would mangle;
@@ -161,9 +166,6 @@ fish for it to stay a thin client:
   pipeline TTS for low first-audio latency;
 - **runtime firmware config** (`fish_config.py`) — tunable firmware constants served over
   `GET /v1/config`, so they can be retuned without a reflash.
-
-It is a text service — it never touches audio. STT and TTS are dumb audio↔text transforms the
-caller calls directly.
 
 ### Protocol
 
@@ -192,12 +194,7 @@ Config via env: `BILLY_LLM_URL` (default `http://localhost:8080`), `BILLY_LLM_MO
 
 ### Deploy
 
-Lives at `/opt/billy-shim` on the backend host, managed by the `billy-shim.service` systemd
-unit (`deploy/systemd/billy-shim.service`).
-```bash
-rsync -a --exclude '.venv' --exclude '__pycache__' src/shim/ your-host-or-ip:/opt/billy-shim/
-ssh your-host-or-ip systemctl restart billy-shim
-```
+Shim program can live anywhere. Recommend using your OS's init system to start and manage it.
 
 ---
 
@@ -228,20 +225,11 @@ Each turn prints various latency measurements.
 
 A second, independent reference client for the same contract — same record → STT → shim → TTS →
 play pipeline as the Python client, same flags, same latency breakdown, but built as a plain C
-binary via CMake instead of a Python venv. It exists less because the Python client needed
-replacing and more to size up what a from-scratch C port actually costs: which external
-libraries a host build needs versus what's already solved for free on-device, and how much of
-the firmware's own protocol code turns out to be portable as-is. That last part went further
-than expected — `net.c`'s hand-rolled WAV header and JSON string extraction have zero ESP-IDF
-dependency, so `src/cli` reuses the same techniques verbatim rather than pulling in a JSON
-library.
+binary via CMake instead of a Python venv.
 
 External dependencies (none of this is vendored): `libcurl` (HTTP, mirrors `httpx`), `portaudio`
 (mic/speaker I/O, mirrors `sounddevice`), `soxr` (output resampling, same library the Python
-`soxr` package binds to). On macOS via MacPorts: `port install curl portaudio soxr`. `numpy` and
-`soundfile` have no C-side equivalent needed — buffer handling is plain arrays, and the WAV
-format in play (canonical PCM16) is simple enough to read/write by hand instead of linking
-libsndfile.
+`soxr` package binds to). On macOS via MacPorts: `port install curl portaudio soxr`.
 
 ### Build & run
 
@@ -250,13 +238,12 @@ cd src/cli
 cmake -S . -B build && cmake --build build
 ./build/billy_cli --host <backend-host>     # ports 8000/8081/8880 derived from host
 ```
-Press **Enter** to start talking, speak, press **Enter** to stop. `Ctrl-C` is a hard exit here —
-unlike the Python client it doesn't catch the interrupt for a graceful shutdown message.
+Press **Enter** to start talking, speak, press **Enter** to stop. `Ctrl-C` quits, same as the
+Python client.
 
 Same `--voice`/`--session`/`--shim-url`/`--stt-url`/`--tts-url` flags as the Python client, same
 system-default audio devices. TTS audio is resampled to the output device's native rate in
-software (soxr, `SOXR_HQ` quality) rather than by requesting a mismatched rate from PortAudio and
-letting the OS mixer convert it — the latter produced audible static in testing.
+software (soxr, `SOXR_HQ` quality).
 
 ---
 
@@ -272,13 +259,3 @@ systemd (`Restart=always`, enabled at boot):
 | Kokoro (Kokoro-FastAPI) | 8880 | voice `am_onyx` | yes |
 
 All three plus the shim are expected to fit resident in ~14GB of VRAM.
-
----
-
-## Power
-
-Deep sleep (BUTTON mode) is designed for roughly 40-45µA typical total draw — dominated by the
-buck regulator's own ~22µA quiescent current, with the ESP32-S3 and amp's deep-sleep/shutdown
-current making up most of the rest. Everything else (status LED, photocell and Vmotor-sense
-dividers, the two other power-input legs) is switched off entirely in deep sleep. These are
-datasheet/design figures, not yet bench-measured on real hardware.

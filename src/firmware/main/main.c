@@ -44,7 +44,7 @@ static esp_err_t speak_sentence(const char *sentence, const char *voice, void *c
     }
     else if (err == ESP_OK && audio.count > 0)
     {
-        err = audio_play(&audio, /* move_mouth = */ true);
+        err = audio_play(&audio);
     }
     heap_caps_free(audio.samples);
     return err;
@@ -145,14 +145,6 @@ static void runloop_task(void *arg)
             peripherals_set_led_status(LED_STATUS_ERROR);
             ESP_LOGE(TAG, "capture failed (PSRAM allocation) — rebooting");
             esp_restart();
-        }
-
-        // Debug: play the utterance straight back over the amp (no mouth motor) before it goes
-        // to STT, so mic/acoustic quality can be checked by ear with no network round trip.
-        // audio_play() resamples it from the mic's rate to the amp's rate itself.
-        if (fish_config_get()->repeat_mode)
-        {
-            audio_play(&utterance, /* move_mouth = */ false);
         }
 
         // Transcribe the utterance using speech-to-text backend

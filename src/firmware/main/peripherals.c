@@ -91,9 +91,3 @@ void peripherals_prepare_for_sleep(void)
     hal_gpio_set(BOARD_PERIPHERALS_EN, false);   // cuts LED VDD *and* both sense dividers' GND
     hal_gpio_hold_enable(BOARD_PERIPHERALS_EN);
 }
-
-void peripherals_set_misc_gpio_debug(bool level)
-{
-    hal_gpio_reset(BOARD_MISC_GPIO);
-    hal_gpio_init_output(BOARD_MISC_GPIO, level);
-}

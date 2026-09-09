@@ -37,8 +37,3 @@ bool peripherals_photocell_bright_enough(void);
 // keeps displaying it with no power drawn), then cuts + holds BOARD_PERIPHERALS_EN low -- zero
 // current for the LED and both sense dividers for the whole sleep.
 void peripherals_prepare_for_sleep(void);
-
-// Rev.0 debug only: reclaims BOARD_MISC_GPIO from ADC mode and drives it high or low, for the
-// bare scope-probe header on that board. Do not call on Rev.1 hardware. The same pin there is
-// BOARD_VMOTOR_ADC, wired to the Vdrive divider, and this will fight it.
-void peripherals_set_misc_gpio_debug(bool level);
