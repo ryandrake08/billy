@@ -7,6 +7,7 @@
 #include <string.h>
 
 #define MAX_RECORD_SECONDS 300   // safety cap; well beyond any real utterance
+#define PLAY_CHUNK_FRAMES  1024  // bounds cancellation latency while writing to PortAudio
 
 static PaStream *s_output_stream = NULL;
 static int       s_output_rate = 0;
@@ -106,20 +107,23 @@ void audio_shutdown(void)
     Pa_Terminate();
 }
 
-int16_t *audio_record_utterance(size_t *out_count)
+audio_record_result_t audio_record_utterance(int16_t **out_audio, size_t *out_count,
+                                             cancel_check_t cancel, const volatile void *cancel_ctx)
 {
+    *out_audio = NULL;
     *out_count = 0;
 
     printf("\n[Enter] to start talking... ");
     fflush(stdout);
     int ch;
     while ((ch = getchar()) != '\n' && ch != EOF) {}
+    if (cancel_requested(cancel, cancel_ctx)) return AUDIO_RECORD_INTERRUPTED;
 
     PaDeviceIndex in_dev = Pa_GetDefaultInputDevice();
     if (in_dev == paNoDevice)
     {
         fprintf(stderr, "audio: no default input device\n");
-        return NULL;
+        return AUDIO_RECORD_ERROR;
     }
     const PaDeviceInfo *in_info = Pa_GetDeviceInfo(in_dev);
     PaStreamParameters in_params = {
@@ -137,14 +141,14 @@ int16_t *audio_record_utterance(size_t *out_count)
     if (err != paNoError)
     {
         fprintf(stderr, "audio: record open failed: %s\n", Pa_GetErrorText(err));
-        return NULL;
+        return AUDIO_RECORD_ERROR;
     }
     err = Pa_StartStream(input_stream);
     if (err != paNoError)
     {
         fprintf(stderr, "audio: record start failed: %s\n", Pa_GetErrorText(err));
         Pa_CloseStream(input_stream);
-        return NULL;
+        return AUDIO_RECORD_ERROR;
     }
 
     printf("\U0001F3A4 recording -- [Enter] to stop... ");
@@ -154,16 +158,19 @@ int16_t *audio_record_utterance(size_t *out_count)
     Pa_StopStream(input_stream);
     Pa_CloseStream(input_stream);
 
-    if (s_rec_count == 0) return NULL;
+    if (cancel_requested(cancel, cancel_ctx)) return AUDIO_RECORD_INTERRUPTED;
+    if (s_rec_count == 0) return AUDIO_RECORD_EMPTY;
 
     int16_t *out = malloc(s_rec_count * sizeof(int16_t));
-    if (!out) return NULL;
+    if (!out) return AUDIO_RECORD_ERROR;
     memcpy(out, s_rec_buf, s_rec_count * sizeof(int16_t));
+    *out_audio = out;
     *out_count = s_rec_count;
-    return out;
+    return AUDIO_RECORD_OK;
 }
 
-void audio_play(const int16_t *audio, size_t count, int sample_rate)
+void audio_play(const int16_t *audio, size_t count, int sample_rate,
+                cancel_check_t cancel, const volatile void *cancel_ctx)
 {
     if (!audio || count == 0 || !s_output_stream) return;
 
@@ -194,10 +201,18 @@ void audio_play(const int16_t *audio, size_t count, int sample_rate)
         to_play_count = odone;
     }
 
-    PaError perr = Pa_WriteStream(s_output_stream, to_play, to_play_count);
-    if (perr != paNoError && perr != paOutputUnderflowed)
+    size_t offset = 0;
+    while (offset < to_play_count && !cancel_requested(cancel, cancel_ctx))
     {
-        fprintf(stderr, "audio: playback failed: %s\n", Pa_GetErrorText(perr));
+        size_t chunk = to_play_count - offset;
+        if (chunk > PLAY_CHUNK_FRAMES) chunk = PLAY_CHUNK_FRAMES;
+        PaError perr = Pa_WriteStream(s_output_stream, to_play + offset, chunk);
+        if (perr != paNoError && perr != paOutputUnderflowed)
+        {
+            fprintf(stderr, "audio: playback failed: %s\n", Pa_GetErrorText(perr));
+            break;
+        }
+        offset += chunk;
     }
 
     free(resampled);

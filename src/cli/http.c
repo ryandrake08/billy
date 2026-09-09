@@ -10,6 +10,30 @@
 void http_global_init(void) { curl_global_init(CURL_GLOBAL_DEFAULT); }
 void http_global_cleanup(void) { curl_global_cleanup(); }
 
+typedef struct
+{
+    cancel_check_t check;
+    const volatile void *ctx;
+} curl_cancel_t;
+
+static int curl_cancel_progress(void *ctx, curl_off_t total_down, curl_off_t now_down,
+                                curl_off_t total_up, curl_off_t now_up)
+{
+    (void) total_down;
+    (void) now_down;
+    (void) total_up;
+    (void) now_up;
+    curl_cancel_t *cancel = ctx;
+    return cancel_requested(cancel->check, cancel->ctx);
+}
+
+static void curl_set_cancellation(CURL *curl, curl_cancel_t *cancel)
+{
+    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
+    curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, curl_cancel_progress);
+    curl_easy_setopt(curl, CURLOPT_XFERINFODATA, cancel);
+}
+
 // Growable response-body sink for the non-streaming calls (STT, TTS).
 struct membuf
 {
@@ -38,7 +62,8 @@ static size_t membuf_write(char *ptr, size_t size, size_t nmemb, void *userdata)
 }
 
 bool http_stt(const char *stt_url, const int16_t *pcm, size_t nsamples, uint32_t sample_rate,
-              char *out_text, size_t out_len, long timeout_ms)
+              char *out_text, size_t out_len, long timeout_ms,
+              cancel_check_t cancel, const volatile void *cancel_ctx)
 {
     out_text[0] = '\0';
     if (!pcm || nsamples == 0) return true;   // nothing captured, not an error
@@ -67,11 +92,13 @@ bool http_stt(const char *stt_url, const int16_t *pcm, size_t nsamples, uint32_t
     snprintf(url, sizeof url, "%s/inference", stt_url);
 
     struct membuf resp = { 0 };
+    curl_cancel_t cancellation = { .check = cancel, .ctx = cancel_ctx };
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_MIMEPOST, mime);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, membuf_write);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resp);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeout_ms);
+    curl_set_cancellation(curl, &cancellation);
 
     CURLcode rc = curl_easy_perform(curl);
     long status = 0;
@@ -89,7 +116,7 @@ bool http_stt(const char *stt_url, const int16_t *pcm, size_t nsamples, uint32_t
             while (l > 0 && (unsigned char) out_text[l - 1] <= ' ') out_text[--l] = '\0';
         }
     }
-    else if (rc != CURLE_OK)
+    else if (rc != CURLE_OK && !cancel_requested(cancel, cancel_ctx))
     {
         fprintf(stderr, "  [stt error: %s]\n", curl_easy_strerror(rc));
     }
@@ -105,7 +132,8 @@ bool http_stt(const char *stt_url, const int16_t *pcm, size_t nsamples, uint32_t
     return ok;
 }
 
-void http_reset(const char *shim_url, const char *session, long timeout_ms)
+void http_reset(const char *shim_url, const char *session, long timeout_ms,
+                cancel_check_t cancel, const volatile void *cancel_ctx)
 {
     char esc_session[256];
     json_escape(session, esc_session, sizeof esc_session);
@@ -119,14 +147,16 @@ void http_reset(const char *shim_url, const char *session, long timeout_ms)
     if (!curl) { fprintf(stderr, "  [reset failed: curl_easy_init]\n"); return; }
 
     struct curl_slist *headers = curl_slist_append(NULL, "Content-Type: application/json");
+    curl_cancel_t cancellation = { .check = cancel, .ctx = cancel_ctx };
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long) bodylen);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeout_ms);
+    curl_set_cancellation(curl, &cancellation);
 
     CURLcode rc = curl_easy_perform(curl);
-    if (rc != CURLE_OK)
+    if (rc != CURLE_OK && !cancel_requested(cancel, cancel_ctx))
     {
         fprintf(stderr, "  [reset failed: %s]\n", curl_easy_strerror(rc));
     }
@@ -196,7 +226,8 @@ static size_t sse_write(char *ptr, size_t size, size_t nmemb, void *userdata)
 }
 
 bool http_respond_stream(const char *shim_url, const char *session, const char *text,
-                          sentence_cb_t on_sentence, void *ctx, long timeout_ms)
+                          sentence_cb_t on_sentence, void *ctx, long timeout_ms,
+                          cancel_check_t cancel, const volatile void *cancel_ctx)
 {
     size_t esc_cap = strlen(text) * 2 + 1;
     char *esc_text = malloc(esc_cap);
@@ -216,6 +247,7 @@ bool http_respond_stream(const char *shim_url, const char *session, const char *
     snprintf(url, sizeof url, "%s/v1/respond", shim_url);
 
     struct sse_ctx sctx = { .cb = on_sentence, .user_ctx = ctx };
+    curl_cancel_t cancellation = { .check = cancel, .ctx = cancel_ctx };
 
     CURL *curl = curl_easy_init();
     if (!curl) { free(body); return false; }
@@ -231,6 +263,7 @@ bool http_respond_stream(const char *shim_url, const char *session, const char *
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, sse_write);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &sctx);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeout_ms);
+    curl_set_cancellation(curl, &cancellation);
 
     CURLcode rc = curl_easy_perform(curl);
     long status = 0;
@@ -252,8 +285,11 @@ bool http_respond_stream(const char *shim_url, const char *session, const char *
     else
     {
         ok = false;
-        if (rc != CURLE_OK) fprintf(stderr, "  [shim error: %s]\n", curl_easy_strerror(rc));
-        else fprintf(stderr, "  [shim error: HTTP %ld]\n", status);
+        if (!cancel_requested(cancel, cancel_ctx))
+        {
+            if (rc != CURLE_OK) fprintf(stderr, "  [shim error: %s]\n", curl_easy_strerror(rc));
+            else fprintf(stderr, "  [shim error: HTTP %ld]\n", status);
+        }
     }
 
     curl_slist_free_all(headers);
@@ -263,7 +299,8 @@ bool http_respond_stream(const char *shim_url, const char *session, const char *
 }
 
 bool http_tts(const char *tts_url, const char *voice, const char *sentence,
-              uint8_t **out_wav, size_t *out_len, long timeout_ms)
+              uint8_t **out_wav, size_t *out_len, long timeout_ms,
+              cancel_check_t cancel, const volatile void *cancel_ctx)
 {
     *out_wav = NULL;
     *out_len = 0;
@@ -288,6 +325,7 @@ bool http_tts(const char *tts_url, const char *voice, const char *sentence,
     if (!curl) { free(body); return false; }
 
     struct curl_slist *headers = curl_slist_append(NULL, "Content-Type: application/json");
+    curl_cancel_t cancellation = { .check = cancel, .ctx = cancel_ctx };
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
@@ -295,6 +333,7 @@ bool http_tts(const char *tts_url, const char *voice, const char *sentence,
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, membuf_write);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resp);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeout_ms);
+    curl_set_cancellation(curl, &cancellation);
 
     CURLcode rc = curl_easy_perform(curl);
     long status = 0;
@@ -308,8 +347,11 @@ bool http_tts(const char *tts_url, const char *voice, const char *sentence,
     }
     else
     {
-        if (rc != CURLE_OK) fprintf(stderr, "  [tts error: %s]\n", curl_easy_strerror(rc));
-        else fprintf(stderr, "  [tts error: HTTP %ld]\n", status);
+        if (!cancel_requested(cancel, cancel_ctx))
+        {
+            if (rc != CURLE_OK) fprintf(stderr, "  [tts error: %s]\n", curl_easy_strerror(rc));
+            else fprintf(stderr, "  [tts error: HTTP %ld]\n", status);
+        }
         free(resp.data);
     }
 

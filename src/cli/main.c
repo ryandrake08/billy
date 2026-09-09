@@ -16,6 +16,7 @@
 
 #include <math.h>
 #include <pthread.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +28,21 @@
 #define RESPOND_TIMEOUT_MS  120000
 #define TTS_TIMEOUT_MS      120000
 #define RESET_TIMEOUT_MS    10000
+
+// main() owns the process signal disposition, so the handler and its flag stay here.
+volatile sig_atomic_t g_interrupted = 0;
+
+static void handle_sigint(int sig)
+{
+    (void) sig;
+    g_interrupted = 1;   // async-signal-safe: sig_atomic_t write only, no I/O or allocation here
+}
+
+static bool interrupted(const volatile void *ctx)
+{
+    const volatile sig_atomic_t *flag = ctx;
+    return *flag != 0;
+}
 
 static double now_seconds(void)
 {
@@ -123,6 +139,8 @@ typedef struct
     const char *shim_url;
     const char *session;
     const char *text;
+    cancel_check_t cancel;
+    const volatile void *cancel_ctx;
 
     double t_prompt_sent;
     bool   first_sentence_seen;
@@ -132,6 +150,7 @@ typedef struct
 static bool on_sentence(const char *sentence, const char *voice, void *ctx_)
 {
     synth_ctx_t *ctx = ctx_;
+    if (cancel_requested(ctx->cancel, ctx->cancel_ctx)) return false;
     if (!ctx->first_sentence_seen)
     {
         ctx->ttfs = now_seconds() - ctx->t_prompt_sent;
@@ -145,9 +164,10 @@ static bool on_sentence(const char *sentence, const char *voice, void *ctx_)
     double t_sent = now_seconds();
     uint8_t *wav = NULL;
     size_t wav_len = 0;
-    if (!http_tts(ctx->tts_url, chosen_voice, sentence, &wav, &wav_len, TTS_TIMEOUT_MS))
+    if (!http_tts(ctx->tts_url, chosen_voice, sentence, &wav, &wav_len, TTS_TIMEOUT_MS,
+                  ctx->cancel, ctx->cancel_ctx))
     {
-        return true;   // one bad sentence isn't fatal to the turn; keep going
+        return !cancel_requested(ctx->cancel, ctx->cancel_ctx);
     }
 
     wav_pcm16_t pcm;
@@ -173,7 +193,8 @@ static void *synth_worker(void *arg)
 {
     synth_ctx_t *ctx = arg;
     ctx->t_prompt_sent = now_seconds();
-    http_respond_stream(ctx->shim_url, ctx->session, ctx->text, on_sentence, ctx, RESPOND_TIMEOUT_MS);
+    http_respond_stream(ctx->shim_url, ctx->session, ctx->text, on_sentence, ctx, RESPOND_TIMEOUT_MS,
+                        ctx->cancel, ctx->cancel_ctx);
     pb_queue_finish(ctx->queue);
     return NULL;
 }
@@ -262,6 +283,17 @@ int main(int argc, char **argv)
     printf("Ctrl-C to quit.\n");
     fflush(stdout);
 
+    // Deliberately no SA_RESTART: a Ctrl-C during either "press Enter" wait in
+    // audio_record_utterance() needs the blocked getchar() to unblock immediately (via EINTR)
+    // rather than transparently resuming the read as if nothing happened.
+    struct sigaction sa = { .sa_handler = handle_sigint, .sa_flags = 0 };
+    sigemptyset(&sa.sa_mask);
+    if (sigaction(SIGINT, &sa, NULL) != 0)
+    {
+        perror("sigaction(SIGINT)");
+        return 1;
+    }
+
     http_global_init();
     if (!audio_init())
     {
@@ -269,23 +301,31 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    http_reset(shim_url, args.session, RESET_TIMEOUT_MS);
+    http_reset(shim_url, args.session, RESET_TIMEOUT_MS, interrupted, &g_interrupted);
 
     for (;;)
     {
+        if (g_interrupted) break;   // Ctrl-C arrived during the previous turn's network activity
+                                     // rather than a keypress wait -- don't start another one
+
         size_t rec_count = 0;
-        int16_t *rec = audio_record_utterance(&rec_count);
+        int16_t *rec = NULL;
+        audio_record_result_t record_result = audio_record_utterance(
+            &rec, &rec_count, interrupted, &g_interrupted);
         double t_end = now_seconds();
-        if (!rec)
+        if (record_result != AUDIO_RECORD_OK)
         {
-            if (feof(stdin)) break;   // stdin closed (e.g. piped/non-interactive) -- stop spinning
+            if (record_result == AUDIO_RECORD_INTERRUPTED) break;
+            if (feof(stdin)) break;     // stdin closed (e.g. piped/non-interactive) -- stop spinning
             continue;
         }
 
         char text[2048];
-        bool stt_ok = http_stt(stt_url, rec, rec_count, AUDIO_SAMPLE_RATE, text, sizeof text, STT_TIMEOUT_MS);
+        bool stt_ok = http_stt(stt_url, rec, rec_count, AUDIO_SAMPLE_RATE, text, sizeof text, STT_TIMEOUT_MS,
+                               interrupted, &g_interrupted);
         free(rec);
         double t_stt = now_seconds();
+        if (g_interrupted) break;
         if (!stt_ok || text[0] == '\0')
         {
             printf("  (heard nothing)\n");
@@ -302,6 +342,8 @@ int main(int argc, char **argv)
             .shim_url = shim_url,
             .session = args.session,
             .text = text,
+            .cancel = interrupted,
+            .cancel_ctx = &g_interrupted,
         };
 
         pthread_t worker;
@@ -319,7 +361,7 @@ int main(int argc, char **argv)
             }
             double t_play = now_seconds();
             printf("  \U0001F41F %s  (sent→audio %.2fs)\n", item->sentence, t_play - item->t_sent);
-            audio_play(item->audio, item->count, item->sample_rate);
+            audio_play(item->audio, item->count, item->sample_rate, interrupted, &g_interrupted);
             free(item->sentence);
             free(item->audio);
             free(item);
@@ -332,6 +374,11 @@ int main(int argc, char **argv)
                t_stt - t_end, ttfs, t_first_audio - t_end);
     }
 
+    if (g_interrupted)
+    {
+        printf("\nbye \U0001F41F\n");
+        fflush(stdout);
+    }
     audio_shutdown();
     http_global_cleanup();
     return 0;
