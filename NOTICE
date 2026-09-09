@@ -1,0 +1,15 @@
+Billy source code and documentation are licensed under Apache License 2.0; see LICENSE.
+
+Excluded asset
+--------------
+
+src/firmware/components/wakeword/models/hey_billy.tflite is not licensed under
+Apache License 2.0. It is a trained model whose training-data provenance does not
+establish Apache-compatible redistribution rights. Do not treat LICENSE as a grant
+of rights to that file. See src/firmware/components/wakeword/models/ATTRIBUTION.md
+for the recorded training provenance.
+
+Third-party dependencies are not vendored in this repository. Their licenses apply
+when they are fetched, linked, or redistributed; in particular, retain all required
+notices for ESP-IDF/TensorFlow Lite Micro and comply with libsoxr's LGPL obligations
+when distributing the C CLI with that library.

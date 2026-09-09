@@ -259,3 +259,12 @@ systemd (`Restart=always`, enabled at boot):
 | Kokoro (Kokoro-FastAPI) | 8880 | voice `am_onyx` | yes |
 
 All three plus the shim are expected to fit resident in ~14GB of VRAM.
+
+---
+
+## License
+
+Source code and documentation are licensed under [Apache License 2.0](LICENSE). The
+trained wake-word model `src/firmware/components/wakeword/models/hey_billy.tflite` is
+explicitly excluded; see [NOTICE](NOTICE) and its
+[`ATTRIBUTION.md`](src/firmware/components/wakeword/models/ATTRIBUTION.md).
