@@ -4527,9 +4527,13 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Mechanical:MountingHole"
+		(symbol "Mechanical:MountingHole_Pad"
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 1.016)
+				(hide yes)
 			)
 			(exclude_from_sim no)
 			(in_bom no)
@@ -4537,7 +4541,7 @@
 			(in_pos_files yes)
 			(duplicate_pin_numbers_are_jumpers no)
 			(property "Reference" "H"
-				(at 0 5.08 0)
+				(at 0 6.35 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
@@ -4546,8 +4550,8 @@
 					)
 				)
 			)
-			(property "Value" "MountingHole"
-				(at 0 3.175 0)
+			(property "Value" "MountingHole_Pad"
+				(at 0 4.445 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
@@ -4578,7 +4582,7 @@
 					)
 				)
 			)
-			(property "Description" "Mounting Hole without connection"
+			(property "Description" "Mounting Hole with connection"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -4600,7 +4604,7 @@
 					)
 				)
 			)
-			(property "ki_fp_filters" "MountingHole*"
+			(property "ki_fp_filters" "MountingHole*Pad*"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -4611,9 +4615,9 @@
 					)
 				)
 			)
-			(symbol "MountingHole_0_1"
+			(symbol "MountingHole_Pad_0_1"
 				(circle
-					(center 0 0)
+					(center 0 1.27)
 					(radius 1.27)
 					(stroke
 						(width 1.27)
@@ -4621,6 +4625,26 @@
 					)
 					(fill
 						(type none)
+					)
+				)
+			)
+			(symbol "MountingHole_Pad_1_1"
+				(pin input line
+					(at 0 -2.54 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
 					)
 				)
 			)
@@ -8303,6 +8327,12 @@
 		(uuid "055b769d-fa40-4212-8316-06f96551527c")
 	)
 	(junction
+		(at 397.51 40.64)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0630c1e9-4458-4628-b838-d24a90cbe554")
+	)
+	(junction
 		(at 345.44 163.83)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8313,6 +8343,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "0cb0a6e1-9126-47a7-b2c2-12bdb8c5eaa1")
+	)
+	(junction
+		(at 397.51 48.26)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0daf84d7-bf3c-414e-96df-06b68a6e2684")
 	)
 	(junction
 		(at 271.78 49.53)
@@ -8349,6 +8385,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "1668cf7d-67d6-4777-8a30-fa8ac74d5bca")
+	)
+	(junction
+		(at 397.51 55.88)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "1828e060-5958-4993-9f2e-a561fa7ff619")
 	)
 	(junction
 		(at 171.45 137.16)
@@ -8445,12 +8487,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "56e79a23-13c5-4430-ad4b-a8c17b57c648")
-	)
-	(junction
-		(at 209.55 218.44)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "57421d7a-06c6-47a7-ab03-9de0d78de930")
 	)
 	(junction
 		(at 229.87 203.2)
@@ -8669,12 +8705,6 @@
 		(uuid "c3616743-a497-4e55-a7ad-c225e81abd05")
 	)
 	(junction
-		(at 270.51 233.68)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "caffd6fa-7f3c-4a71-93de-ca82f1a88614")
-	)
-	(junction
 		(at 365.76 209.55)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8799,12 +8829,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f5eabef2-803a-4e02-950d-3d885d626a27")
-	)
-	(junction
-		(at 77.47 203.2)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f7455989-197d-4be3-9de2-aade6d2c9115")
 	)
 	(junction
 		(at 363.22 93.98)
@@ -9968,6 +9992,16 @@
 	)
 	(wire
 		(pts
+			(xy 397.51 48.26) (xy 397.51 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "642eadff-515b-4f1a-bbc5-65a745abb2d5")
+	)
+	(wire
+		(pts
 			(xy 58.42 127) (xy 58.42 129.54)
 		)
 		(stroke
@@ -10218,7 +10252,7 @@
 	)
 	(wire
 		(pts
-			(xy 209.55 218.44) (xy 203.2 218.44)
+			(xy 203.2 218.44) (xy 215.9 218.44)
 		)
 		(stroke
 			(width 0)
@@ -10318,7 +10352,7 @@
 	)
 	(wire
 		(pts
-			(xy 77.47 203.2) (xy 82.55 203.2)
+			(xy 72.39 203.2) (xy 82.55 203.2)
 		)
 		(stroke
 			(width 0)
@@ -10455,16 +10489,6 @@
 			(type default)
 		)
 		(uuid "9471b3f5-c482-4ce7-af06-84c7eab2abd8")
-	)
-	(wire
-		(pts
-			(xy 209.55 218.44) (xy 215.9 218.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "966c41f9-5df3-47ea-b675-bcbe975ba977")
 	)
 	(wire
 		(pts
@@ -10718,6 +10742,16 @@
 	)
 	(wire
 		(pts
+			(xy 397.51 40.64) (xy 397.51 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ab388f19-f35e-4221-a453-103465b80ad3")
+	)
+	(wire
+		(pts
 			(xy 82.55 203.2) (xy 87.63 203.2)
 		)
 		(stroke
@@ -10738,16 +10772,6 @@
 	)
 	(wire
 		(pts
-			(xy 254 233.68) (xy 270.51 233.68)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ae8e8530-21c0-492d-8101-ca015223a410")
-	)
-	(wire
-		(pts
 			(xy 340.36 110.49) (xy 345.44 110.49)
 		)
 		(stroke
@@ -10755,6 +10779,16 @@
 			(type default)
 		)
 		(uuid "af75b9f3-bed3-40cd-a179-2bd3702521f8")
+	)
+	(wire
+		(pts
+			(xy 397.51 33.02) (xy 397.51 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "afec21ae-a9ee-45eb-acfd-f795c36e2538")
 	)
 	(wire
 		(pts
@@ -11138,6 +11172,16 @@
 	)
 	(wire
 		(pts
+			(xy 397.51 55.88) (xy 397.51 59.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d70e360c-f9b5-437c-9177-07327b025473")
+	)
+	(wire
+		(pts
 			(xy 171.45 173.99) (xy 185.42 173.99)
 		)
 		(stroke
@@ -11245,16 +11289,6 @@
 			(type default)
 		)
 		(uuid "e0a0fec0-b481-415c-8b5b-a232d071c4c2")
-	)
-	(wire
-		(pts
-			(xy 72.39 203.2) (xy 77.47 203.2)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e1dc0112-bfba-4f4e-8f3b-0565f8418cc8")
 	)
 	(wire
 		(pts
@@ -11428,7 +11462,7 @@
 	)
 	(wire
 		(pts
-			(xy 270.51 233.68) (xy 287.02 233.68)
+			(xy 254 233.68) (xy 287.02 233.68)
 		)
 		(stroke
 			(width 0)
@@ -13339,40 +13373,38 @@
 		)
 	)
 	(symbol
-		(lib_id "Mechanical:MountingHole")
-		(at 394.97 48.26 0)
+		(lib_id "Mechanical:MountingHole_Pad")
+		(at 394.97 48.26 90)
 		(unit 1)
 		(body_style 1)
-		(exclude_from_sim yes)
+		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(in_pos_files no)
+		(in_pos_files yes)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "03acb4d3-c846-485c-a386-42fc7342c86f")
 		(property "Reference" "H3"
-			(at 397.51 46.9899 0)
+			(at 393.7 41.91 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "MountingHole"
-			(at 397.51 49.5299 0)
+			(at 393.7 44.45 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380_Pad"
 			(at 394.97 48.26 0)
 			(hide yes)
 			(show_name no)
@@ -13394,7 +13426,7 @@
 				)
 			)
 		)
-		(property "Description" "Mounting Hole without connection"
+		(property "Description" "Mounting Hole with connection"
 			(at 394.97 48.26 0)
 			(hide yes)
 			(show_name no)
@@ -13470,6 +13502,9 @@
 					(size 1.27 1.27)
 				)
 			)
+		)
+		(pin "1"
+			(uuid "2075c4e4-340a-4694-bb9f-94cf9a4323a9")
 		)
 		(instances
 			(project "billy"
@@ -15101,6 +15136,84 @@
 			(project "billy"
 				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
 					(reference "#PWR031")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 397.51 59.69 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1676f278-5b29-42bc-9540-2a2143cfc6d0")
+		(property "Reference" "#PWR026"
+			(at 397.51 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 397.51 64.77 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 397.51 59.69 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 397.51 59.69 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 397.51 59.69 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ad699d0a-4f3c-484a-ba0d-ef89252ea201")
+		)
+		(instances
+			(project "billy"
+				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
+					(reference "#PWR026")
 					(unit 1)
 				)
 			)
@@ -20925,139 +21038,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint")
-		(at 77.47 203.2 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(in_pos_files no)
-		(dnp no)
-		(uuid "69d16ced-1bd7-45c1-aa89-7d9942272b23")
-		(property "Reference" "TP5"
-			(at 78.994 200.152 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint"
-			(at 74.422 197.866 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_1.0x1.0mm"
-			(at 82.55 203.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 82.55 203.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "test point"
-			(at 77.47 203.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
-			(at 77.47 203.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MF" ""
-			(at 77.47 203.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MP" ""
-			(at 77.47 203.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser Part" ""
-			(at 77.47 203.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Attributes" ""
-			(at 77.47 203.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "de1354f5-be7a-4ff9-bb82-2c7eece48d6e")
-		)
-		(instances
-			(project "billy"
-				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
-					(reference "TP5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Connector:Screw_Terminal_01x02")
 		(at 118.11 147.32 0)
 		(unit 1)
@@ -23316,7 +23296,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-123"
+		(property "Footprint" "Diode_SMD:D_SOD-323"
 			(at 220.98 210.82 0)
 			(hide yes)
 			(show_name no)
@@ -24539,40 +24519,38 @@
 		)
 	)
 	(symbol
-		(lib_id "Mechanical:MountingHole")
-		(at 394.97 55.88 0)
+		(lib_id "Mechanical:MountingHole_Pad")
+		(at 394.97 55.88 90)
 		(unit 1)
 		(body_style 1)
-		(exclude_from_sim yes)
+		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(in_pos_files no)
+		(in_pos_files yes)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a17fed32-2460-49ae-ae25-5e520133f735")
 		(property "Reference" "H4"
-			(at 397.51 54.6099 0)
+			(at 393.7 49.53 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "MountingHole"
-			(at 397.51 57.1499 0)
+			(at 393.7 52.07 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380_Pad"
 			(at 394.97 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -24594,7 +24572,7 @@
 				)
 			)
 		)
-		(property "Description" "Mounting Hole without connection"
+		(property "Description" "Mounting Hole with connection"
 			(at 394.97 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -24670,6 +24648,9 @@
 					(size 1.27 1.27)
 				)
 			)
+		)
+		(pin "1"
+			(uuid "f784349a-f3a1-4d68-8ebb-30c6b5287d9e")
 		)
 		(instances
 			(project "billy"
@@ -24681,40 +24662,38 @@
 		)
 	)
 	(symbol
-		(lib_id "Mechanical:MountingHole")
-		(at 394.97 40.64 0)
+		(lib_id "Mechanical:MountingHole_Pad")
+		(at 394.97 40.64 90)
 		(unit 1)
 		(body_style 1)
-		(exclude_from_sim yes)
+		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(in_pos_files no)
+		(in_pos_files yes)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a2600d5e-e6a2-4bec-989a-113ceae55f30")
 		(property "Reference" "H2"
-			(at 397.51 39.3699 0)
+			(at 393.7 34.29 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "MountingHole"
-			(at 397.51 41.9099 0)
+			(at 393.7 36.83 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380_Pad"
 			(at 394.97 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -24736,7 +24715,7 @@
 				)
 			)
 		)
-		(property "Description" "Mounting Hole without connection"
+		(property "Description" "Mounting Hole with connection"
 			(at 394.97 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -24812,6 +24791,9 @@
 					(size 1.27 1.27)
 				)
 			)
+		)
+		(pin "1"
+			(uuid "51b93de4-a05d-4870-8942-b804200ec617")
 		)
 		(instances
 			(project "billy"
@@ -25762,139 +25744,6 @@
 			(project "billy"
 				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
 					(reference "#FLG08")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint")
-		(at 209.55 218.44 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(in_pos_files no)
-		(dnp no)
-		(uuid "b2b94203-c815-4312-a4dc-4c8d671e07f7")
-		(property "Reference" "TP6"
-			(at 204.978 218.44 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint"
-			(at 205.232 212.852 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_1.0x1.0mm"
-			(at 214.63 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 214.63 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "test point"
-			(at 209.55 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
-			(at 209.55 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MF" ""
-			(at 209.55 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MP" ""
-			(at 209.55 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser Part" ""
-			(at 209.55 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Attributes" ""
-			(at 209.55 218.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "fae3ac64-0e61-4b36-a841-90bbbd55d9db")
-		)
-		(instances
-			(project "billy"
-				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
-					(reference "TP6")
 					(unit 1)
 				)
 			)
@@ -27449,139 +27298,6 @@
 			(project "billy"
 				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
 					(reference "C16")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint")
-		(at 270.51 233.68 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(in_pos_files no)
-		(dnp no)
-		(uuid "c9d807a5-e3b9-4ad5-9b2e-232ef49e97f0")
-		(property "Reference" "TP3"
-			(at 265.938 233.68 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint"
-			(at 267.462 228.346 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Keystone_5010-5014_Multipurpose"
-			(at 275.59 233.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 275.59 233.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "test point"
-			(at 270.51 233.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "DigiKey Part" ""
-			(at 270.51 233.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MF" ""
-			(at 270.51 233.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser MP" ""
-			(at 270.51 233.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Mouser Part" ""
-			(at 270.51 233.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Attributes" ""
-			(at 270.51 233.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "975af5bb-e52e-4bc9-a5cb-69b322408e6a")
-		)
-		(instances
-			(project "billy"
-				(path "/bea121ec-f0fe-44e6-bdd2-ce74eb787ff8"
-					(reference "TP3")
 					(unit 1)
 				)
 			)
@@ -31258,40 +30974,38 @@
 		)
 	)
 	(symbol
-		(lib_id "Mechanical:MountingHole")
-		(at 394.97 33.02 0)
+		(lib_id "Mechanical:MountingHole_Pad")
+		(at 394.97 33.02 90)
 		(unit 1)
 		(body_style 1)
-		(exclude_from_sim yes)
+		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(in_pos_files no)
+		(in_pos_files yes)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fb299d49-f3e1-49e5-af5a-cccc50738c7f")
 		(property "Reference" "H1"
-			(at 397.51 31.7499 0)
+			(at 393.7 26.67 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "MountingHole"
-			(at 397.51 34.2899 0)
+			(at 393.7 29.21 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380_Pad"
 			(at 394.97 33.02 0)
 			(hide yes)
 			(show_name no)
@@ -31313,7 +31027,7 @@
 				)
 			)
 		)
-		(property "Description" "Mounting Hole without connection"
+		(property "Description" "Mounting Hole with connection"
 			(at 394.97 33.02 0)
 			(hide yes)
 			(show_name no)
@@ -31389,6 +31103,9 @@
 					(size 1.27 1.27)
 				)
 			)
+		)
+		(pin "1"
+			(uuid "ec22a5a6-2d54-4a50-8ec5-61477dd9bd55")
 		)
 		(instances
 			(project "billy"
