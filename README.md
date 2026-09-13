@@ -1,7 +1,7 @@
-# Smart Mouth Billy Bass LLM voice assistant
+# Smart Mouth Billy Bass LLM jokester
 
 Billy is a Big Mouth Billy Bass novelty toy converted into an **offline, LAN-only** voice
-assistant. An ESP32-S3 inside the fish captures speech, drives the motors, and plays back
+jokester. An ESP32-S3 inside the fish captures speech, drives the motors, and plays back
 audio; a separate GPU box does speech-to-text, LLM inference, and text-to-speech. There is no
 internet dependency anywhere in the pipeline.
 
@@ -40,11 +40,6 @@ the shim, which is a text-only service that never touches audio. The shim stream
 the LLM generates them, so the caller can synthesize and play sentence 1 while sentence 2 is
 still being generated — this pipelining is what keeps time-to-first-audio low.
 
-**`language=auto` on the STT call is required.** whisper.cpp's server defaults each request to its launch-time `-l` flag (`en` on this deployment); decoding non-English audio as English silently produces an English *translation* instead of a transcript.
-
-**`language` on `/v1/respond`** is whisper's `detected_language` (a lowercase English name, e.g.
-`"spanish"`), forwarded as-is by the client.
-
 There are three implementations of this protocol, and they should be indentical: the reference clients
 `src/client/billy_cli.py` (Python) and `src/cli/` (C), and the ESP32 firmware
 (`src/firmware/main/net.c`). The CLIs exist to document the protocol the firmware has to match —
@@ -68,7 +63,7 @@ host build; it turned out to be all of it.
 ## `board/` — Custom PCB
 
 KiCad project at `board/billy/`. Replaces the toy's stock control board with a single board
-carrying the ESP32-S3, motor drivers, amp, buck regulator, and power-input protection —
+carrying the ESP32-S3, motor drivers, amp, buck regulator, and power-input protection,
 designed to fit inside the original toy's chassis (~70×50mm).
 
 | Part | Role |
