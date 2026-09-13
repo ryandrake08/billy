@@ -31,10 +31,12 @@ and the overall end-of-speech -> first-audio figure, to validate the ~2 s target
 Usage:
   pip install -r requirements.txt
   ./billy_cli.py --host <backend-host>     # ports: shim :8000, STT :8081, TTS :8880
+  ./billy_cli.py --host <backend-host> --input-wav utterance.wav   # one turn, then exit
 """
 import argparse
 import io
 import json
+import pathlib
 import queue
 import sys
 import threading
@@ -99,7 +101,10 @@ def transcribe(client, stt_url, wav_bytes):
     response_format=verbose_json adds "detected_language" (a lowercase English name, e.g.
     "spanish") over plain "json"'s bare {"text": ...}."""
     files = {"file": ("rec.wav", wav_bytes, "audio/wav")}
-    data = {"response_format": "verbose_json", "temperature": "0.0"}
+    # language=auto is required: whisper.cpp's server defaults each request to its launch-time
+    # -l flag (this deployment: "en"), and decoding non-English audio as English silently produces
+    # an English *translation* instead of a transcript.
+    data = {"response_format": "verbose_json", "temperature": "0.0", "language": "auto"}
     r = client.post(f"{stt_url}/inference", files=files, data=data, timeout=60)
     r.raise_for_status()
     body = r.json()
@@ -190,6 +195,30 @@ def speak_turn(client, tts_url, voice_override, sentence_iter, on_first_audio):
     worker.join()
 
 
+def run_turn(client, shim_url, stt_url, tts_url, session, voice_override, wav_bytes):
+    """One full turn: STT -> shim -> TTS -> playback, printing the transcript and latencies.
+    Shared by the interactive mic loop and --input-wav's single-shot mode."""
+    t_end = time.time()
+
+    text, language = transcribe(client, stt_url, wav_bytes)
+    t_stt = time.time()
+    if not text:
+        print("  (heard nothing)")
+        return
+    print(f"  🗣  {text}  [{language}]")
+
+    first_audio = {}
+    ttfs = {}
+    sentences = stream_billy(client, shim_url, session, text, language,
+                              on_first_sentence=lambda dt: ttfs.setdefault("dt", dt))
+    speak_turn(client, tts_url, voice_override, sentences,
+               lambda: first_audio.setdefault("t", time.time()))
+
+    t_first = first_audio.get("t", time.time())
+    print(f"  ⏱  STT {t_stt - t_end:.2f}s · LLM ttfs {ttfs.get('dt', float('nan')):.2f}s"
+          f" · end→first-audio {t_first - t_end:.2f}s")
+
+
 def main():
     ap = argparse.ArgumentParser(description="Billy Bass CLI reference client")
     ap.add_argument("--host", default=None,
@@ -201,6 +230,10 @@ def main():
                     help="override the shim's per-sentence voice choice for the whole session "
                          "(Kokoro: see /web UI for the list); omit to use whatever the shim sends")
     ap.add_argument("--session", default="default", help="shim conversation id")
+    ap.add_argument("--input-wav", default=None, metavar="PATH",
+                     help="skip the mic: run one turn on this WAV file's bytes (16 kHz mono, "
+                          "matching what the mic path itself records) and exit -- for replaying "
+                          "the same utterance repeatedly instead of speaking it fresh each time")
     args = ap.parse_args()
 
     shim_url = args.shim_url or (f"http://{args.host}:8000" if args.host else None)
@@ -212,34 +245,21 @@ def main():
 
     voice_note = f"voice override {args.voice}" if args.voice else f"shim-chosen voice (fallback {DEFAULT_VOICE})"
     print(f"Billy CLI — shim {shim_url} · STT {stt_url} · TTS {tts_url} · {voice_note}")
-    print("Ctrl-C to quit.")
 
     client = httpx.Client()
     reset_session(client, shim_url, args.session)
     try:
+        if args.input_wav:
+            wav = pathlib.Path(args.input_wav).read_bytes()
+            run_turn(client, shim_url, stt_url, tts_url, args.session, args.voice, wav)
+            return
+
+        print("Ctrl-C to quit.")
         while True:
             wav = record_utterance()
             if not wav:
                 continue
-            t_end = time.time()
-
-            text, language = transcribe(client, stt_url, wav)
-            t_stt = time.time()
-            if not text:
-                print("  (heard nothing)")
-                continue
-            print(f"  🗣  {text}  [{language}]")
-
-            first_audio = {}
-            ttfs = {}
-            sentences = stream_billy(client, shim_url, args.session, text, language,
-                                      on_first_sentence=lambda dt: ttfs.setdefault("dt", dt))
-            speak_turn(client, tts_url, args.voice, sentences,
-                       lambda: first_audio.setdefault("t", time.time()))
-
-            t_first = first_audio.get("t", time.time())
-            print(f"  ⏱  STT {t_stt - t_end:.2f}s · LLM ttfs {ttfs.get('dt', float('nan')):.2f}s"
-                  f" · end→first-audio {t_first - t_end:.2f}s")
+            run_turn(client, shim_url, stt_url, tts_url, args.session, args.voice, wav)
     except KeyboardInterrupt:
         print("\nbye 🐟")
     finally:

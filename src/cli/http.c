@@ -89,6 +89,12 @@ bool http_stt(const char *stt_url, const int16_t *pcm, size_t nsamples, uint32_t
     curl_mime_name(part, "response_format");
     curl_mime_data(part, "verbose_json", CURL_ZERO_TERMINATED);
 
+    // whisper.cpp's server defaults each request to its launch-time -l flag, and decoding non-English
+    // audio as English silently produces an English *translation* instead of a transcript.
+    part = curl_mime_addpart(mime);
+    curl_mime_name(part, "language");
+    curl_mime_data(part, "auto", CURL_ZERO_TERMINATED);
+
     char url[256];
     snprintf(url, sizeof url, "%s/inference", stt_url);
 

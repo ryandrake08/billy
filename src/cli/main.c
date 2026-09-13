@@ -200,6 +200,88 @@ static void *synth_worker(void *arg)
     return NULL;
 }
 
+// One full turn: STT -> shim (streamed) -> TTS per sentence -> play, printing the transcript and
+// latencies. Shared by the interactive mic loop and --input-wav's single-shot mode; `pcm` is
+// already-captured audio either way (a mic recording or a parsed WAV file), so this starts at STT.
+static void run_turn(const char *shim_url, const char *stt_url, const char *tts_url,
+                      const char *session, const char *voice_override,
+                      const int16_t *pcm, size_t count, uint32_t sample_rate)
+{
+    double t_end = now_seconds();
+
+    char text[2048];
+    char language[64];
+    bool stt_ok = http_stt(stt_url, pcm, count, sample_rate, text, sizeof text,
+                           language, sizeof language, STT_TIMEOUT_MS,
+                           interrupted, &g_interrupted);
+    double t_stt = now_seconds();
+    if (g_interrupted) return;
+    if (!stt_ok || text[0] == '\0')
+    {
+        printf("  (heard nothing)\n");
+        return;
+    }
+    printf("  \U0001F5E3  %s  [%s]\n", text, language);
+
+    pb_queue_t queue;
+    pb_queue_init(&queue);
+    synth_ctx_t ctx = {
+        .tts_url = tts_url,
+        .voice_override = voice_override,
+        .queue = &queue,
+        .shim_url = shim_url,
+        .session = session,
+        .text = text,
+        .language = language,
+        .cancel = interrupted,
+        .cancel_ctx = &g_interrupted,
+    };
+
+    pthread_t worker;
+    pthread_create(&worker, NULL, synth_worker, &ctx);
+
+    bool first = true;
+    double t_first_audio = t_end;
+    pb_item_t *item;
+    while ((item = pb_queue_pop(&queue)) != NULL)
+    {
+        if (first)
+        {
+            t_first_audio = now_seconds();
+            first = false;
+        }
+        double t_play = now_seconds();
+        printf("  \U0001F41F %s  (sent→audio %.2fs)\n", item->sentence, t_play - item->t_sent);
+        audio_play(item->audio, item->count, item->sample_rate, interrupted, &g_interrupted);
+        free(item->sentence);
+        free(item->audio);
+        free(item);
+    }
+    pthread_join(worker, NULL);
+    pb_queue_destroy(&queue);
+
+    double ttfs = ctx.first_sentence_seen ? ctx.ttfs : NAN;
+    printf("  ⏱  STT %.2fs · LLM ttfs %.2fs · end→first-audio %.2fs\n",
+           t_stt - t_end, ttfs, t_first_audio - t_end);
+}
+
+// Reads a whole file into a malloc'd buffer (caller frees). Returns NULL on any error.
+static uint8_t *read_file(const char *path, size_t *out_len)
+{
+    FILE *f = fopen(path, "rb");
+    if (!f) return NULL;
+    if (fseek(f, 0, SEEK_END) != 0) { fclose(f); return NULL; }
+    long len = ftell(f);
+    if (len < 0 || fseek(f, 0, SEEK_SET) != 0) { fclose(f); return NULL; }
+    uint8_t *buf = malloc((size_t) len);
+    if (!buf) { fclose(f); return NULL; }
+    size_t rd = fread(buf, 1, (size_t) len, f);
+    fclose(f);
+    if (rd != (size_t) len) { free(buf); return NULL; }
+    *out_len = (size_t) len;
+    return buf;
+}
+
 // --- CLI args -------------------------------------------------------------------------------
 
 typedef struct
@@ -210,6 +292,7 @@ typedef struct
     const char *tts_url;
     const char *voice;
     const char *session;
+    const char *input_wav;
 } cli_args_t;
 
 static void print_usage(const char *prog)
@@ -223,7 +306,10 @@ static void print_usage(const char *prog)
         "  --stt-url <url>        override\n"
         "  --tts-url <url>        override\n"
         "  --voice <voice>        override the shim's per-sentence voice for the whole session\n"
-        "  --session <id>         shim conversation id (default: \"default\")\n",
+        "  --session <id>         shim conversation id (default: \"default\")\n"
+        "  --input-wav <path>     skip the mic: run one turn on this WAV file (16 kHz mono,\n"
+        "                         matching what the mic path itself records) and exit --\n"
+        "                         for replaying the same utterance repeatedly\n",
         prog, prog);
 }
 
@@ -248,6 +334,7 @@ int main(int argc, char **argv)
         else if (!strcmp(argv[i], "--tts-url"))  args.tts_url = arg_value(argc, argv, &i);
         else if (!strcmp(argv[i], "--voice"))    args.voice = arg_value(argc, argv, &i);
         else if (!strcmp(argv[i], "--session"))  args.session = arg_value(argc, argv, &i);
+        else if (!strcmp(argv[i], "--input-wav")) args.input_wav = arg_value(argc, argv, &i);
         else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
         {
             print_usage(argv[0]);
@@ -281,7 +368,6 @@ int main(int argc, char **argv)
     if (args.voice) snprintf(voice_note, sizeof voice_note, "voice override %s", args.voice);
     else snprintf(voice_note, sizeof voice_note, "shim-chosen voice (fallback %s)", DEFAULT_VOICE);
     printf("Billy CLI -- shim %s · STT %s · TTS %s · %s\n", shim_url, stt_url, tts_url, voice_note);
-    printf("Ctrl-C to quit.\n");
     fflush(stdout);
 
     // Deliberately no SA_RESTART: a Ctrl-C during either "press Enter" wait in
@@ -304,6 +390,38 @@ int main(int argc, char **argv)
 
     http_reset(shim_url, args.session, RESET_TIMEOUT_MS, interrupted, &g_interrupted);
 
+    if (args.input_wav)
+    {
+        size_t file_len = 0;
+        uint8_t *file_buf = read_file(args.input_wav, &file_len);
+        if (!file_buf)
+        {
+            fprintf(stderr, "%s: couldn't read %s\n", argv[0], args.input_wav);
+            audio_shutdown();
+            http_global_cleanup();
+            return 1;
+        }
+        wav_pcm16_t pcm;
+        bool parsed = wav_parse_pcm16(file_buf, file_len, &pcm);
+        free(file_buf);
+        if (!parsed)
+        {
+            fprintf(stderr, "%s: %s is not a supported PCM16 WAV\n", argv[0], args.input_wav);
+            audio_shutdown();
+            http_global_cleanup();
+            return 1;
+        }
+        run_turn(shim_url, stt_url, tts_url, args.session, args.voice,
+                 pcm.samples, pcm.count, pcm.sample_rate);
+        free(pcm.samples);
+        audio_shutdown();
+        http_global_cleanup();
+        return 0;
+    }
+
+    printf("Ctrl-C to quit.\n");
+    fflush(stdout);
+
     for (;;)
     {
         if (g_interrupted) break;   // Ctrl-C arrived during the previous turn's network activity
@@ -313,7 +431,6 @@ int main(int argc, char **argv)
         int16_t *rec = NULL;
         audio_record_result_t record_result = audio_record_utterance(
             &rec, &rec_count, interrupted, &g_interrupted);
-        double t_end = now_seconds();
         if (record_result != AUDIO_RECORD_OK)
         {
             if (record_result == AUDIO_RECORD_INTERRUPTED) break;
@@ -321,61 +438,9 @@ int main(int argc, char **argv)
             continue;
         }
 
-        char text[2048];
-        char language[64];
-        bool stt_ok = http_stt(stt_url, rec, rec_count, AUDIO_SAMPLE_RATE, text, sizeof text,
-                               language, sizeof language, STT_TIMEOUT_MS,
-                               interrupted, &g_interrupted);
+        run_turn(shim_url, stt_url, tts_url, args.session, args.voice,
+                 rec, rec_count, AUDIO_SAMPLE_RATE);
         free(rec);
-        double t_stt = now_seconds();
-        if (g_interrupted) break;
-        if (!stt_ok || text[0] == '\0')
-        {
-            printf("  (heard nothing)\n");
-            continue;
-        }
-        printf("  \U0001F5E3  %s  [%s]\n", text, language);
-
-        pb_queue_t queue;
-        pb_queue_init(&queue);
-        synth_ctx_t ctx = {
-            .tts_url = tts_url,
-            .voice_override = args.voice,
-            .queue = &queue,
-            .shim_url = shim_url,
-            .session = args.session,
-            .text = text,
-            .language = language,
-            .cancel = interrupted,
-            .cancel_ctx = &g_interrupted,
-        };
-
-        pthread_t worker;
-        pthread_create(&worker, NULL, synth_worker, &ctx);
-
-        bool first = true;
-        double t_first_audio = t_end;
-        pb_item_t *item;
-        while ((item = pb_queue_pop(&queue)) != NULL)
-        {
-            if (first)
-            {
-                t_first_audio = now_seconds();
-                first = false;
-            }
-            double t_play = now_seconds();
-            printf("  \U0001F41F %s  (sent→audio %.2fs)\n", item->sentence, t_play - item->t_sent);
-            audio_play(item->audio, item->count, item->sample_rate, interrupted, &g_interrupted);
-            free(item->sentence);
-            free(item->audio);
-            free(item);
-        }
-        pthread_join(worker, NULL);
-        pb_queue_destroy(&queue);
-
-        double ttfs = ctx.first_sentence_seen ? ctx.ttfs : NAN;
-        printf("  ⏱  STT %.2fs · LLM ttfs %.2fs · end→first-audio %.2fs\n",
-               t_stt - t_end, ttfs, t_first_audio - t_end);
     }
 
     if (g_interrupted)

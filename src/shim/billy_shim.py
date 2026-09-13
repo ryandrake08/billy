@@ -119,7 +119,7 @@ def respond(req: RespondReq):
     sentence 1 while the LLM is still generating.
 
     `language` (whisper's detected_language on the caller's utterance) picks the turn's voice via
-    voice_for() and, only for a language Stage 5 has actually enabled, adds a one-turn "reply in
+    voice_for() and, only for a language that's actually enabled, adds a one-turn "reply in
     <language>" nudge -- kept out of the stored session history so it doesn't repeat every turn."""
     msgs = _session(req.session)
     msgs.append({"role": "user", "content": req.text})

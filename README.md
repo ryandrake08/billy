@@ -31,14 +31,19 @@ Three calls per conversational turn:
 
 | Call | Target | Request → Response |
 |---|---|---|
-| STT | whisper.cpp `:8081`, direct | `POST /inference` (multipart wav) → `{"text": ...}` |
-| brain | shim `:8000` | `POST /v1/respond` `{session, text}` → SSE stream of `{"sentence", "voice"}` |
+| STT | whisper.cpp `:8081`, direct | `POST /inference` (multipart wav, `response_format=verbose_json`, `language=auto`) → `{"text", "detected_language", ...}` |
+| brain | shim `:8000` | `POST /v1/respond` `{session, text, language}` → SSE stream of `{"sentence", "voice"}` |
 | TTS | Kokoro `:8880`, direct | `POST /v1/audio/speech` `{model, input, voice}` → wav bytes |
 
 STT and TTS are dumb audio↔text transforms called **directly**; only the brain hop goes through
 the shim, which is a text-only service that never touches audio. The shim streams sentences as
 the LLM generates them, so the caller can synthesize and play sentence 1 while sentence 2 is
 still being generated — this pipelining is what keeps time-to-first-audio low.
+
+**`language=auto` on the STT call is required.** whisper.cpp's server defaults each request to its launch-time `-l` flag (`en` on this deployment); decoding non-English audio as English silently produces an English *translation* instead of a transcript.
+
+**`language` on `/v1/respond`** is whisper's `detected_language` (a lowercase English name, e.g.
+`"spanish"`), forwarded as-is by the client.
 
 There are three implementations of this protocol, and they should be indentical: the reference clients
 `src/client/billy_cli.py` (Python) and `src/cli/` (C), and the ESP32 firmware
@@ -56,6 +61,7 @@ host build; it turned out to be all of it.
 | `src/shim/` | Backend application-logic layer (Python/FastAPI). |
 | `src/client/` | CLI reference client (Python) — a mic+speaker stand-in for the fish. |
 | `src/cli/` | CLI reference client (C) — built against libcurl/PortAudio/soxr. |
+| `src/tests/` | End-to-end integration test for the multi-language STT→shim→LLM pipeline. |
 
 ---
 
@@ -164,6 +170,9 @@ fish for it to stay a thin client:
 - **markdown/emoji scrubbing** — the LLM still emits stray formatting that TTS would mangle;
 - **sentence splitting + streaming** — emits clean sentences as they're ready so the caller can
   pipeline TTS for low first-audio latency;
+- **per-language voice routing** (`text.py`'s `LANGUAGE_VOICES`) — English (`am_onyx`) plus
+  Spanish, Brazilian Portuguese, Mandarin, Japanese, Hindi, and Italian, picked from the caller's
+  detected language and overridable per sentence for an explicit switch mid-reply;
 - **runtime firmware config** (`fish_config.py`) — tunable firmware constants served over
   `GET /v1/config`, so they can be retuned without a reflash.
 
@@ -171,7 +180,7 @@ fish for it to stay a thin client:
 
 | Call | Request | Response |
 |---|---|---|
-| `POST /v1/respond` | `{"session": "default", "text": "<user utterance>"}` | `text/event-stream`: one `data: {"sentence": ...}` per spoken sentence, then `data: [DONE]` |
+| `POST /v1/respond` | `{"session": "default", "text": "<user utterance>", "language": "english"}` | `text/event-stream`: one `data: {"sentence": ..., "voice": ...}` per spoken sentence, then `data: [DONE]` |
 | `POST /v1/reset` | `{"session": "default"}` | `{"reset": "<session>"}` |
 | `GET /v1/config` | — | Runtime firmware-tunable constants |
 | `GET /health` | — | `{status, llm_url, llm_model, llm_reachable, sessions}` |
@@ -217,6 +226,10 @@ Press **Enter** to start talking, speak, press **Enter** to stop. `Ctrl-C` quits
 choice. `--session <id>` sets the shim conversation id; `--shim-url`/`--stt-url`/`--tts-url`
 override individual endpoints. Uses the system default audio devices.
 
+`--input-wav <path>` skips the mic entirely: runs one turn on that WAV file's bytes (16 kHz mono,
+same as the mic path itself records) and exits — for testing the same utterance repeatedly
+without re-recording it by hand each time.
+
 Each turn prints various latency measurements.
 
 ---
@@ -247,6 +260,23 @@ software (soxr, `SOXR_HQ` quality).
 
 ---
 
+## `src/tests/` — end-to-end integration test
+
+Exercises the  STT→shim→LLM chain for every supported language. For each language, a
+"golden" WAV asking Billy to repeat a fixed phrase is transcribed by real whisper.cpp, then sent
+to a shim, checking the reply comes back in the right voice and language.
+
+```bash
+cd src/tests
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+./.venv/bin/python test_language_integration.py     # needs src/shim/.venv already set up
+```
+
+The golden WAVs in `golden/` are gitignored: `generate_golden.py` makes them with Microsoft's
+free `edge-tts`. The test does this itself the first time golden/ is missing a file.
+
+---
+
 ## Backend engines
 
 Three off-the-shelf inference engines run on the backend GPU host alongside the shim, all under
@@ -255,8 +285,8 @@ systemd (`Restart=always`, enabled at boot):
 | Service | Port | Model | GPU |
 |---|---|---|---|
 | llama.cpp | 8080 | Qwen3.5-9B, Q8_0, non-thinking mode | yes |
-| whisper.cpp | 8081 | `large-v3-turbo` | yes |
-| Kokoro (Kokoro-FastAPI) | 8880 | voice `am_onyx` | yes |
+| whisper.cpp | 8081 | `large-v3` | yes |
+| Kokoro (Kokoro-FastAPI) | 8880 | `am_onyx` + 6 other language voices (see `src/shim/`) | yes |
 
 All three plus the shim are expected to fit resident in ~14GB of VRAM.
 

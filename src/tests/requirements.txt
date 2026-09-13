@@ -1,0 +1,3 @@
+edge-tts
+httpx
+py3langid

@@ -22,6 +22,9 @@ build
 # Sample schematics
 board/tmp/
 
+# Test data generated via Microsoft's edge-tts (src/tests/generate_golden.py)
+src/tests/golden/*.wav
+
 # KiCad per-user/local state and backups -- not design data
 *.kicad_prl
 *.bak

@@ -52,25 +52,24 @@ PERSONA = (
 # no reflash.
 DEFAULT_VOICE = "am_onyx"
 
-# Per-language voice overrides (Stage 5 internationalization, .devdocs/IMPLEMENTATION_PLAN.md).
-# Keyed by whisper.cpp's "detected_language" value (a lowercase English name, e.g. "spanish" --
-# not an ISO code; that's the one flat string field whisper.cpp's verbose_json response already
-# gives us, so the client forwards it here unmodified). A language absent from this map --
-# including "english" -- speaks in DEFAULT_VOICE. French is deliberately absent -- Kokoro has no
-# male French voice, so it stays on DEFAULT_VOICE permanently.
+# Per-language voice overrides. Keyed by whisper.cpp's "detected_language" value (a lowercase
+# English name, e.g. "spanish" -- not an ISO code; that's the one flat string field whisper.cpp's
+# verbose_json response already gives us, so the client forwards it here unmodified). A language
+# absent from this map -- including "english" -- speaks in DEFAULT_VOICE. French is deliberately
+# absent -- Kokoro has no male French voice, so it stays on DEFAULT_VOICE permanently.
 LANGUAGE_VOICES: dict[str, str] = {
-    "spanish": "em_alex",       # Spanish (P1)
-    "portuguese": "pm_alex",    # Brazilian Portuguese (P1)
-    "chinese": "zm_yunjian",    # Mandarin (P1)
-    "japanese": "jm_kumo",      # Japanese (P2)
-    "hindi": "hm_omega",        # Hindi (P2)
-    "italian": "im_nicola",     # Italian (P2)
+    "spanish": "em_alex",
+    "portuguese": "pm_alex",
+    "chinese": "zm_yunjian",
+    "japanese": "jm_kumo",
+    "hindi": "hm_omega",
+    "italian": "im_nicola",
 }
 
 
 def voice_for(language):
     """TTS voice for a detected/requested language name. Falls back to DEFAULT_VOICE for
-    None, "english", or any language Stage 5 hasn't enabled a voice for yet."""
+    None, "english", or any language not enabled in LANGUAGE_VOICES."""
     if not language:
         return DEFAULT_VOICE
     return LANGUAGE_VOICES.get(language.lower(), DEFAULT_VOICE)
@@ -90,7 +89,7 @@ def language_instruction(language):
 
 
 # ISO 639-1 code -> the lowercase English name used everywhere else above (LANGUAGE_VOICES,
-# whisper's detected_language). Only the languages Stage 5 considers at all -- restricting
+# whisper's detected_language). Only the languages this shim considers at all -- restricting
 # py3langid to this small set (instead of its full ~97-language default) is what makes
 # one-sentence classification reliable; tested directly against short Billy-style sentences
 # before relying on it (unrestricted, even "Hello there, sport." misclassified).

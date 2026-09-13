@@ -316,10 +316,13 @@ esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len,
     int prelen = snprintf(pre, sizeof pre,
         "--%s\r\nContent-Disposition: form-data; name=\"file\"; filename=\"rec.wav\"\r\n"
         "Content-Type: audio/wav\r\n\r\n", BOUNDARY);
-    char post[288];
+    // whisper.cpp's server defaults each request to its launch-time -l flag, and decoding non-English
+    // audio as English silently produces an English *translation* instead of a transcript.
+    char post[384];
     int postlen = snprintf(post, sizeof post,
         "\r\n--%s\r\nContent-Disposition: form-data; name=\"response_format\"\r\n\r\nverbose_json\r\n"
-        "--%s--\r\n", BOUNDARY, BOUNDARY);
+        "--%s\r\nContent-Disposition: form-data; name=\"language\"\r\n\r\nauto\r\n"
+        "--%s--\r\n", BOUNDARY, BOUNDARY, BOUNDARY);
     uint8_t wav[44];
     wav_header(wav, audio->count, audio->sample_rate);
     size_t pcm_bytes = audio->count * sizeof(int16_t);
