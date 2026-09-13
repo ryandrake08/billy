@@ -8,7 +8,9 @@ It is a TEXT service: it never touches the audio streams. The client (CLI today,
 later) calls whisper (STT :8081) and Kokoro (TTS :8880) directly, and routes only the text/brain
 hop through here. Contract:
 
-  POST /v1/respond  {session, text}      -> text/event-stream of {"sentence", "voice"} then [DONE]
+  POST /v1/respond  {session, text, language}  -> text/event-stream of {"sentence", "voice"} then [DONE]
+                                             (language: whisper's detected_language, e.g. "english";
+                                              defaults to "english" if omitted)
   POST /v1/reset    {session}            -> {"reset": <session>}
   GET  /v1/config                        -> firmware config overrides (fish_config.py) -- fetched
                                              by the fish every turn loop cycle
@@ -26,7 +28,8 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from text import PERSONA, VOICE, strip_think, sentences_from, strip_markup
+from text import (PERSONA, voice_for, voice_for_sentence, language_instruction,
+                   strip_think, sentences_from, strip_markup)
 from fish_config import OVERRIDES
 
 LLM_URL = os.environ.get("BILLY_LLM_URL", "http://localhost:8080").rstrip("/")
@@ -102,6 +105,7 @@ def _sse(obj) -> str:
 class RespondReq(BaseModel):
     session: str = "default"
     text: str
+    language: str = "english"
 
 
 class ResetReq(BaseModel):
@@ -112,20 +116,27 @@ class ResetReq(BaseModel):
 def respond(req: RespondReq):
     """Stream Billy's reply as clean, spoken-ready sentences (one SSE event each), each carrying
     the voice it should be spoken in. The client pipelines these into TTS — speech can start on
-    sentence 1 while the LLM is still generating."""
+    sentence 1 while the LLM is still generating.
+
+    `language` (whisper's detected_language on the caller's utterance) picks the turn's voice via
+    voice_for() and, only for a language Stage 5 has actually enabled, adds a one-turn "reply in
+    <language>" nudge -- kept out of the stored session history so it doesn't repeat every turn."""
     msgs = _session(req.session)
     msgs.append({"role": "user", "content": req.text})
+    voice = voice_for(req.language)
+    instr = language_instruction(req.language)
+    call_msgs = msgs + [{"role": "system", "content": instr}] if instr else msgs
 
     def gen():
         spoken = []
         try:
             with httpx.Client() as client:
-                for sent in sentences_from(strip_think(_llm_deltas(client, msgs))):
+                for sent in sentences_from(strip_think(_llm_deltas(client, call_msgs))):
                     clean = strip_markup(sent)
                     if not clean:  # sentence was pure markup/emoji — nothing to say
                         continue
                     spoken.append(clean)
-                    yield _sse({"sentence": clean, "voice": VOICE})
+                    yield _sse({"sentence": clean, "voice": voice_for_sentence(clean, voice)})
         except httpx.HTTPError as e:
             yield _sse({"error": f"llm upstream: {e}"})
         # Record what Billy actually said so the next turn has context.

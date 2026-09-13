@@ -150,7 +150,9 @@ static void runloop_task(void *arg)
         // Transcribe the utterance using speech-to-text backend
         peripherals_set_led_status(LED_STATUS_THINK);
         char transcript[256];
-        esp_err_t stt_err = net_stt(&utterance, transcript, sizeof transcript);
+        char language[64];
+        esp_err_t stt_err = net_stt(&utterance, transcript, sizeof transcript,
+                                     language, sizeof language);
         heap_caps_free(utterance.samples);   // PCM no longer needed after STT
 
         if (stt_err == ESP_ERR_NO_MEM)
@@ -197,7 +199,7 @@ static void runloop_task(void *arg)
         }
 
         // The shim streams sentences; speak_sentence TTS+plays each as it arrives.
-        esp_err_t respond_err = net_respond(transcript, speak_sentence, NULL);
+        esp_err_t respond_err = net_respond(transcript, language, speak_sentence, NULL);
         if (respond_err == FISH_ERR_AUDIO_HW || respond_err == ESP_ERR_NO_MEM)
         {
             // Both are device-wide conditions that will just recur on the next sentence -- the

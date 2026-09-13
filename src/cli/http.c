@@ -62,10 +62,11 @@ static size_t membuf_write(char *ptr, size_t size, size_t nmemb, void *userdata)
 }
 
 bool http_stt(const char *stt_url, const int16_t *pcm, size_t nsamples, uint32_t sample_rate,
-              char *out_text, size_t out_len, long timeout_ms,
-              cancel_check_t cancel, const volatile void *cancel_ctx)
+              char *out_text, size_t out_len, char *out_language, size_t out_language_len,
+              long timeout_ms, cancel_check_t cancel, const volatile void *cancel_ctx)
 {
     out_text[0] = '\0';
+    snprintf(out_language, out_language_len, "english");
     if (!pcm || nsamples == 0) return true;   // nothing captured, not an error
 
     size_t wav_len = WAV_HEADER_BYTES + nsamples * sizeof(int16_t);
@@ -86,7 +87,7 @@ bool http_stt(const char *stt_url, const int16_t *pcm, size_t nsamples, uint32_t
 
     part = curl_mime_addpart(mime);
     curl_mime_name(part, "response_format");
-    curl_mime_data(part, "json", CURL_ZERO_TERMINATED);
+    curl_mime_data(part, "verbose_json", CURL_ZERO_TERMINATED);
 
     char url[256];
     snprintf(url, sizeof url, "%s/inference", stt_url);
@@ -115,6 +116,7 @@ bool http_stt(const char *stt_url, const int16_t *pcm, size_t nsamples, uint32_t
             size_t l = strlen(out_text);   // and appends a trailing newline
             while (l > 0 && (unsigned char) out_text[l - 1] <= ' ') out_text[--l] = '\0';
         }
+        json_get_string((const char *) resp.data, "detected_language", out_language, out_language_len);
     }
     else if (rc != CURLE_OK && !cancel_requested(cancel, cancel_ctx))
     {
@@ -226,8 +228,8 @@ static size_t sse_write(char *ptr, size_t size, size_t nmemb, void *userdata)
 }
 
 bool http_respond_stream(const char *shim_url, const char *session, const char *text,
-                          sentence_cb_t on_sentence, void *ctx, long timeout_ms,
-                          cancel_check_t cancel, const volatile void *cancel_ctx)
+                          const char *language, sentence_cb_t on_sentence, void *ctx,
+                          long timeout_ms, cancel_check_t cancel, const volatile void *cancel_ctx)
 {
     size_t esc_cap = strlen(text) * 2 + 1;
     char *esc_text = malloc(esc_cap);
@@ -237,10 +239,14 @@ bool http_respond_stream(const char *shim_url, const char *session, const char *
     char esc_session[256];
     json_escape(session, esc_session, sizeof esc_session);
 
-    size_t body_cap = esc_cap + strlen(esc_session) + 64;
+    char esc_language[128];
+    json_escape(language, esc_language, sizeof esc_language);
+
+    size_t body_cap = esc_cap + strlen(esc_session) + strlen(esc_language) + 96;
     char *body = malloc(body_cap);
     if (!body) { free(esc_text); return false; }
-    int bodylen = snprintf(body, body_cap, "{\"session\":\"%s\",\"text\":\"%s\"}", esc_session, esc_text);
+    int bodylen = snprintf(body, body_cap, "{\"session\":\"%s\",\"text\":\"%s\",\"language\":\"%s\"}",
+                            esc_session, esc_text, esc_language);
     free(esc_text);
 
     char url[256];

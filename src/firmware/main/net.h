@@ -27,12 +27,16 @@ esp_err_t net_init(void);
 // the fetch succeeds.
 esp_err_t net_fetch_config(bool wait_for_backend);
 
-// STT: POST audio to whisper /inference -> transcript text.
-esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len);
+// STT: POST audio to whisper /inference -> transcript text + detected language (a lowercase
+// English name, e.g. "spanish"). out_language is set to "english" if the field is absent.
+esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len,
+                   char *out_language, size_t out_language_len);
 
-// Brain: POST {session, text} to the shim /v1/respond; invokes on_sentence for each spoken
-// sentence (and the voice it should be spoken in) as it streams back (SSE).
-esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx);
+// Brain: POST {session, text, language} to the shim /v1/respond; invokes on_sentence for each
+// spoken sentence (and the voice it should be spoken in) as it streams back (SSE). language is
+// whatever net_stt detected -- it picks the shim's per-turn voice and, for an enabled
+// non-English language, nudges the LLM to reply in it.
+esp_err_t net_respond(const char *text, const char *language, sentence_cb_t on_sentence, void *ctx);
 
 // TTS: POST one sentence to Kokoro /v1/audio/speech -> audio, in the given voice.
 esp_err_t net_tts(const char *sentence, const char *voice, audio_buf_t *out_audio);

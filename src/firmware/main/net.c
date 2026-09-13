@@ -295,9 +295,11 @@ static void json_escape(const char *in, char *out, size_t out_len)
 // STT: POST the utterance as a WAV to whisper /inference (multipart, streamed so we don't buffer
 // the whole multipart body), parse the {"text": ...} JSON reply. STT is a dumb audio->text
 // transform, so it's called directly (only the brain hop goes through the shim).
-esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len)
+esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len,
+                   char *out_language, size_t out_language_len)
 {
     out_text[0] = '\0';
+    snprintf(out_language, out_language_len, "english");
     if (!audio || !audio->samples || audio->count == 0)
     {
         ESP_LOGW(TAG, "STT: nothing captured");
@@ -316,7 +318,7 @@ esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len)
         "Content-Type: audio/wav\r\n\r\n", BOUNDARY);
     char post[288];
     int postlen = snprintf(post, sizeof post,
-        "\r\n--%s\r\nContent-Disposition: form-data; name=\"response_format\"\r\n\r\njson\r\n"
+        "\r\n--%s\r\nContent-Disposition: form-data; name=\"response_format\"\r\n\r\nverbose_json\r\n"
         "--%s--\r\n", BOUNDARY, BOUNDARY);
     uint8_t wav[44];
     wav_header(wav, audio->count, audio->sample_rate);
@@ -359,13 +361,24 @@ esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len)
     }
     esp_http_client_write(client, post, postlen);
 
-    char resp[2048];
+    // verbose_json's per-word timestamp/probability entries make this reply far larger than
+    // plain json's bare {"text": ...} (measured ~470 bytes/sec of speech against gpu-host) --
+    // size for the firmware's capture_max_ms cap (10 s default) with real margin, and take it
+    // from PSRAM rather than the runloop task's 12 KB stack.
+    size_t resp_cap = 8192;
+    char *resp = heap_caps_malloc(resp_cap, MALLOC_CAP_SPIRAM);
+    if (!resp)
+    {
+        esp_http_client_close(client);
+        esp_http_client_cleanup(client);
+        return ESP_ERR_NO_MEM;
+    }
     int rd = 0;
     if (err == ESP_OK)
     {
         esp_http_client_fetch_headers(client);
         int status = esp_http_client_get_status_code(client);
-        rd = esp_http_client_read_response(client, resp, sizeof resp - 1);
+        rd = esp_http_client_read_response(client, resp, resp_cap - 1);
         if (rd < 0) rd = 0;
         resp[rd] = '\0';
         if (status != 200)
@@ -376,7 +389,7 @@ esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len)
     }
     esp_http_client_close(client);
     esp_http_client_cleanup(client);
-    if (err != ESP_OK) return err;
+    if (err != ESP_OK) { heap_caps_free(resp); return err; }
 
     if (json_get_string(resp, "text", out_text, out_len))
     {
@@ -386,14 +399,16 @@ esp_err_t net_stt(const audio_buf_t *audio, char *out_text, size_t out_len)
         size_t len = strlen(out_text);   // and appends a trailing newline
         while (len > 0 && (unsigned char) out_text[len - 1] <= ' ') out_text[--len] = '\0';
     }
-    ESP_LOGI(TAG, "STT -> \"%s\"", out_text);
+    json_get_string(resp, "detected_language", out_language, out_language_len);
+    heap_caps_free(resp);
+    ESP_LOGI(TAG, "STT -> \"%s\" [%s]", out_text, out_language);
     return ESP_OK;
 }
 
 // Brain: POST {session, text} to the shim and stream the reply. The shim owns persona/history/
 // cleaning and emits SSE lines `data: {"sentence": "..."}` (spoken-ready) then `data: [DONE]`;
 // on_sentence fires for each so TTS/playback pipelines with generation.
-esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
+esp_err_t net_respond(const char *text, const char *language, sentence_cb_t on_sentence, void *ctx)
 {
     if (!net_is_connected())
     {
@@ -403,8 +418,11 @@ esp_err_t net_respond(const char *text, sentence_cb_t on_sentence, void *ctx)
 
     char esc[256 * 2];
     json_escape(text, esc, sizeof esc);
-    char body[600];
-    int bodylen = snprintf(body, sizeof body, "{\"session\":\"default\",\"text\":\"%s\"}", esc);
+    char esc_language[128];
+    json_escape(language, esc_language, sizeof esc_language);
+    char body[600 + sizeof esc_language];
+    int bodylen = snprintf(body, sizeof body,
+        "{\"session\":\"default\",\"text\":\"%s\",\"language\":\"%s\"}", esc, esc_language);
 
     char url[128];
     snprintf(url, sizeof url, "http://%s:8000/v1/respond", BACKEND_HOST);

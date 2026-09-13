@@ -139,6 +139,7 @@ typedef struct
     const char *shim_url;
     const char *session;
     const char *text;
+    const char *language;
     cancel_check_t cancel;
     const volatile void *cancel_ctx;
 
@@ -193,8 +194,8 @@ static void *synth_worker(void *arg)
 {
     synth_ctx_t *ctx = arg;
     ctx->t_prompt_sent = now_seconds();
-    http_respond_stream(ctx->shim_url, ctx->session, ctx->text, on_sentence, ctx, RESPOND_TIMEOUT_MS,
-                        ctx->cancel, ctx->cancel_ctx);
+    http_respond_stream(ctx->shim_url, ctx->session, ctx->text, ctx->language, on_sentence, ctx,
+                        RESPOND_TIMEOUT_MS, ctx->cancel, ctx->cancel_ctx);
     pb_queue_finish(ctx->queue);
     return NULL;
 }
@@ -321,7 +322,9 @@ int main(int argc, char **argv)
         }
 
         char text[2048];
-        bool stt_ok = http_stt(stt_url, rec, rec_count, AUDIO_SAMPLE_RATE, text, sizeof text, STT_TIMEOUT_MS,
+        char language[64];
+        bool stt_ok = http_stt(stt_url, rec, rec_count, AUDIO_SAMPLE_RATE, text, sizeof text,
+                               language, sizeof language, STT_TIMEOUT_MS,
                                interrupted, &g_interrupted);
         free(rec);
         double t_stt = now_seconds();
@@ -331,7 +334,7 @@ int main(int argc, char **argv)
             printf("  (heard nothing)\n");
             continue;
         }
-        printf("  \U0001F5E3  %s\n", text);
+        printf("  \U0001F5E3  %s  [%s]\n", text, language);
 
         pb_queue_t queue;
         pb_queue_init(&queue);
@@ -342,6 +345,7 @@ int main(int argc, char **argv)
             .shim_url = shim_url,
             .session = args.session,
             .text = text,
+            .language = language,
             .cancel = interrupted,
             .cancel_ctx = &g_interrupted,
         };

@@ -11,8 +11,9 @@ cleaning. All of that lives in the backend shim, which keeps the fish model-agno
 lets the character change with no reflash. The fish just conducts three calls per turn,
 two of them straight to the audio engines:
 
-  STT   : POST {stt}/inference       multipart file=<wav 16k mono>, response_format=json -> {"text": ...}
-  brain : POST {shim}/v1/respond     JSON {session, text}; SSE -> {"sentence", "voice"} per line, then [DONE]
+  STT   : POST {stt}/inference       multipart file=<wav 16k mono>, response_format=verbose_json
+                                      -> {"text", "detected_language", ...}
+  brain : POST {shim}/v1/respond     JSON {session, text, language}; SSE -> {"sentence", "voice"} per line, then [DONE]
   TTS   : POST {tts}/v1/audio/speech JSON {model,input,voice,response_format=wav}          -> wav bytes
 
 The shim already returns clean, spoken-ready sentences (persona applied, <think> stripped,
@@ -93,21 +94,24 @@ def record_utterance():
 
 
 def transcribe(client, stt_url, wav_bytes):
-    """whisper.cpp /inference (multipart) -> transcript text. Called directly (STT is a dumb
-    audio->text transform; only the brain hop goes through the shim)."""
+    """whisper.cpp /inference (multipart) -> (transcript text, detected language). Called
+    directly (STT is a dumb audio->text transform; only the brain hop goes through the shim).
+    response_format=verbose_json adds "detected_language" (a lowercase English name, e.g.
+    "spanish") over plain "json"'s bare {"text": ...}."""
     files = {"file": ("rec.wav", wav_bytes, "audio/wav")}
-    data = {"response_format": "json", "temperature": "0.0"}
+    data = {"response_format": "verbose_json", "temperature": "0.0"}
     r = client.post(f"{stt_url}/inference", files=files, data=data, timeout=60)
     r.raise_for_status()
-    return r.json().get("text", "").strip()
+    body = r.json()
+    return body.get("text", "").strip(), body.get("detected_language", "english")
 
 
-def stream_billy(client, shim_url, session, text, on_first_sentence=None):
+def stream_billy(client, shim_url, session, text, language, on_first_sentence=None):
     """POST the utterance to the shim and yield each (sentence, voice) as it streams back.
     The shim owns the persona, history, and text cleaning — sentences arrive ready to speak,
     each tagged with the voice it should be spoken in (voice is None if the shim omits it).
     on_first_sentence, if given, is called once with the prompt-sent -> first-sentence latency."""
-    body = {"session": session, "text": text}
+    body = {"session": session, "text": text, "language": language}
     t_sent = time.time()
     with client.stream("POST", f"{shim_url}/v1/respond", json=body, timeout=120) as r:
         r.raise_for_status()
@@ -219,16 +223,16 @@ def main():
                 continue
             t_end = time.time()
 
-            text = transcribe(client, stt_url, wav)
+            text, language = transcribe(client, stt_url, wav)
             t_stt = time.time()
             if not text:
                 print("  (heard nothing)")
                 continue
-            print(f"  🗣  {text}")
+            print(f"  🗣  {text}  [{language}]")
 
             first_audio = {}
             ttfs = {}
-            sentences = stream_billy(client, shim_url, args.session, text,
+            sentences = stream_billy(client, shim_url, args.session, text, language,
                                       on_first_sentence=lambda dt: ttfs.setdefault("dt", dt))
             speak_turn(client, tts_url, args.voice, sentences,
                        lambda: first_audio.setdefault("t", time.time()))
